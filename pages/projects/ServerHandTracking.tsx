@@ -4,6 +4,7 @@ import Image from 'next/image'
 import styles from '../../styles/Home.module.css'
 
 const Home: NextPage = () => {
+    const dog = 5;;
   return (
     <div>
       <Head>
@@ -11,6 +12,18 @@ const Home: NextPage = () => {
         <meta name="description" content="Personal Page For Jaxon Poentis" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+        <div className={styles.navBar}>
+          
+          <div className={styles.links}>
+            <span style={{fontStyle:"italic", marginLeft:"2vw"}}><a href='/'>Jaxon Poentis</a></span>
+            <a style={{textDecoration: "underline",}}  href='/'>Home</a>
+            <a style={{textDecoration: "underline"}}  href='/'>Home</a>
+            <a style={{textDecoration: "underline"}}  href='/'>Home</a>
+
+            <a style={{textDecoration: "underline",}}  href='/'>Home</a>
+
+          </div>
+        </div>
         <div className={styles.maincotainer}>
           <h1 style={{"fontSize":"300%"}}>～Server Hand-Tracking Robotic Hand～</h1>
          
@@ -21,13 +34,13 @@ const Home: NextPage = () => {
                 <p></p>Source Code:
                 <ul>
                   <li>
-                    <a style={{textDecoration: "underline"}}  href='https://github.com/jaximus808/MasterArduinoServer'>Master Server</a>
+                    <a style={{textDecoration: "underline"}}target={"_blank"}  href='https://github.com/jaximus808/MasterArduinoServer'>Master Server</a>
                     <p>
                     This part handles the authentication of clients and putting users and robotic clients in the correct Fleet Server.</p>
                     <p></p>
                   </li>  
                   <li>
-                    <a style={{textDecoration: "underline"}} href='https://github.com/jaximus808/HandRobotSimulator20212022'>Fleet Server</a>
+                    <a style={{textDecoration: "underline"}} target={"_blank"}href='https://github.com/jaximus808/HandRobotSimulator20212022'>Fleet Server</a>
                     
                     <p>This part handles the authentication of clients and putting users and robotic clients in the correct Fleet Server.</p>
                     <p></p>
