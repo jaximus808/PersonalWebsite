@@ -17,8 +17,16 @@ model Projects {
   mediaLink String
   youtube Boolean @default(false)
   description String
+  shortDescription String
   linkName String
   projectDate String 
+  favorite Boolean
   createdDate DateTime @default(now())
 
+}
+
+model Admin {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  username String @unique
+  password String
 }

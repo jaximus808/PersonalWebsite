@@ -3,10 +3,12 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import Header from '../components/header'
+import Footer from '../components/footer'
 
-import { PrismaClient , Project, Prisma} from '@prisma/client'
+import { PrismaClient , Prisma} from '@prisma/client'
 import { useState } from 'react'
 import prisma from '../lib/prisma'
+import cookies from "cookie"
 
 
 export default function Index( { }) {
@@ -134,9 +136,7 @@ export default function Index( { }) {
                 </h3>
               </div>
             </div>
-            <div style={{marginTop:"50px"}}>
-              <h5>Made by Jaxon Poentis</h5>
-            </div>
+            <Footer authSense={false} authenticated={false}/>
         </div>
     </div>
   )
