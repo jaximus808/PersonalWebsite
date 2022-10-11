@@ -12,10 +12,28 @@ import { getCookies, getCookie, setCookies, removeCookies } from 'cookies-next';
 import * as jsonwebtoken from "jsonwebtoken";
 import { useState } from 'react'
 
+import {PrismaClient, Prisma, Projects} from "@prisma/client"
 
-interface authentication
+
+const prisma = new PrismaClient();
+// type ProjectProp =
+// {
+//   name: String, 
+//   mediaLink: String,
+//   youtube: Boolean, 
+//   description: String,
+//   shortDescription: String,
+//   linkName: String,
+//   projectDate: String, 
+//   favorite:Boolean,
+//   projectLinks: String,
+//   createdDate: String, 
+// }
+
+type props = 
 {
   auth:boolean;
+  projects:any
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -46,16 +64,23 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
     
   }
-
   
+  const projects = await prisma.projects.findMany();
+  console.log(projects)
+ 
+  //console.log(projects)
   return {
-    props: {auth: authenticated},
+    props: 
+      {
+        auth: authenticated,
+        projects:JSON.parse(JSON.stringify(projects)),
+      },
   }
 }
 
-export default function Index({ auth }:authentication) {
+const Index: React.FC<props> = props => {
 
-  console.log(auth);
+  console.log(props.projects)
   
   const AddProject = async(e:any) => 
   {
@@ -76,6 +101,7 @@ export default function Index({ auth }:authentication) {
           linkName: githubLink,
           projectDate:date,
           favorite: favorite,
+          projectLinks: projectLink
       })
     })
     const data = await response.json();
@@ -97,8 +123,10 @@ export default function Index({ auth }:authentication) {
   const [mediaLink, setMediaLink] = useState("");
   const [githubLink, setGithubLink] = useState("");
   const [date, setDate] = useState("");
-  const [responseText,setResponse] = useState();
+  const [responseText,setResponse] = useState("");
+  const [projectLink,setProjectLink] = useState("");
   
+  const [projectList, setProjectList] = useState(props.projects);
 
   const handleProjectChange = (e:any) =>
   {
@@ -131,6 +159,11 @@ export default function Index({ auth }:authentication) {
     setGithubLink(e.target.value);
   }
 
+  const handleProjectLink = (e:any) =>
+  {
+    setProjectLink(e.target.value);
+  }
+
 
   const handleDate = (e:any) =>
   {
@@ -150,7 +183,7 @@ export default function Index({ auth }:authentication) {
        
         <div className={styles.maincotainer}>
             <p></p>
-            {(auth) ?
+            {(props.auth) ?
             <>
               <h1 style={{fontSize:"300%"}}>～Add Projects～</h1>
               <form onSubmit={AddProject}>
@@ -194,13 +227,18 @@ export default function Index({ auth }:authentication) {
                 <input  type={"text" }value={githubLink} onChange={handleGithubLink}/>
                 <p></p>
                 <label>
-                    {"Github Link: "} 
+                    {"Project Link: "} 
+                </label>
+                <input  type={"text"}value={projectLink} onChange={handleProjectLink}/>
+                <p></p>
+                <label>
+                  {"Date Created: "}
                 </label>
                 <input  type={"date"}value={date} onChange={handleDate}/>
                 <p></p>
                 <label>
-                                {responseText}
-                            </label>
+                    {responseText}
+                </label>
                 <p></p>
                 <p> </p>
                 <input type={"submit"} value={"Add Project"}/>
@@ -211,8 +249,31 @@ export default function Index({ auth }:authentication) {
             <></>}
 
             <h1 style={{fontSize:"300%"}}>～Projects～</h1>
-            <ul>
-                <li>
+              {props.projects.map((data:any) =>
+              {
+                return (<div>
+                    <h2>
+                      <a style={{textDecoration: "underline"}} target={"_blank"} href={`/projects/${data.githubLink}`}>
+                        {data.name}
+                      </a>
+                    </h2>
+                    <div style={{paddingLeft:"20px"}}>
+                        { (data.youtube) ?
+                        <iframe width="560" height="315" src={data.mediaLink} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>  
+                        :
+                         <img src={data.mediaLink} width="370" height="315" /> }
+                        <h3>
+                        {data.shortDescription}
+                        <p></p>
+                        <a style={{textDecoration: "underline"}} target={"_blank"} href={`https://github.com/jaximus808/${data.githubLink}`}>{"--> Check out the Repo"}</a>
+                        <a style={{textDecoration: "underline"}} target={"_blank"} href={`https://github.com/jaximus808/${data.githubLink}`}>{"--> Learn More Here"}</a>
+                  
+                        </h3>
+                    </div>
+                  </div>
+                )})}
+
+                {/* <li>
                     <div>
                         <h2><a style={{textDecoration: "underline"}} href={"/projects/emailbriefer"}>
                             Email Morning Briefer</a>
@@ -225,10 +286,11 @@ export default function Index({ auth }:authentication) {
                             </h3>
                         </div>
                     </div>
-                </li>
-            </ul>
-            <Footer authSense={true} authenticated={auth}/>
+                </li> */}
+            <Footer authSense={true} authenticated={props.auth}/>
         </div>
     </div>
   )
 }
+
+export default Index;

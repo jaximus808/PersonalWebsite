@@ -21,6 +21,7 @@ model Projects {
   linkName String
   projectDate String 
   favorite Boolean
+  projectLinks String
   createdDate DateTime @default(now())
 
 }
