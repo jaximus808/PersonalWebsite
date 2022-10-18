@@ -80,8 +80,46 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const Index: React.FC<props> = props => {
 
+  const [projectsPage, setProjectPage] = useState(0);
+
+  const [showForwardButton, setShowForwardButton] = useState(props.projects.length > 5 );
+  const [showBackButton, setShowBackButton] = useState(false);
+
   console.log(props.projects)
   
+  const MovePageForawrd = () =>
+  {
+    if(props.projects.length <= (projectsPage+1)*5) return; 
+    setProjectPage(projectsPage+1);
+    if(props.projects.length <= (projectsPage+2)*5)
+    {
+      setShowForwardButton(false)
+    }
+    else 
+    {
+      setShowForwardButton(true)
+
+    }
+
+    setShowBackButton(true)
+  }
+  const MovePageBackward = () =>
+  {
+    if(props.projects.length <= (projectsPage-1)*5) return; 
+    setProjectPage(projectsPage-1);
+    if((projectsPage-2)*5 < 0 )
+    {
+      setShowBackButton(false)
+    }
+    else 
+    {
+
+      setShowBackButton(true)
+    }
+
+    setShowForwardButton(true)
+  }
+
   const AddProject = async(e:any) => 
   {
     e.preventDefault();
@@ -127,6 +165,13 @@ const Index: React.FC<props> = props => {
   const [projectLink,setProjectLink] = useState("");
   
   const [projectList, setProjectList] = useState(props.projects);
+
+  const logOut = async () =>
+  {
+    const logProject = await fetch("/api/admin/logout").then(res => res.json());
+    console.log(logProject)
+    location.reload();
+  }
 
   const handleProjectChange = (e:any) =>
   {
@@ -243,17 +288,18 @@ const Index: React.FC<props> = props => {
                 <p> </p>
                 <input type={"submit"} value={"Add Project"}/>
             </form>
-            
+            <button onClick={logOut}>Log Out</button>
             </>:
               
             <></>}
+            <h1 style={{fontSize:"300%"}}>～Projects (Page: {projectsPage+1})～</h1>
 
-            <h1 style={{fontSize:"300%"}}>～Projects～</h1>
-              {props.projects.map((data:any) =>
+            <p></p>
+              {props.projects.slice(projectsPage*5, (props.projects.length > (projectsPage+1)*5 )?((projectsPage+1)*5):props.projects.length).map((data:any) =>
               {
                 return (<div>
                     <h2>
-                      <a style={{textDecoration: "underline"}} target={"_blank"} href={`/projects/${data.githubLink}`}>
+                      <a style={{textDecoration: "underline"}} target={"_blank"} href={`/api/projects/${data.githubLink}`}>
                         {data.name}
                       </a>
                     </h2>
@@ -266,12 +312,21 @@ const Index: React.FC<props> = props => {
                         {data.shortDescription}
                         <p></p>
                         <a style={{textDecoration: "underline"}} target={"_blank"} href={`https://github.com/jaximus808/${data.githubLink}`}>{"--> Check out the Repo"}</a>
-                        <a style={{textDecoration: "underline"}} target={"_blank"} href={`https://github.com/jaximus808/${data.githubLink}`}>{"--> Learn More Here"}</a>
+                        <p></p>
+                        <a style={{textDecoration: "underline"}} target={"_blank"} href={`/api/projects/${data.name}`}>{"-> Learn More Here"}</a>
                   
                         </h3>
                     </div>
                   </div>
                 )})}
+
+                
+                <div>
+                  <button disabled={!showBackButton} onClick={MovePageBackward}>{"<"}</button>
+                  <span style={{marginLeft:"25px"}}></span>
+                  <button disabled={!showForwardButton} onClick={MovePageForawrd}>{">"}</button>
+                </div>
+                
 
                 {/* <li>
                     <div>

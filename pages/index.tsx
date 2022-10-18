@@ -10,9 +10,39 @@ import { useState } from 'react'
 import prisma from '../lib/prisma'
 import cookies from "cookie"
 
+import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
 
-export default function Index( { }) {
+type props = 
+{
+  pastProjFav:any
+}
 
+
+export const getServerSideProps: GetServerSideProps = async (context) =>
+{
+
+  const prisma = new PrismaClient();
+
+  const pastFavoriteProjects = await prisma.projects.findMany({
+    where:
+    {
+      favorite:true
+    }
+  })
+
+  console.log(pastFavoriteProjects)
+
+  return {
+    props:{
+      pastProjFav: JSON.parse(JSON.stringify(pastFavoriteProjects))
+    }
+  }
+}
+
+const Index:React.FC<props> = props => {
+
+  console.log(props)
+    
   return (
     <div>
       <Head>
@@ -71,22 +101,33 @@ export default function Index( { }) {
           <p></p>
           Some things I like to eat are Ramen, Steak, and Mango dessert. I enjoy hanging out with friends whenever I have the time and I love nerding out with other students interested in STEM, however biology usually goes over my head haha. 
         </h3>
-          <h1>～Current Projects～</h1>
-          <div>
-              <h2 style={{ fontStyle: "italic","fontSize":"180%"}}>Tsant Programming Language</h2>
-              <div style={{paddingLeft:"20px"}}>
-                <img src='tsant.png' width="370" height="315" />
-                <h3>
-                  This project was to practice C++ algorithms and I aim to make this language a mix of C++ and python. Currently it is able to handle function notations, arithmetic, varaible storage, and more. The next step to make it turing complete is to add condition statements. Currently it is an interpetted language but soon I am looking to make it a compiled and interpetted language.
-                  <p></p>
-                  <a style={{textDecoration: "underline"}} target={"_blank"} href='https://github.com/jaximus808/TsantCompiler'>Learn More...</a>
-                </h3>
-              </div>
-            </div>
+          
           <h1>～Past Favorite Projects～</h1>
-
-            <div>
-              <>
+          {props.pastProjFav.map((data:any) =>
+              {
+                return (<div>
+                    <h2>
+                      <a style={{textDecoration: "underline"}} target={"_blank"} href={`/api/projects/${data.name}`}>
+                        {data.name}
+                      </a>
+                    </h2>
+                    <div style={{paddingLeft:"20px"}}>
+                        { (data.youtube) ?
+                        <iframe width="560" height="315" src={data.mediaLink} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>  
+                        :
+                         <img src={data.mediaLink} width="370" height="315" /> }
+                        <h3>
+                        {data.shortDescription}
+                        <p></p>
+                        <a style={{textDecoration: "underline"}} target={"_blank"} href={`https://github.com/jaximus808/${data.githubLink}`}>{"--> Check out the Repo"}</a>
+                        <p></p>
+                        <a style={{textDecoration: "underline"}} target={"_blank"} href={`/api/projects/${data.name}`}>{"--> Learn More Here"}</a>
+                  
+                        </h3>
+                    </div>
+                  </div>
+                )})} 
+              <> 
                 {/* {projects.map((projectElem, i:number) =>
                 (
                   <div>
@@ -104,7 +145,9 @@ export default function Index( { }) {
                   
                 ))} */}
               </>
-              <h2 style={{ fontStyle: "italic","fontSize":"180%"}}>Server Hand-Tracking Robotic Hand</h2>
+              {/* 
+              
+            <div><h2 style={{ fontStyle: "italic","fontSize":"180%"}}>Server Hand-Tracking Robotic Hand</h2>
               <div style={{paddingLeft:"20px"}}>
                 <iframe width="560" height="315" src="https://www.youtube.com/embed/ixc6L8SsFSI" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>  
                 <h3>
@@ -135,10 +178,11 @@ export default function Index( { }) {
                   <a style={{textDecoration: "underline"}} href='https://github.com/jaximus808/PsychSocketGame'>Learn More...</a>
                 </h3>
               </div>
-            </div>
+            </div> */}
             <Footer authSense={false} authenticated={false}/>
         </div>
     </div>
   )
 }
 
+export default Index

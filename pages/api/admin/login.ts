@@ -56,7 +56,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) =>
 
         console.log("L");
         const token = jsonwebtoken.sign({_id:users?.id!},process.env.ADMIN_PASS!);
-        setCookies("token",token,{ req, res, maxAge: 1000000 });
+        setCookies("token",token,{ req, res, maxAge: 1000 });
         res.json({
             authenticated: true,
             msg: "GOOD!"
