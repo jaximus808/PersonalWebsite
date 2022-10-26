@@ -1,9 +1,9 @@
 
 import Head from 'next/head'
-import styles from '../../../styles/Home.module.css'
-import Header from '../../../components/header'
+import styles from '../../styles/Home.module.css'
+import Header from '../../components/header'
 
-import Footer from '../../../components/footer'
+import Footer from '../../components/footer'
 
 import cookies from "cookie"
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
@@ -76,12 +76,9 @@ type props =
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // ...
-
-
-
-    const projects  = context.query.projects
-    console.log(projects)
-    if(!projects)
+    const { projectName }  = context.query
+    console.log(projectName)
+    if(!projectName)
     {
         console.log("MEOW")
         return{
@@ -93,30 +90,44 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             }
           }
     }
-    const project = await prisma.projects.findMany(
-        {
-            where:
-            {
-                name: projects.toString(),
-            }
-        }
-    )
-
-  return{
-    props:
+    
+    try
     {
-        projectData:project,
-        exist: true
+        const project = await prisma.projects.findMany(
+            {
+                where:
+                {
+                    name: projectName.toString()
+                }
+            }
+        )
+        return{
+            props:
+            {
+                projectData:JSON.parse(JSON.stringify(project))[0],
+                exist: true
+            }
+          }
     }
-  }
+    catch
+    {
+        return{
+            props:
+            {
+                project:[],
+                exist: false
+            }
+          }
+    }
+  
 }
 
 const Index: React.FC<props> = props => {
 
   
-
-  return (
-    <div>
+    console.log(props)
+  return ( 
+  <div>
       <Head>
         <title>Jaxon Poentis</title>
         <meta name="description" content="Personal Page For Jaxon Poentis" />
@@ -124,13 +135,17 @@ const Index: React.FC<props> = props => {
       </Head>
       
         <Header/>
-       
         <div className={styles.maincotainer}>
-            <p></p>
+            
+                <h3><a style={{textDecoration: "underline"}} href='/projects'>{"<-"} Look At More Projects</a></h3>
                 {(props.exist) ?
                 <div>
+                <h1>
+                    Project: {props.projectData.name}
+                </h1>
+
                 <h2>
-                    {props.projectData.name}
+                    Posted on: {props.projectData.projectDate}
                 </h2>
                 <div style={{paddingLeft:"20px"}}>
                     { (props.projectData.youtube) ?

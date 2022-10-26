@@ -14,6 +14,7 @@ import { useState } from 'react'
 
 import {PrismaClient, Prisma, Projects} from "@prisma/client"
 
+import Background from '../components/backgroundThree'
 
 const prisma = new PrismaClient();
 // type ProjectProp =
@@ -218,12 +219,14 @@ const Index: React.FC<props> = props => {
 
   return (
     <div>
+      
+<Background/> 
       <Head>
-        <title>Jaxon Poentis</title>
+        <title >Jaxon Poentis</title>
         <meta name="description" content="Personal Page For Jaxon Poentis" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      
+        
         <Header/>
        
         <div className={styles.maincotainer}>
@@ -292,28 +295,35 @@ const Index: React.FC<props> = props => {
             </>:
               
             <></>}
-            <h1 style={{fontSize:"300%"}}>～Projects (Page: {projectsPage+1})～</h1>
 
+            <div className={styles.textContainer}>
+              <h1 style={{ "textAlign":"center",fontSize:"4vw"}}>～Projects (Page: {projectsPage+1})～</h1>
+            <div style={{"textAlign":"center"}}>
+                  <button disabled={!showBackButton} onClick={MovePageBackward}>{"<"}</button>
+                  <span style={{marginLeft:"25px"}}></span>
+                  <button disabled={!showForwardButton} onClick={MovePageForawrd}>{">"}</button>
+                </div>
             <p></p>
               {props.projects.slice(projectsPage*5, (props.projects.length > (projectsPage+1)*5 )?((projectsPage+1)*5):props.projects.length).map((data:any) =>
               {
-                return (<div>
+                return (
+                <div className={styles.projectContainerText} style={{ "textAlign":"center",}} >
                     <h2>
-                      <a style={{textDecoration: "underline"}} target={"_blank"} href={`/api/projects/${data.githubLink}`}>
+                      <a  style={{fontSize:"2.5vw",textDecoration: "underline"}} target={"_blank"} href={`/projects/${data.name}`}>
                         {data.name}
                       </a>
                     </h2>
-                    <div style={{paddingLeft:"20px"}}>
+                    <div >
                         { (data.youtube) ?
                         <iframe width="560" height="315" src={data.mediaLink} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>  
                         :
-                         <img src={data.mediaLink} width="370" height="315" /> }
-                        <h3>
+                         <img src={data.mediaLink} margin-left=""width="100%" height="100%" /> }
+                        <h3 style={{fontSize:"1.5vw"}}>
                         {data.shortDescription}
                         <p></p>
-                        <a style={{textDecoration: "underline"}} target={"_blank"} href={`https://github.com/jaximus808/${data.githubLink}`}>{"--> Check out the Repo"}</a>
+                        <a style={{fontSize:"1.5vw",textDecoration: "underline"}} target={"_blank"} href={`https://github.com/jaximus808/${data.githubLink}`}>{"--> Check out the Repo"}</a>
                         <p></p>
-                        <a style={{textDecoration: "underline"}} target={"_blank"} href={`/api/projects/${data.name}`}>{"-> Learn More Here"}</a>
+                        <a style={{fontSize:"1.5vw",textDecoration: "underline"}} target={"_blank"} href={`/api/projects/${data.name}`}>{"-> Learn More Here"}</a>
                   
                         </h3>
                     </div>
@@ -321,11 +331,9 @@ const Index: React.FC<props> = props => {
                 )})}
 
                 
-                <div>
-                  <button disabled={!showBackButton} onClick={MovePageBackward}>{"<"}</button>
-                  <span style={{marginLeft:"25px"}}></span>
-                  <button disabled={!showForwardButton} onClick={MovePageForawrd}>{">"}</button>
-                </div>
+                
+
+            </div>
                 
 
                 {/* <li>

@@ -105,8 +105,11 @@ const Footer: NextPage<Props> = (props) => {
                     <>
                         
                     </>}
-                <div style={{marginTop:"50px"}}>
-                    <h5>Made by Jaxon Poentis</h5>
+                <div className={styles.footerContainer} style={{width:"125%",marginLeft:"-12.5%",marginTop:"50px"}}>
+
+                    <h5 style={{}}>Made by Jaxon Poentis</h5>
+
+                    <h5 style={{}}>The background is inspired by the Einstein Rosen Bridge theory where a black hole at time zero, when its embedded in mathematics, creates a geometric "funnel" shape with an empty center in the middle in both the positive and negative direction, aka a theoretical wormhole.</h5>
                     <p></p>
                 </div>
             </div>
