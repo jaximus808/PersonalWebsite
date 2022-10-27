@@ -9,9 +9,8 @@ import cookies from "cookie"
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
 import { getCookies, getCookie, setCookies, removeCookies } from 'cookies-next';
 
+import { useState,useEffect, useRef  } from 'react'
 import * as jsonwebtoken from "jsonwebtoken";
-import { useState } from 'react'
-
 import {PrismaClient, Prisma, Projects} from "@prisma/client"
 
 import Background from '../components/backgroundThree'
@@ -77,6 +76,66 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         projects:JSON.parse(JSON.stringify(projects)),
       },
   }
+}
+
+function ScrollDown(props:any)
+{
+
+    
+    const yRef = useRef(0);
+    const moved = useRef(false)
+    const scrollTitle:any = useRef(null);
+
+
+    const showFixed =() =>
+    {
+      scrollTitle.current.style.top = "0";
+
+      scrollTitle.current.style.color ="rgba(255,255,255,1)"
+    }
+
+    const hideFixed =() =>
+    {
+
+      scrollTitle.current.style.color ="rgba(255,255,255,0)"
+        scrollTitle.current.style.top = "50%";
+    }
+    const handleScroll =()=>
+    {
+        const y = window.pageYOffset;
+        yRef.current = y;
+        console.log(yRef.current)
+        if(!moved.current && yRef.current > 0 )
+        {
+            moved.current = true
+            window.requestAnimationFrame(hideFixed);
+        }
+        if(moved.current && yRef.current ==0 )
+        {
+
+            moved.current = false
+            window.requestAnimationFrame(showFixed);
+        }
+    }
+
+    useEffect(() => 
+    {
+        window.addEventListener("scroll", handleScroll)
+        
+        const y = window.pageYOffset;
+        yRef.current = y;
+        return () =>
+        {
+            window.removeEventListener("scroll", handleScroll)
+        }
+        
+    },[])
+    return (
+      <>
+
+        <h2 className={styles.scrollDownTitle} ref={scrollTitle} style={{"fontSize":"2vw","textAlign":"center"}}>v Scroll Down v</h2> 
+      </>
+    )
 }
 
 const Index: React.FC<props> = props => {
@@ -228,8 +287,12 @@ const Index: React.FC<props> = props => {
       </Head>
         
         <Header/>
+        <div className={styles.mainTitleName}>
+          <div style={{"fontSize":"10vw","textAlign":"center"}}>My Projects</div> 
+          <ScrollDown/>
+        </div>
        
-        <div className={styles.maincotainer}>
+        <div className={styles.homeMaincotainer}>
             <p></p>
             {(props.auth) ?
             <>
@@ -308,9 +371,9 @@ const Index: React.FC<props> = props => {
               {
                 return (
                 <div className={styles.projectContainerText} style={{ "textAlign":"center",}} >
-                    <h2>
-                      <a  style={{fontSize:"2.5vw",textDecoration: "underline"}} target={"_blank"} href={`/projects/${data.name}`}>
-                        {data.name}
+                    <h2 >
+                      <a  style={{fontSize:"2.5vw",textDecoration: "underline"}} href={`/projects/${data.name}`}>
+                        <div style={{ overflowWrap: "break-word"}}>{data.name}</div>
                       </a>
                     </h2>
                     <div >
@@ -321,9 +384,9 @@ const Index: React.FC<props> = props => {
                         <h3 style={{fontSize:"1.5vw"}}>
                         {data.shortDescription}
                         <p></p>
-                        <a style={{fontSize:"1.5vw",textDecoration: "underline"}} target={"_blank"} href={`https://github.com/jaximus808/${data.githubLink}`}>{"--> Check out the Repo"}</a>
+                        <a style={{fontSize:"1.5vw",textDecoration: "underline"}} target={"_blank"} href={`${data.linkName}`}>{"--> Check out the Repo"}</a>
                         <p></p>
-                        <a style={{fontSize:"1.5vw",textDecoration: "underline"}} target={"_blank"} href={`/api/projects/${data.name}`}>{"-> Learn More Here"}</a>
+                        <a style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/projects/${data.name}`}>{"-> Learn More Here"}</a>
                   
                         </h3>
                     </div>

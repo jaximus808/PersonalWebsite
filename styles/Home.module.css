@@ -74,7 +74,7 @@
   font-family: OpenSans, sans-serif;
   font-weight: 400;
   padding-left: 1vw;
-  padding-bottom: 2vw;
+  padding-bottom: 0.5vw;
   padding-right: 1vw;
   padding-top: 0.1vw;
   margin-top: 2vw;
@@ -83,6 +83,28 @@
   width:100%;
 }
 
+.Logo
+{
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline;
+  width: 8vw;
+}
+
+.instaLogo
+{
+  background-color: #bbb;
+  border-radius: 25%;
+  display: inline;
+  width: 8vw;
+}
+.gmailLogo
+{
+  background-color: #bbb;
+  border-radius: 25%;
+  display: inline;
+  width: 8vw;
+}
 
 .projectContainerText
 {
@@ -114,6 +136,13 @@
   font-family: OpenSans, sans-serif;
   color:white;
 }
+.links>a:hover
+{
+  
+  font-family: OpenSans, sans-serif;
+  color:rgb(239, 43, 177);
+}
+
 
 .links>a
 {
@@ -121,6 +150,8 @@
   float: right;
   margin-left: 2vw;
   margin-right: 2vw;
+
+  transition-duration: 0.5s;
 }
 
 .mainTitleName

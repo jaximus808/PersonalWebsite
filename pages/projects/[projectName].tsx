@@ -4,7 +4,7 @@ import styles from '../../styles/Home.module.css'
 import Header from '../../components/header'
 
 import Footer from '../../components/footer'
-
+import Background from '../../components/backgroundThree'
 import cookies from "cookie"
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
 import { getCookies, getCookie, setCookies, removeCookies } from 'cookies-next';
@@ -128,6 +128,8 @@ const Index: React.FC<props> = props => {
     console.log(props)
   return ( 
   <div>
+
+<Background/> 
       <Head>
         <title>Jaxon Poentis</title>
         <meta name="description" content="Personal Page For Jaxon Poentis" />
@@ -136,8 +138,12 @@ const Index: React.FC<props> = props => {
       
         <Header/>
         <div className={styles.maincotainer}>
-            
+                <div className={styles.textContainer}>
+                    
                 <h3><a style={{textDecoration: "underline"}} href='/projects'>{"<-"} Look At More Projects</a></h3>
+                </div>
+
+                <div className={styles.textContainer}>
                 {(props.exist) ?
                 <div>
                 <h1>
@@ -155,13 +161,14 @@ const Index: React.FC<props> = props => {
                     <h3>
                     {props.projectData.description}
                     <p></p>
-                    <a style={{textDecoration: "underline"}} target={"_blank"} href={`https://github.com/jaximus808/${props.projectData.githubLink}`}>{"--> Check out the Repo"}</a>
+                    <a style={{textDecoration: "underline"}} target={"_blank"} href={`${props.projectData.linkName}`}>{"--> Check out the Repo"}</a>
                     </h3>
                 </div>
             </div>
             :
               
             <></>}
+            </div>
             
 
                 {/* <li>

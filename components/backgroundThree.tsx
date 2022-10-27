@@ -189,28 +189,6 @@ function System(props:any):JSX.Element
 }
 
 
-function Box(props:any)
-{
-  const [xPos, setXPos] = useState(props.pos[0]);
-  const [Yrotation, setYRotation] = useState(0); 
-
-  const [Xrotation, setXRotation] = useState(0); 
-
-  const [Zrotation, setZRotation] = useState(0); 
-
-
-  const ref = useRef(); 
-  
-
-  return (
-      <mesh scale={2} position={[0, -25, -80]} rotation={[Xrotation,Yrotation+Math.PI/4,Zrotation]} ref={ref} >
-        <boxBufferGeometry args={[1,1,1]} attach="geometry"/>
-        <meshPhongMaterial color={"lightblue"} attach="material"></meshPhongMaterial>
-      </mesh>
-  )
-}
-
-
 export default function Background()
 {
     return(

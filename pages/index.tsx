@@ -122,8 +122,8 @@ const Index:React.FC<props> = props => {
         </div>
         <div className={styles.homeMaincotainer}>
           <div className={styles.textContainer}>
-            <h1 style={{"fontSize":"300%","textAlign":"center"}}>～Jaxon Poentis～</h1>
-            <h3>Hello! My name is Jaxon Poentis and I am currently a senior at Roosevelt High School in Hawaii. I am self-taught programmer and I create projects in Website-Devolpment, Machine Learning, Networking, Game Devolpment, and whatever interests me at the time. I am very interested in learning more about Computer Science and Quantum Computing in the future.</h3>
+            <h1 style={{"fontSize":"300%","textAlign":"center"}}>～Hello!～</h1>
+            <h3>My name is Jaxon Poentis and I am currently a senior at Roosevelt High School in Hawaii. I am self-taught programmer and I create projects in Website-Devolpment, Machine Learning, Networking, Game Devolpment, and whatever interests me at the time. I am very interested in learning more about Computer Science and Quantum Computing in the future.</h3>
           </div>
           
         {/* <h1>～My Socials～</h1>
@@ -167,7 +167,7 @@ const Index:React.FC<props> = props => {
               {
                 return (<div style={{"textAlign":"center"}}>
                     <h2>
-                      <a style={{textDecoration: "underline", fontStyle:"italic"}} target={"_blank"} href={`/projects/${data.name}`}>
+                      <a style={{textDecoration: "underline", fontStyle:"italic"}}  href={`/projects/${data.name}`}>
                         {data.name}
                       </a>
                     </h2>
@@ -179,9 +179,9 @@ const Index:React.FC<props> = props => {
                         <h3>
                         {data.shortDescription}
                         <p></p>
-                        <a style={{textDecoration: "underline"}} target={"_blank"} href={`https://github.com/jaximus808/${data.githubLink}`}>{"--> Check out the Repo"}</a>
+                        <a style={{textDecoration: "underline"}} target={"_blank"} href={`${data.linkName}`}>{"--> Check out the Repo"}</a>
                         <p></p>
-                        <a style={{textDecoration: "underline"}} target={"_blank"} href={`/api/projects/${data.name}`}>{"--> Learn More Here"}</a>
+                        <a style={{textDecoration: "underline"}} href={`/projects/${data.name}`}>{"--> Learn More Here"}</a>
                   
                         </h3>
                     </div>
