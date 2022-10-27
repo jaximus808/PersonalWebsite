@@ -1,4 +1,5 @@
 import type { NextPage } from 'next'
+import Link from 'next/link'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
@@ -108,7 +109,7 @@ const Index:React.FC<props> = props => {
   return (
     <div>
 
-<Background/> 
+      <Background/> 
       <Head>
         <title>Jaxon Poentis</title>
         <meta name="description" content="Personal Page For Jaxon Poentis" />
@@ -126,50 +127,15 @@ const Index:React.FC<props> = props => {
             <h3>My name is Jaxon Poentis and I am currently a senior at Roosevelt High School in Hawaii. I am self-taught programmer and I create projects in Website-Devolpment, Machine Learning, Networking, Game Devolpment, and whatever interests me at the time. I am very interested in learning more about Computer Science and Quantum Computing in the future.</h3>
           </div>
           
-        {/* <h1>～My Socials～</h1>
-          <h3>
-
-            <ul style={{fontSize:"130%",textDecoration: "underline"}}>
-              <li style={{marginBottom: "20px"}}>
-                <a target={"_blank"} href='https://github.com/jaximus808'>Github</a>
-              </li>
-              <li style={{marginBottom: "20px"}} >
-                <a target={"_blank"}href='https://instagram.com/jaxonsoldev?igshid=YmMyMTA2M2Y='>Developer Log Instagram</a>
-               
-              </li>
-              <li style={{marginBottom: "20px"}} >
-                <a target={"_blank"}href='jaximus808@gmail.com'>Email: jaximus808@gmail.com</a>
-               
-              </li>
-              <li style={{marginBottom: "20px"}} >
-                <a target={"_blank"}href='https://www.linkedin.com/in/jaxon-poentis-967357243/'>Linkedin</a>
-               
-              </li>
-              <li style={{marginBottom: "20px"}}>
-                <a target={"_blank"}href='https://www.youtube.com/channel/UCqakvmaEw3OYRjkpY1gXKag'>Developer Log Youtube</a>
-              </li>
-            </ul>
-          </h3>
-        
-        <h1>～Get To Know Me～</h1>
-        <h3>
-          I was born on March 23rd 2005 and I grew up on the island of Oahu. My ethnicities are (in order from highest percentage): Japanese, Hawaiian, Filipino, Spanish, and Korean. I began block-based coding with scratch in elementary school and serious text-based coding at the end of freshman year of High School.
-          <p></p>
-          Some other activities I participate in are Boy Scouts (currently a Life Scout), Tennis, Math Team, and the founder of the Roosevelt Coding Club. 
-          <p></p>
-          Some things I like to eat are Ramen, Steak, and Mango dessert. I enjoy hanging out with friends whenever I have the time and I love nerding out with other students interested in STEM, however biology usually goes over my head haha. 
-        </h3>
-           */}
-
           <div className={styles.textContainer}>
           <h1 style={{"fontSize":"250%","textAlign":"center"}}>～My Favorite Projects～</h1>
           {props.pastProjFav.map((data:any) =>
               {
                 return (<div style={{"textAlign":"center"}}>
                     <h2>
-                      <a style={{textDecoration: "underline", fontStyle:"italic"}}  href={`/projects/${data.name}`}>
-                        {data.name}
-                      </a>
+                      <Link style={{ fontStyle:"italic"}}  href={`/projects/${data.name}`}>
+                        <div style={{"cursor":"pointer",textDecoration: "underline",}}>{data.name}</div>
+                      </Link>
                     </h2>
                     <div style={{paddingLeft:"20px"}}>
                         { (data.youtube) ?
@@ -179,9 +145,9 @@ const Index:React.FC<props> = props => {
                         <h3>
                         {data.shortDescription}
                         <p></p>
-                        <a style={{textDecoration: "underline"}} target={"_blank"} href={`${data.linkName}`}>{"--> Check out the Repo"}</a>
+                        <a rel="noreferrer" style={{textDecoration: "underline"}} target={"_blank"} href={`${data.linkName}`}>{"--> Check out the Repo"}</a>
                         <p></p>
-                        <a style={{textDecoration: "underline"}} href={`/projects/${data.name}`}>{"--> Learn More Here"}</a>
+                        <Link  href={`/projects/${data.name}`}><div style={{textDecoration: "underline","cursor":"pointer"}}>{"--> Learn More Here"}</div></Link>
                   
                         </h3>
                     </div>

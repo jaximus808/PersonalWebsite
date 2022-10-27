@@ -1,6 +1,6 @@
 import { Canvas,useFrame } from "@react-three/fiber";
 import css from "../styles/Home.module.css"
-
+import Router from 'next/router'
 import * as THREE from "three"
 import React, {useState, useEffect, useRef, useMemo,Suspense } from 'react'
 
@@ -17,6 +17,10 @@ const height = 10;
 
 function Stars(props:any)
 {
+
+    Router.events.on('routeChangeStart', (url, options) => {linkedClicked.current=true})
+    Router.events.on('routeChangeComplete', (url, options) => {linkedClicked.current=false})
+
     const ref:any = useRef(); 
 
     let angle = Radians(props.angle)
@@ -29,6 +33,8 @@ function Stars(props:any)
     let x = radius * Math.cos(angle)
     let y = props.y
     let z = radius * Math.sin(angle); 
+    const linkedClicked = useRef(false)
+    const idleTurningRate = useRef(0.002)
     console.log(Radians(65))
     let zOffSet = props.z; 
 
@@ -41,6 +47,10 @@ function Stars(props:any)
         if(angle < 0) angle = angle + 2*Math.PI;
         x = radius * Math.cos(angle)
         z = radius * Math.sin(angle)
+        if(!ref)
+        {
+            return
+        }
         ref.current.position.x = x; 
         ref.current.position.z = z+zOffSet; 
 
@@ -48,11 +58,23 @@ function Stars(props:any)
     useFrame((state, delta) =>
     { 
         yValue = 1
-        angle = angle + 0.002*(yValue);
+        if(linkedClicked.current)
+        {
+            idleTurningRate.current+= 0.001
+        }
+        else
+        {
+            idleTurningRate.current = 0.002
+        }
+        angle = angle + (idleTurningRate.current)*(yValue);
         if(angle > 2*Math.PI) angle = angle - 2*Math.PI;
         if(angle < 0) angle = angle + 2*Math.PI;
         x = radius * Math.cos(angle)
         z = radius * Math.sin(angle)
+        if(!ref)
+        {
+            return
+        }
         ref.current.position.x = x; 
         ref.current.position.z = z+zOffSet; 
 

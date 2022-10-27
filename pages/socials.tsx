@@ -108,7 +108,7 @@ const Index:React.FC<props> = props => {
   return (
     <div>
 
-<Background/> 
+    <Background/> 
       <Head>
         <title>Jaxon Poentis</title>
         <meta name="description" content="Personal Page For Jaxon Poentis" />
@@ -129,28 +129,28 @@ const Index:React.FC<props> = props => {
             <div style={{textAlign:"center",fontSize:"130%",textDecoration: "underline"}}>
                 <div style={{marginBottom: "20px"}}>
                     <img className={styles.Logo} src='/githubLogo.png'/>
-                    <a  target={"_blank"} href='https://github.com/jaximus808'><div style={{display:"block",marginBottom:"3vw"}}>My Github</div></a>
+                    <a rel="noreferrer" target={"_blank"} href='https://github.com/jaximus808'><div style={{display:"block",marginBottom:"3vw"}}>My Github</div></a>
                 </div>
                 <div style={{marginBottom: "20px"}} >
                     <img className={styles.instaLogo} src='/instalogo.png'/>
-                    <a target={"_blank"}href='https://instagram.com/jaxonsoldev?igshid=YmMyMTA2M2Y='><div style={{display:"block",marginBottom:"3vw"}}>Developer Log Instagram</div></a>
+                    <a rel="noreferrer" target={"_blank"}href='https://instagram.com/jaxonsoldev?igshid=YmMyMTA2M2Y='><div style={{display:"block",marginBottom:"3vw"}}>Developer Log Instagram</div></a>
                 
                 </div>
                 <div style={{marginBottom: "20px"}} >
 
                     <img className={styles.gmailLogo} src='/gmailLogo.png'/>
-                    <a target={"_blank"}href='jaximus808@gmail.com'><div style={{display:"block",marginBottom:"3vw"}}>Email: jaximus808@gmail.com</div></a>
+                    <a rel="noreferrer" target={"_blank"}href='jaximus808@gmail.com'><div style={{display:"block",marginBottom:"3vw"}}>Email: jaximus808@gmail.com</div></a>
                 
                 </div>
                 <div style={{marginBottom: "20px"}} >
 
                     <img className={styles.gmailLogo} src='/linkdinLogo.png'/>
-                    <a target={"_blank"}href='https://www.linkedin.com/in/jaxon-poentis-967357243/'><div style={{display:"block",marginBottom:"3vw"}}>Linkedin</div></a>
+                    <a rel="noreferrer" target={"_blank"}href='https://www.linkedin.com/in/jaxon-poentis-967357243/'><div style={{display:"block",marginBottom:"3vw"}}>Linkedin</div></a>
                 
                 </div>
                 <div style={{marginBottom: "20px"}}>
                     <img className={styles.gmailLogo} src='/youtubeLogo.png'/>
-                    <a target={"_blank"}href='https://www.youtube.com/channel/UCqakvmaEw3OYRjkpY1gXKag'><div style={{display:"block",marginBottom:"3vw"}}>Developer Log Youtube</div></a>
+                    <a rel="noreferrer"target={"_blank"}href='https://www.youtube.com/channel/UCqakvmaEw3OYRjkpY1gXKag'><div style={{display:"block",marginBottom:"3vw"}}>Developer Log Youtube</div></a>
                 </div>
             </div>
             </h3>

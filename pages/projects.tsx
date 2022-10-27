@@ -5,6 +5,7 @@ import Header from '../components/header'
 
 import Footer from '../components/footer'
 
+import Link from 'next/link'
 import cookies from "cookie"
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
 import { getCookies, getCookie, setCookies, removeCookies } from 'cookies-next';
@@ -372,9 +373,9 @@ const Index: React.FC<props> = props => {
                 return (
                 <div className={styles.projectContainerText} style={{ "textAlign":"center",}} >
                     <h2 >
-                      <a  style={{fontSize:"2.5vw",textDecoration: "underline"}} href={`/projects/${data.name}`}>
-                        <div style={{ overflowWrap: "break-word"}}>{data.name}</div>
-                      </a>
+                      <Link className={styles.specialLink}  style={{fontSize:"2.5vw",textDecoration: "underline"}} href={`/projects/${data.name}`}>
+                        <div className={styles.specialLink} style={{ "cursor":"pointer",overflowWrap: "break-word"}}>{data.name}</div>
+                      </Link>
                     </h2>
                     <div >
                         { (data.youtube) ?
@@ -384,9 +385,9 @@ const Index: React.FC<props> = props => {
                         <h3 style={{fontSize:"1.5vw"}}>
                         {data.shortDescription}
                         <p></p>
-                        <a style={{fontSize:"1.5vw",textDecoration: "underline"}} target={"_blank"} href={`${data.linkName}`}>{"--> Check out the Repo"}</a>
+                        <a rel="noreferrer" style={{fontSize:"1.5vw",textDecoration: "underline"}} target={"_blank"} href={`${data.linkName}`}>{"--> Check out the Repo"}</a>
                         <p></p>
-                        <a style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/projects/${data.name}`}>{"-> Learn More Here"}</a>
+                        <Link style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/projects/${data.name}`}>{"-> Learn More Here"}</Link>
                   
                         </h3>
                     </div>

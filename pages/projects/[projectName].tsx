@@ -9,6 +9,7 @@ import cookies from "cookie"
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
 import { getCookies, getCookie, setCookies, removeCookies } from 'cookies-next';
 
+import Link from 'next/link'
 import * as jsonwebtoken from "jsonwebtoken";
 import { useState } from 'react'
 
@@ -140,7 +141,11 @@ const Index: React.FC<props> = props => {
         <div className={styles.maincotainer}>
                 <div className={styles.textContainer}>
                     
-                <h3><a style={{textDecoration: "underline"}} href='/projects'>{"<-"} Look At More Projects</a></h3>
+                <h3>
+                    <Link href='/projects'>
+                        <div style={{textDecoration: "underline", "cursor":"pointer"}} >{"<-"} Look At More Projects</div>
+                    </Link>
+                </h3>
                 </div>
 
                 <div className={styles.textContainer}>
@@ -161,7 +166,7 @@ const Index: React.FC<props> = props => {
                     <h3>
                     {props.projectData.description}
                     <p></p>
-                    <a style={{textDecoration: "underline"}} target={"_blank"} href={`${props.projectData.linkName}`}>{"--> Check out the Repo"}</a>
+                    <a rel="noreferrer" style={{textDecoration: "underline"}} target={"_blank"} href={`${props.projectData.linkName}`}>{"--> Check out the Repo"}</a>
                     </h3>
                 </div>
             </div>
