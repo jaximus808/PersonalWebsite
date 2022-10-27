@@ -19,7 +19,7 @@ const height = 10;
 
 function Stars(props:any)
 {
- 
+
     Router.events.on('routeChangeStart', (url, options) => {linkedClicked.current=true})
     Router.events.on('routeChangeComplete', (url, options) => {linkedClicked.current=false})
 
