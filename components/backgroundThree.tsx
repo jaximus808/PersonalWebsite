@@ -171,25 +171,25 @@ function System(props:any):JSX.Element
 
     for(let y = 0; y < 4; y++)
     {
-        for(let i = 0; i < 45; i++)
+        for(let i = 0; i < 20; i++)
         {
             // rows.push(
             // <Stars angle={i*8} scale={0.01} radius={-45} y={10} z={-35}/>
             // )
             rows.push(
-                <Stars angle={i*8} scale={0.01} radius={-4+y*0.8} y={10.2-y} z={35}/>
+                <Stars angle={i*18} scale={0.01} radius={-3+y*0.6} y={10.2-y} z={35}/>
             )
         }   
     }
     for(let y = 0; y < 4; y++)
     {
-        for(let i = 0; i < 45; i++)
+        for(let i = 0; i < 20; i++)
         {
             // rows.push(
             // <Stars angle={i*8} scale={0.01} radius={-45} y={10} z={-35}/>
             // )
             rows.push(
-                <Stars angle={i*8} scale={0.01} radius={4-y*0.8} y={3.2+y} z={35}/>
+                <Stars angle={i*18} scale={0.01} radius={3-y*0.6} y={3.2+y} z={35}/>
             )
         }   
     }
