@@ -1,4 +1,6 @@
-import { Canvas,useFrame } from "@react-three/fiber";
+
+import dynamic from 'next/dynamic';
+import { Canvas, useFrame } from "@react-three/fiber"
 import css from "../styles/Home.module.css"
 import Router from 'next/router'
 import * as THREE from "three"
