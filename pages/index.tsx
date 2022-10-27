@@ -131,7 +131,7 @@ const Index:React.FC<props> = props => {
           <h1 style={{"fontSize":"250%","textAlign":"center"}}>～My Favorite Projects～</h1>
           {props.pastProjFav.map((data:any) =>
               {
-                return (<div style={{"textAlign":"center"}}>
+                return (<div key={data.id} style={{"textAlign":"center"}}>
                     <h2>
                       <Link style={{ fontStyle:"italic"}}  href={`/projects/${data.name}`}>
                         <div style={{"cursor":"pointer",textDecoration: "underline",}}>{data.name}</div>

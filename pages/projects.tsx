@@ -371,7 +371,7 @@ const Index: React.FC<props> = props => {
               {props.projects.slice(projectsPage*5, (props.projects.length > (projectsPage+1)*5 )?((projectsPage+1)*5):props.projects.length).map((data:any) =>
               {
                 return (
-                <div className={styles.projectContainerText} style={{ "textAlign":"center",}} >
+                <div key={data.id} className={styles.projectContainerText} style={{ "textAlign":"center",}} >
                     <h2 >
                       <Link className={styles.specialLink}  style={{fontSize:"2.5vw",textDecoration: "underline"}} href={`/projects/${data.name}`}>
                         <div className={styles.specialLink} style={{ "cursor":"pointer",overflowWrap: "break-word"}}>{data.name}</div>
