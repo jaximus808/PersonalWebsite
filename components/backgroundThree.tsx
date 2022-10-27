@@ -37,7 +37,6 @@ function Stars(props:any)
     let z = radius * Math.sin(angle); 
     const linkedClicked = useRef(false)
     const idleTurningRate = useRef(0.002)
-    console.log(Radians(65))
     let zOffSet = props.z; 
 
     const handleScroll =()=>
@@ -116,7 +115,6 @@ function Planet(props:any)
     let x = radius * Math.cos(angle)
     let y = props.y
     let z = radius * Math.sin(angle); 
-    console.log(Radians(65))
     let zOffSet = props.z; 
 
     const handleScroll =()=>

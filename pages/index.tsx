@@ -31,7 +31,6 @@ export const getServerSideProps: GetServerSideProps = async (context) =>
     }
   })
 
-  console.log(pastFavoriteProjects)
 
   return {
     props:{
@@ -67,7 +66,6 @@ function ScrollDown(props:any)
     {
         const y = window.pageYOffset;
         yRef.current = y;
-        console.log(yRef.current)
         if(!moved.current && yRef.current > 0 )
         {
             moved.current = true
@@ -104,8 +102,6 @@ function ScrollDown(props:any)
 
 const Index:React.FC<props> = props => {
 
-  console.log(props)
-    
   return (
     <div>
 

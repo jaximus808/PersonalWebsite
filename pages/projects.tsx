@@ -39,14 +39,11 @@ type props =
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // ...
-  console.log(context.req.headers.cookies);
 
   const parsedCookies = cookies.parse(context.req.headers.cookie?context.req.headers.cookie:"");
-  console.log(parsedCookies);
-  console.log("token:")
+  
   const token = parsedCookies.token;
 
-  console.log(parsedCookies.token)
   let authenticated = false; 
   if(!token) 
   {
@@ -67,7 +64,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
   
   const projects = await prisma.projects.findMany();
-  console.log(projects)
  
   //console.log(projects)
   return {
@@ -105,7 +101,6 @@ function ScrollDown(props:any)
     {
         const y = window.pageYOffset;
         yRef.current = y;
-        console.log(yRef.current)
         if(!moved.current && yRef.current > 0 )
         {
             moved.current = true
@@ -146,7 +141,6 @@ const Index: React.FC<props> = props => {
   const [showForwardButton, setShowForwardButton] = useState(props.projects.length > 5 );
   const [showBackButton, setShowBackButton] = useState(false);
 
-  console.log(props.projects)
   
   const MovePageForawrd = () =>
   {
@@ -206,7 +200,6 @@ const Index: React.FC<props> = props => {
     const data = await response.json();
     if(data.pass)
     {
-      console.log("POG")
     }   
     else 
     {
@@ -230,7 +223,6 @@ const Index: React.FC<props> = props => {
   const logOut = async () =>
   {
     const logProject = await fetch("/api/admin/logout").then(res => res.json());
-    console.log(logProject)
     location.reload();
   }
 

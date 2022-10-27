@@ -22,6 +22,7 @@
 
 .canvas{
   background: rgba(0,0,0,0);
+  width: 100vw; height: 100vh
 }
 .scene{
   width:100vw;
