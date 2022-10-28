@@ -131,7 +131,7 @@ const Index:React.FC<props> = props => {
                 return (<div key={data.id} style={{"textAlign":"center"}}>
                     <h2>
                       <Link style={{ fontStyle:"italic"}}  href={`/projects/${data.name}`}>
-                        <div style={{"cursor":"pointer",textDecoration: "underline",}}>{data.name}</div>
+                        <div style={{overflowWrap: "break-word","cursor":"pointer",textDecoration: "underline",}}>{data.name}</div>
                       </Link>
                     </h2>
                     <div style={{paddingLeft:"20px"}}>
