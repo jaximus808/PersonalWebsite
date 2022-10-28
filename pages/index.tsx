@@ -11,6 +11,30 @@ import { useState,useEffect, useRef  } from 'react'
 import prisma from '../lib/prisma'
 import cookies from "cookie"
 
+import Youtube from "react-youtube"
+function YoutubeVideo(props:any)
+{
+  function _onReady(event:any) {
+    event.target.pauseVideo();
+  }
+  const opts = {
+    height: "390",
+    width: "640",
+    playerVars: {
+      autoplay: 1,
+    },
+  };
+
+  return (
+    <div style={{height:"150%"}}>
+      <Youtube videoId={props.vId} 
+          opts={opts} onReady={_onReady} />
+    </div>
+  );
+  
+}
+
+
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
 
 type props = 
@@ -136,7 +160,7 @@ const Index:React.FC<props> = props => {
                     </h2>
                     <div style={{paddingLeft:"20px"}}>
                         { (data.youtube) ?
-                        <iframe width="100%" height="100%" src={data.mediaLink} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>  
+                        <YoutubeVideo vId={data.mediaLink}/>
                         :
                          <img src={data.mediaLink} width="100%" height="100%" /> }
                         <h3>

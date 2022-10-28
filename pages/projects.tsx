@@ -83,7 +83,8 @@ function YoutubeVideo(props:any)
     event.target.pauseVideo();
   }
   const opts = {
-    height: "100%",
+
+    height: "300",
     width: "100%",
     playerVars: {
       autoplay: 1,
