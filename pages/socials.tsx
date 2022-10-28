@@ -128,7 +128,7 @@ const Index:React.FC<props> = props => {
 
             <div style={{textAlign:"center",fontSize:"130%",textDecoration: "underline"}}>
                 <div style={{marginBottom: "20px"}}>
-                    <img className={styles.Logo} src='/githubLogo.png'/>
+                    <img className={styles.Logo} src='/gmailLogo.png'/>
                     <a rel="noreferrer" target={"_blank"} href='https://github.com/jaximus808'><div style={{display:"block",marginBottom:"3vw"}}>My Github</div></a>
                 </div>
                 <div style={{marginBottom: "20px"}} >
