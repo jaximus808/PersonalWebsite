@@ -15,6 +15,28 @@ import { useState } from 'react'
 
 import {PrismaClient, Prisma, Projects} from "@prisma/client"
 
+import Youtube from "react-youtube"
+function YoutubeVideo(props:any)
+{
+  function _onReady(event:any) {
+    event.target.pauseVideo();
+  }
+  const opts = {
+    height: "390",
+    width: "640",
+    playerVars: {
+      autoplay: 1,
+    },
+  };
+
+  return (
+    <div style={{height:"150%"}}>
+      <Youtube videoId={props.vId} 
+          opts={opts} onReady={_onReady} />
+    </div>
+  );
+  
+}
 const prisma = new PrismaClient();
 // type ProjectProp =
 // {
@@ -159,7 +181,7 @@ const Index: React.FC<props> = props => {
                 </h2>
                 <div style={{paddingLeft:"20px"}}>
                     { (props.projectData.youtube) ?
-                    <iframe width="560" height="315" src={props.projectData.mediaLink} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>  
+                    <YoutubeVideo vId={props.projectData.mediaLink}/>
                     :
                     <img src={props.projectData.mediaLink} width="370" height="315" /> }
                     <h3>
