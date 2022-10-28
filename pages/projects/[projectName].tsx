@@ -188,6 +188,9 @@ const Index: React.FC<props> = props => {
                     {props.projectData.description}
                     <p></p>
                     <a rel="noreferrer" style={{textDecoration: "underline"}} target={"_blank"} href={`${props.projectData.linkName}`}>{"--> Check out the Repo"}</a>
+                    <p></p>
+                    {(props.projectData.projectLinks != "") ? <a rel="noreferrer" style={{textDecoration: "underline"}} target={"_blank"} href={`${props.projectData.projectLinks}`}>{"--> Check out more of the project"}</a>:<></>
+}
                     </h3>
                 </div>
             </div>
