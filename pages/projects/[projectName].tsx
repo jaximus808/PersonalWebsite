@@ -78,10 +78,8 @@ type props =
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // ...
     const { projectName }  = context.query
-    console.log(projectName)
     if(!projectName)
     {
-        console.log("MEOW")
         return{
             props:
             {
@@ -126,7 +124,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const Index: React.FC<props> = props => {
 
   
-    console.log(props)
   return ( 
   <div>
 
@@ -134,6 +131,8 @@ const Index: React.FC<props> = props => {
       <Head>
         <title>Jaxon Poentis</title>
         <meta name="description" content="Personal Page For Jaxon Poentis" />
+
+        <meta property="og:image" content="/metadata.jpg" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       
@@ -172,7 +171,9 @@ const Index: React.FC<props> = props => {
             </div>
             :
               
-            <></>}
+            <>
+                <div>Project does not exist</div>
+            </>}
             </div>
             
 
