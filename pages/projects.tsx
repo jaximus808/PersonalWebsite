@@ -379,7 +379,7 @@ const Index: React.FC<props> = props => {
                         <p></p>
                         <a rel="noreferrer" style={{fontSize:"1.5vw",textDecoration: "underline"}} target={"_blank"} href={`${data.linkName}`}>{"--> Check out the Repo"}</a>
                         <p></p>
-                        <Link style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/projects/${data.name}`}>{"-> Learn More Here"}</Link>
+                        <Link style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/projects/${data.name}`}><div style={{textDecoration: "underline"}}>{"-> Learn More Here"}</div></Link>
                   
                         </h3>
                     </div>
