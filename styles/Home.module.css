@@ -20,6 +20,15 @@
   transform: translate(-50%,0%); 
 }
 
+.frontImage
+{
+  width:30vw;
+  height: 37vw;
+  position: relative;
+  left:50%;
+  transform: translate(-50%,0);
+}
+
 .canvas{
   background: rgba(0,0,0,0);
   width: 100vw; height: 100vh

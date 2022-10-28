@@ -120,6 +120,7 @@ const Index:React.FC<props> = props => {
         <div className={styles.homeMaincotainer}>
           <div className={styles.textContainer}>
             <h1 style={{"fontSize":"300%","textAlign":"center"}}>～Hello!～</h1>
+            <img src="/frontimage.jpg" className={styles.frontImage}/>
             <h3>My name is Jaxon Poentis and I am currently a senior at Roosevelt High School in Hawaii. I am self-taught programmer and I create projects in Website-Devolpment, Machine Learning, Networking, Game Devolpment, and whatever interests me at the time. I am very interested in learning more about Computer Science and Quantum Computing in the future.</h3>
           </div>
           
@@ -135,9 +136,9 @@ const Index:React.FC<props> = props => {
                     </h2>
                     <div style={{paddingLeft:"20px"}}>
                         { (data.youtube) ?
-                        <iframe width="560" height="315" src={data.mediaLink} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>  
+                        <iframe width="100%" height="100%" src={data.mediaLink} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>  
                         :
-                         <img src={data.mediaLink} width="370" height="315" /> }
+                         <img src={data.mediaLink} width="100%" height="100%" /> }
                         <h3>
                         {data.shortDescription}
                         <p></p>
@@ -151,58 +152,7 @@ const Index:React.FC<props> = props => {
                 )})} 
 
               </div>
-              <> 
-                {/* {projects.map((projectElem, i:number) =>
-                (
-                  <div>
-                  
-                  <h2 style={{ fontStyle: "italic","fontSize":"180%"}}>{projectElem.name}</h2>
-                  <div style={{paddingLeft:"20px"}}>
-                    {(projectElem.youtube) ?<iframe width="560" height="315" src={projectElem.mediaLink} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>:<img src={projectElem.mediaLink}/> }
-                    <h3>
-                      {projectElem.description}
-                      <p></p>
-                      <a style={{textDecoration: "underline"}} href={projectElem.description}>Learn More...</a>
-                    </h3>
-                  </div>
-                  </div>
-                  
-                ))} */}
-              </>
-              {/* 
               
-            <div><h2 style={{ fontStyle: "italic","fontSize":"180%"}}>Server Hand-Tracking Robotic Hand</h2>
-              <div style={{paddingLeft:"20px"}}>
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/ixc6L8SsFSI" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>  
-                <h3>
-                  This project was for the Regeneron International Science and Engineering Fair and was a solution to physically connecting people together with a more functional appraoch. It uses hand tracking to allow uses to control the robotic prototype through using UDP. 
-                  <p></p>
-                  <a style={{textDecoration: "underline"}} target={"_blank"}  href='https://github.com/jaximus808/Server-Hand-Tracking-Robotic-HandServerHandTracking'>Learn More...</a>
-                </h3>
-              </div>
-            </div>
-            <div>
-              <h2 style={{fontStyle: "italic","fontSize":"180%"}}>Coding Club Website</h2>
-              <div style={{paddingLeft:"20px"}}>
-                <img src='codingClubLogo.png'width="315" height="315"></img>
-                <h3>
-                  This website is for the Coding Club at Roosevelt High School. The website can be found at <a style={{textDecoration: "underline"}} target='_blank' href='https://www.rooseveltstem.com'>rooseveltstem.com.</a> It allows annoucements to be posted through a discord bot that adds events to a mongodb database.
-                  <p></p>
-                  <a style={{textDecoration: "underline"}} target={"_blank"} href='https://github.com/jaximus808/CodingClubWebsite'>Learn More...</a>
-                </h3>
-              </div>
-            </div>
-            <div>
-              <h2 style={{fontStyle: "italic","fontSize":"180%"}}>Multiplayer AP Pyschology Game 1.0</h2>
-              <div style={{paddingLeft:"20px"}}>
-                <img src='socketgame.gif'width="560" height="315"></img>
-                <h3>
-                  This multiplayer game was created for an Ap Pysychology class for students to play as a game to help memorize important terms on the module. There were some issues but this helped me to understand and actually work with socket streaming and multiplayer games. In the future I plan to improve this to allow users to customize the game with their own terms along with better multiplayer architecture. 
-                  <p></p>
-                  <a style={{textDecoration: "underline"}} href='https://github.com/jaximus808/PsychSocketGame'>Learn More...</a>
-                </h3>
-              </div>
-            </div> */}
             <Footer authSense={false} authenticated={false}/>
 
         </div>

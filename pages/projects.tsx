@@ -371,7 +371,7 @@ const Index: React.FC<props> = props => {
                     </h2>
                     <div >
                         { (data.youtube) ?
-                        <iframe width="560" height="315" src={data.mediaLink} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>  
+                        <iframe width="100%" height="100%" src={data.mediaLink} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>  
                         :
                          <img src={data.mediaLink} margin-left=""width="100%" height="100%" /> }
                         <h3 style={{fontSize:"1.5vw"}}>
