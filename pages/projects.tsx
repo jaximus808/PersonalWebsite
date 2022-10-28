@@ -16,6 +16,8 @@ import {PrismaClient, Prisma, Projects} from "@prisma/client"
 
 import Background from '../components/backgroundThree'
 
+import Youtube from "react-youtube"
+
 const prisma = new PrismaClient();
 // type ProjectProp =
 // {
@@ -74,6 +76,32 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
   }
 }
+
+function YoutubeVideo(props:any)
+{
+  function _onReady(event:any) {
+    event.target.pauseVideo();
+  }
+  const opts = {
+    height: "100%",
+    width: "100%",
+    playerVars: {
+      autoplay: 1,
+    },
+  };
+
+  return (
+    <div style={{height:"150%"}}>
+      <Youtube videoId={props.vId} 
+          opts={opts} onReady={_onReady} />
+    </div>
+  );
+  
+}
+
+  
+  
+
 
 function ScrollDown(props:any)
 {
@@ -371,7 +399,8 @@ const Index: React.FC<props> = props => {
                     </h2>
                     <div >
                         { (data.youtube) ?
-                        <iframe width="100%" height="100%" src={data.mediaLink} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>  
+                        <YoutubeVideo vId={data.mediaLink}/>
+                        // <iframe width="100%" height="100%" src={data.mediaLink} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>  
                         :
                          <img src={data.mediaLink} margin-left=""width="100%" height="100%" /> }
                         <h3 style={{fontSize:"1.5vw"}}>
