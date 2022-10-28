@@ -121,7 +121,7 @@ const Index:React.FC<props> = props => {
           <div className={styles.textContainer}>
             <h1 style={{"fontSize":"300%","textAlign":"center"}}>～Hello!～</h1>
             <img src="/frontimage.jpg" className={styles.frontImage}/>
-            <h3>My name is Jaxon Poentis and I am currently a senior at Roosevelt High School in Hawaii. I am self-taught programmer and I create projects in Website-Devolpment, Machine Learning, Networking, Game Devolpment, and whatever interests me at the time. I am very interested in learning more about Computer Science and Quantum Computing in the future.</h3>
+            <h3 style={{"textAlign":"center"}}>My name is Jaxon Poentis and I am currently a senior at Roosevelt High School in Hawaii. I am self-taught programmer and I create projects in Website-Devolpment, Machine Learning, Networking, Game Devolpment, and whatever interests me at the time. I am very interested in learning more about Computer Science and Quantum Computing in the future.</h3>
           </div>
           
           <div className={styles.textContainer}>
