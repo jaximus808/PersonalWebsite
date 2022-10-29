@@ -382,7 +382,9 @@ const Index: React.FC<props> = props => {
             <></>}
 
             <div className={styles.textContainer}>
-              <h1 style={{ "textAlign":"center",fontSize:"4vw"}}>～Projects (Page: {projectsPage+1})～</h1>
+              <h1 style={{ "textAlign":"center",fontSize:"4vw"}}>～Projects (Total:{props.projects.length})～</h1>
+              <h1 style={{ "textAlign":"center",fontSize:"3vw"}}>～(Page: {projectsPage+1})～</h1>
+
             <div style={{"textAlign":"center"}}>
                   <button disabled={!showBackButton} onClick={MovePageBackward}>{"<"}</button>
                   <span style={{marginLeft:"25px"}}></span>
