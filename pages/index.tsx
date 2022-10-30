@@ -18,7 +18,7 @@ function YoutubeVideo(props:any)
     event.target.pauseVideo();
   }
   const opts = {
-    height: "390",
+    height: "500vw",
     width: "100%",
     playerVars: {
       autoplay: 1,
@@ -158,7 +158,7 @@ const Index:React.FC<props> = props => {
                         <div style={{overflowWrap: "break-word","cursor":"pointer",textDecoration: "underline",}}>{data.name}</div>
                       </Link>
                     </h2>
-                    <div style={{paddingLeft:"20px"}}>
+                    <div >
                         { (data.youtube) ?
                         <YoutubeVideo vId={data.mediaLink}/>
                         :
