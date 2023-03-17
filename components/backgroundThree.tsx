@@ -70,6 +70,8 @@ function Stars(props:any)
         angle = angle + (idleTurningRate.current)*(yValue);
         if(angle > 2*Math.PI) angle = angle - 2*Math.PI;
         if(angle < 0) angle = angle + 2*Math.PI;
+        if(Math.abs(angle) >300) angle = 0 //just incase it increments too much somehow
+
         x = radius * Math.cos(angle)
         z = radius * Math.sin(angle)
         if(!ref)
