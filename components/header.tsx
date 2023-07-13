@@ -3,14 +3,59 @@ import Link from 'next/link'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+import { useRef, useState,useEffect } from 'react'
 
 const Header: NextPage = () => {
+
+  const handleScroll =()=>
+  {
+      const y = window.pageYOffset;
+      yRef.current = y;
+      if(!scrolled.current && yRef.current > window.innerHeight*0.1 )
+      {
+        scrolled.current = true
+        window.requestAnimationFrame(()=>
+        {
+          headerRef.current.className = styles.navBarMini;
+        });
+      }
+      if(scrolled.current && yRef.current <=window.innerHeight*0.1  )
+      {
+
+        scrolled.current = false
+
+          window.requestAnimationFrame(()=>
+          {
+
+            headerRef.current.className = styles.navBar;
+          });
+      }
+  }
+
+  useEffect(() => 
+  {
+      window.addEventListener("scroll", handleScroll)
+      
+      const y = window.pageYOffset;
+      yRef.current = y;
+      return () =>
+      {
+          window.removeEventListener("scroll", handleScroll)
+      }
+      
+  },[])
+
+  const yRef = useRef(0);
+
+  const scrolled = useRef(false);
+
+  let headerRef:any = useRef(null);
+
   return (
-    <div className={styles.navBar}>
+    <div ref={headerRef} className={styles.navBar}>
           
           <div className={styles.links}>
             <span style={{fontStyle:"italic", marginLeft:"2vw"}}><Link href='/'>Jaxon Poentis</Link></span>
-            <Link style={{textDecoration: "underline",}} target={"_blank"} href='https://www.rooseveltstem.com/'>Coding Club</Link>
             <Link style={{textDecoration: "underline"}}  href='/projects'>Project Catalog</Link>
             <Link style={{textDecoration: "underline"}}  href='/socials'>My Socials</Link>
 
