@@ -145,7 +145,7 @@ const Index:React.FC<props> = props => {
           <div className={styles.textContainer}>
             <h1 style={{"fontSize":"300%","textAlign":"center"}}>~Aloha~</h1>
             <img src="/Frontimage2.jpg" style={{"borderRadius":"0.5rem"}} className={styles.frontImage}/>
-            <h2 style={{"textAlign":"center"}}>My name is Jaxon Poentis and I am born and raised from Hawaii! I am self-taught programmer and I create many different projects from Website-Devolpment, Machine Learning, Networking, Game Devolpment, and many other interest sections of programming! I am currently attending Washington University in St. Lious of class 2027 studying Computer Science and Business! </h2>
+            <h2 style={{"textAlign":"center"}}>My name is Jaxon Poentis and I am born and raised from Hawaii! I am a self-taught programmer and enjoy creating many different types of projects from Website-Devolpment, Machine Learning, Networking, and Game Devolpment! I am currently attending Washington University in St. Lious of class 2027 studying Computer Science and Business! </h2>
             <h3 style={{"textAlign":"center"}}> </h3>
           </div>
           
@@ -156,19 +156,19 @@ const Index:React.FC<props> = props => {
             <div>
               <h2 style={{"fontSize":'2rem', "textDecoration":'underline'}}>College Preperation</h2>
               <img  src="/washuimg.jpg" style={{"width":"70%","borderRadius":"0.5rem"}}/>
-              <h2 >At the moment I'm getting ready for college and I'm quite excited to start the next part of my journey at Washu! I'm still a little nervous if I'll be fully ready when I get there but that goes for everything right?</h2> 
+              <h2 >At the moment I'm getting ready for college and am quite excited to start the next part of my journey at Washu! I'm still a little nervous if I'll be fully ready when I get there but that goes for everything right?</h2> 
             </div>
 
             <div>
 
               <a href='https://www.fiverr.com/jaxoncoding/create-a-web-based-game-single-or-multiplayer-in-p5' style={{"fontSize":'2rem', "textDecoration":'underline'}}><h2>Fiverr Gig</h2></a>
               <img  src="/FiverPic.png" style={{"width":"70%","borderRadius":"0.5rem"}}/>
-              <h2 >I've started to do a small freelancing business in which I create broswer games for clients. It's been challenging but I've learned a lot! So far I've my gig has gotten 2,000 impressions and I've worked on around 6 projects from a real estate guesser to a real-time fort battle game. I'm not sure how active I'll be once college starts, but I hope I can continue to work on this small business!</h2> 
+              <h2 >I've started to do a small freelancing business in which I create broswer games for clients through fiverr. It's been challenging but I've learned a lot! So far my gig has gotten 2,000 impressions and I've worked on around 6 projects, from a real estate guesser to a real-time fort battle game. I'm not sure how active I'll be once college starts, but I hope I can continue to work on this small business!</h2> 
             </div>
             <div>
               <h2 style={{"fontSize":'2rem', "textDecoration":'underline'}}>FormFit AI</h2>
               <img  src="/FormFit.png" style={{"width":"70%","borderRadius":"0.5rem"}}/>
-              <h2 >Another side project I'm currently working on is a formtracking AI app that will give instant feedback based on camera input about one's form when exercising. It's still in the works but I'm hoping I can launch a small service for those who want to improve their gym session as that's something I find really important for today's time.</h2> 
+              <h2 >Another side project I'm currently working on is a formtracking AI app that will give instant feedback based on camera input about one's form when exercising. It's still in the works but I'm hoping I can launch a small service for those who want to improve their gym session as that's something I find really important for today's time of health/work balance.</h2> 
             </div>
           </div>
              
