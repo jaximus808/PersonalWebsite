@@ -161,7 +161,7 @@ const Index:React.FC<props> = props => {
 
             <div>
 
-              <a href='https://www.fiverr.com/jaxoncoding/create-a-web-based-game-single-or-multiplayer-in-p5' style={{"fontSize":'2rem', "textDecoration":'underline'}}>Fiverr Gig</a>
+              <a href='https://www.fiverr.com/jaxoncoding/create-a-web-based-game-single-or-multiplayer-in-p5' style={{"fontSize":'2rem', "textDecoration":'underline'}}><h2>Fiverr Gig</h2></a>
               <img  src="/FiverPic.png" style={{"width":"70%","borderRadius":"0.5rem"}}/>
               <h2 >I've started to do a small freelancing business in which I create broswer games for clients. It's been challenging but I've learned a lot! So far I've my gig has gotten 2,000 impressions and I've worked on around 6 projects from a real estate guesser to a real-time fort battle game. I'm not sure how active I'll be once college starts, but I hope I can continue to work on this small business!</h2> 
             </div>
