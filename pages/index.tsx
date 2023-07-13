@@ -144,7 +144,7 @@ const Index:React.FC<props> = props => {
         <div className={styles.homeMaincotainer}>
           <div className={styles.textContainer}>
             <h1 style={{"fontSize":"300%","textAlign":"center"}}>~Aloha~</h1>
-            <img src="/frontimage2.jpg" style={{"borderRadius":"0.5rem"}} className={styles.frontImage}/>
+            <img src="/Frontimage2.jpg" style={{"borderRadius":"0.5rem"}} className={styles.frontImage}/>
             <h2 style={{"textAlign":"center"}}>My name is Jaxon Poentis and I am born and raised from Hawaii! I am self-taught programmer and I create many different projects from Website-Devolpment, Machine Learning, Networking, Game Devolpment, and many other interest sections of programming! I am currently attending Washington University in St. Lious of class 2027 studying Computer Science and Business! </h2>
             <h3 style={{"textAlign":"center"}}> </h3>
           </div>
