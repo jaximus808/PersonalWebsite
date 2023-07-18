@@ -65,7 +65,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     
   }
   
-  const projects = await prisma.projects.findMany();
+  let projects : any;
+  
+  try
+  {
+
+    projects = await prisma.projects.findMany();
+  }
+  catch
+  {
+    projects = []
+  }
  
   //console.log(projects)
   return {
@@ -382,8 +392,9 @@ const Index: React.FC<props> = props => {
             <></>}
 
             <div className={styles.textContainer}>
-              <h1 style={{ "textAlign":"center",fontSize:"4vw"}}>～Projects (Total:{props.projects.length})～</h1>
-              <h1 style={{ "textAlign":"center",fontSize:"3vw"}}>～(Page: {projectsPage+1})～</h1>
+              <h1 style={{ "textAlign":"center",fontSize:"4vw"}}>～Projects～</h1>
+              <h3 style={{ "textAlign":"center",fontSize:"1.5vw"}}>(Total:{props.projects.length})</h3>
+              <h1 style={{ "textAlign":"center",fontSize:"2vw"}}>～(Page: {projectsPage+1})～</h1>
 
             <div style={{"textAlign":"center"}}>
                   <button disabled={!showBackButton} onClick={MovePageBackward}>{"<"}</button>
@@ -391,7 +402,10 @@ const Index: React.FC<props> = props => {
                   <button disabled={!showForwardButton} onClick={MovePageForawrd}>{">"}</button>
                 </div>
             <p></p>
-              {props.projects.slice(projectsPage*5, (props.projects.length > (projectsPage+1)*5 )?((projectsPage+1)*5):props.projects.length).map((data:any) =>
+              {(props.projects.length === 0 ) ? 
+              <h3 style={{ "textAlign":"center",fontSize:"2vw"}}>Sorry projects could not be loaded, try again!</h3>
+              :
+              props.projects.slice(projectsPage*5, (props.projects.length > (projectsPage+1)*5 )?((projectsPage+1)*5):props.projects.length).map((data:any) =>
               {
                 return (
                 <div key={data.id} className={styles.projectContainerText} style={{ "textAlign":"center",}} >

@@ -47,14 +47,23 @@ export const getServerSideProps: GetServerSideProps = async (context) =>
 {
 
   const prisma = new PrismaClient();
+  let  pastFavoriteProjects:any;
+  try
+  {
+    pastFavoriteProjects = await prisma.projects.findMany({
+      where:
+      {
+        favorite:true
+      }
+    })
+  
+  }
+  catch
+  {
+    pastFavoriteProjects = [];
+  }
 
-  const pastFavoriteProjects = await prisma.projects.findMany({
-    where:
-    {
-      favorite:true
-    }
-  })
-
+  
 
   return {
     props:{

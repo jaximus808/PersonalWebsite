@@ -30,8 +30,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) =>
         });
         if(!users)
         {
-            console.log("L");
-            console.log("MEOW?")
             res.json({
                 authenticated: false,
                 msg: "Wrong Username or Password"

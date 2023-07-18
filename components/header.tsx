@@ -59,6 +59,7 @@ const Header: NextPage = () => {
             <Link style={{textDecoration: "underline"}}  href='/projects'>Project Catalog</Link>
             <Link style={{textDecoration: "underline"}}  href='/socials'>My Socials</Link>
 
+            <Link style={{textDecoration: "underline",}}  href='/blogs'>Blogs</Link>
             <Link style={{textDecoration: "underline",}}  href='/'>Home</Link>
 
           </div>

@@ -12,32 +12,6 @@ import cookies from "cookie"
 
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
 
-type props = 
-{
-  pastProjFav:any
-}
-
-
-export const getServerSideProps: GetServerSideProps = async (context) =>
-{
-
-  const prisma = new PrismaClient();
-
-  const pastFavoriteProjects = await prisma.projects.findMany({
-    where:
-    {
-      favorite:true
-    }
-  })
-
-  console.log(pastFavoriteProjects)
-
-  return {
-    props:{
-      pastProjFav: JSON.parse(JSON.stringify(pastFavoriteProjects))
-    }
-  }
-}
 
 
 function ScrollDown(props:any)
@@ -101,9 +75,8 @@ function ScrollDown(props:any)
 }
 
 
-const Index:React.FC<props> = props => {
+const Index = () => {
 
-  console.log(props)
     
   return (
     <div>
