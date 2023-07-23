@@ -76,7 +76,7 @@ const Footer: NextPage<Props> = (props) => {
 
         
             <div> 
-                {/* {(authSense) ? (authen)?
+                {(authSense) ? (authen)?
                 <div style={{marginTop:"50px"}}>
                     <h5>Admin View</h5>
                     <button onClick={LogOut}>Log Out</button>
@@ -104,7 +104,7 @@ const Footer: NextPage<Props> = (props) => {
                     :
                     <>
                         
-                    </>} */}
+                    </>}
                 <div className={styles.footerContainer} style={{width:"125%",marginLeft:"-12.5%",marginTop:"50px"}}>
 
                     <h5 style={{}}>Website Made by Jaxon Poentis</h5>

@@ -7,12 +7,12 @@ import Footer from '../components/footer'
 import Background from '../components/backgroundThree'
 import { PrismaClient , Prisma} from '@prisma/client'
 import { useState,useEffect, useRef  } from 'react'
-import prisma from '../lib/prisma'
 import cookies from "cookie"
 import Link from 'next/link'
 
 import jsonwebtoken from 'jsonwebtoken'
 
+const prisma = new PrismaClient();
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
 type props = 
 {
@@ -45,7 +45,6 @@ const parsedCookies = cookies.parse(context.req.headers.cookie?context.req.heade
     }
     
   }
-  const prisma = new PrismaClient();
   let blogs:any;
   try  
   {
@@ -58,6 +57,7 @@ const parsedCookies = cookies.parse(context.req.headers.cookie?context.req.heade
 
   
 
+    console.log(authenticated)
   return {
     props:{
       blogs: JSON.parse(JSON.stringify(blogs)),
@@ -131,19 +131,28 @@ const Index:React.FC<props> = props => {
     console.log(props)
     const AddBlog = async(e:any) => 
     {
+      console.log("wtf")
+      console.log(customDate == 'false')
+      console.log("HELLo")
         e.preventDefault();
-        const response = await fetch("/api/admin/addproject", {
+        const response = await fetch("/api/admin/addblog", {
         method:"POST",
         headers:
         {
             'Content-Type': 'application/json',
         },
+
         body: JSON.stringify(
-        {
-            title: blogName,
-            content: blogContent,
-            datePosted: blogDate
-        })
+          
+            ( customDate === 'false') ? {
+              title:blogName,
+              content:blogContent
+            }:{
+              title:blogName,
+              content:blogContent,
+              datePosted: blogDate
+            }
+          )
         })
         const data = await response.json();
         if(data.pass)
@@ -213,7 +222,6 @@ const Index:React.FC<props> = props => {
           <meta name="description" content="Personal Page For Jaxon Poentis" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        {}
           <Header/>
           <div className={styles.mainTitleName}>
             <div style={{"fontSize":"10vw","textAlign":"center"}}>My Blog</div> 
@@ -263,8 +271,7 @@ const Index:React.FC<props> = props => {
             </>:
               
             <></>}
-          <div className={styles.homeMaincotainer}>
-           
+
             <div className={styles.textContainer}>
                 <h1 style={{ "textAlign":"center",fontSize:"4vw"}}>~Blogs~</h1>
                 <h3 style={{ "textAlign":"center",fontSize:"1.5vw"}}>(Total:{props.blogs.length})</h3>
@@ -285,20 +292,21 @@ const Index:React.FC<props> = props => {
                     return (
                     <div key={data.id} className={styles.projectContainerText} style={{ "textAlign":"center",}} >
                         <h2 >
-                        <Link className={styles.specialLink}  style={{fontSize:"2.5vw",textDecoration: "underline"}} href={`/blogs/${data.name}`}>
-                            <div className={styles.specialLink} style={{ "cursor":"pointer",overflowWrap: "break-word"}}>{data.name}</div>
+                        <Link className={styles.specialLink}  style={{fontSize:"2.5vw",textDecoration: "underline"}} href={`/blogs/${data.id}`}>
+                            <div className={styles.specialLink} style={{ "cursor":"pointer",overflowWrap: "break-word"}}>{data.title}</div>
                         </Link>
                         </h2>
                         <div >
                             
-                            <h3 style={{fontSize:"1.5vw", overflowWrap: "break-word", height:"calc(1.5vw*3)"}}>
+                            <h3 style={{fontSize:"1.5vw",'overflow':'hidden',WebkitLineClamp:4, WebkitBoxOrient:"vertical",display:"-webkit-box"}}>
                             {data.content}
+                            </h3>
                             <p></p>
+
                             
                             <p></p>
-                            <Link style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/blogs/${data.name}`}><div style={{textDecoration: "underline"}}>{"-> Read More Here"}</div></Link>
+                            <Link style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/blogs/${data.id}`}><div style={{textDecoration: "underline", 'cursor':'pointer'}}>{"-> Read More Here"}</div></Link>
                     
-                            </h3>
                         </div>
                     </div>
                     )})}
@@ -309,9 +317,8 @@ const Index:React.FC<props> = props => {
             </div>
             
           
-          <Footer authSense={true} authenticated={props.auth}/>
   
-          </div>
+          <Footer authSense={true} authenticated={props.auth}/>
       </div>
       </div>
     )

@@ -77,7 +77,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     projects = []
   }
  
-  //console.log(projects)
+  //console.log(projects
   return {
     props: 
       {
@@ -396,41 +396,41 @@ const Index: React.FC<props> = props => {
               <h3 style={{ "textAlign":"center",fontSize:"1.5vw"}}>(Total:{props.projects.length})</h3>
               <h1 style={{ "textAlign":"center",fontSize:"2vw"}}>～(Page: {projectsPage+1})～</h1>
 
-            <div style={{"textAlign":"center"}}>
-                  <button disabled={!showBackButton} onClick={MovePageBackward}>{"<"}</button>
-                  <span style={{marginLeft:"25px"}}></span>
-                  <button disabled={!showForwardButton} onClick={MovePageForawrd}>{">"}</button>
-                </div>
-            <p></p>
-              {(props.projects.length === 0 ) ? 
-              <h3 style={{ "textAlign":"center",fontSize:"2vw"}}>Sorry projects could not be loaded, try again!</h3>
-              :
-              props.projects.slice(projectsPage*5, (props.projects.length > (projectsPage+1)*5 )?((projectsPage+1)*5):props.projects.length).map((data:any) =>
-              {
-                return (
-                <div key={data.id} className={styles.projectContainerText} style={{ "textAlign":"center",}} >
-                    <h2 >
-                      <Link className={styles.specialLink}  style={{fontSize:"2.5vw",textDecoration: "underline"}} href={`/projects/${data.name}`}>
-                        <div className={styles.specialLink} style={{ "cursor":"pointer",overflowWrap: "break-word"}}>{data.name}</div>
-                      </Link>
-                    </h2>
-                    <div >
-                        { (data.youtube) ?
-                        <YoutubeVideo vId={data.mediaLink}/>
-                        // <iframe width="100%" height="100%" src={data.mediaLink} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>  
-                        :
-                         <img src={data.mediaLink} margin-left=""width="100%" height="100%" /> }
-                        <h3 style={{fontSize:"1.5vw"}}>
-                        {data.shortDescription}
-                        <p></p>
-                        <a rel="noreferrer" style={{fontSize:"1.5vw",textDecoration: "underline"}} target={"_blank"} href={`${data.linkName}`}>{"--> Check out the Repo"}</a>
-                        <p></p>
-                        <Link style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/projects/${data.name}`}><div style={{textDecoration: "underline"}}>{"-> Learn More Here"}</div></Link>
-                  
-                        </h3>
-                    </div>
+              <div style={{"textAlign":"center"}}>
+                    <button disabled={!showBackButton} onClick={MovePageBackward}>{"<"}</button>
+                    <span style={{marginLeft:"25px"}}></span>
+                    <button disabled={!showForwardButton} onClick={MovePageForawrd}>{">"}</button>
                   </div>
-                )})}
+              <p></p>
+                {(props.projects.length === 0 ) ? 
+                <h3 style={{ "textAlign":"center",fontSize:"2vw"}}>Sorry projects could not be loaded, try again!</h3>
+                :
+                props.projects.slice(projectsPage*5, (props.projects.length > (projectsPage+1)*5 )?((projectsPage+1)*5):props.projects.length).map((data:any) =>
+                {
+                  return (
+                  <div key={data.id} className={styles.projectContainerText} style={{ "textAlign":"center",}} >
+                      <h2 >
+                        <Link className={styles.specialLink}  style={{fontSize:"2.5vw",textDecoration: "underline"}} href={`/projects/${data.name}`}>
+                          <div className={styles.specialLink} style={{ "cursor":"pointer",overflowWrap: "break-word"}}>{data.name}</div>
+                        </Link>
+                      </h2>
+                      <div >
+                          { (data.youtube) ?
+                          <YoutubeVideo vId={data.mediaLink}/>
+                          // <iframe width="100%" height="100%" src={data.mediaLink} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>  
+                          :
+                          <img src={data.mediaLink} margin-left=""width="100%" height="100%" /> }
+                          <h3 style={{fontSize:"1.5vw"}}>
+                          {data.shortDescription}
+                          <p></p>
+                          <a rel="noreferrer" style={{fontSize:"1.5vw",textDecoration: "underline"}} target={"_blank"} href={`${data.linkName}`}>{"--> Check out the Repo"}</a>
+                          <p></p>
+                          <Link style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/projects/${data.name}`}><div style={{textDecoration: "underline"}}>{"-> Learn More Here"}</div></Link>
+                    
+                          </h3>
+                      </div>
+                    </div>
+                  )})}
 
                 
                 
