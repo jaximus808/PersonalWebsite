@@ -112,7 +112,7 @@ const Index: React.FC<props> = props => {
                     
                 <h3>
                     <Link href='/blogs'>
-                        <div style={{textDecoration: "underline", "cursor":"pointer"}} >{"<-"} Look at more blogss</div>
+                        <div style={{textDecoration: "underline", "cursor":"pointer"}} >{"<-"} Look at more blogs</div>
                     </Link>
                 </h3>
                 </div>
