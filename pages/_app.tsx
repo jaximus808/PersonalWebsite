@@ -1,8 +1,40 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
+import localFont from 'next/font/local'
+import Head from 'next/head'
+const titleFont = localFont({
+  
+  src:'./fonts/Tourner.ttf',
+  weight:'400',
+  style:'normal',
+  variable:'--font-tourner'
+})
+
+const textFont = localFont({
+  
+  src:[{
+    path:'./fonts/caviar_dreams/CaviarDreams.ttf',
+  weight:'400',
+  style:'normal',
+  },
+  {
+    path:'./fonts/caviar_dreams/CaviarDreams_Bold.ttf',
+  weight:'500',
+  style:'bold',
+  }],
+
+  variable:'--font-caviarDreams'
+})
+
+
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+  return (
+    <main className={`${titleFont.variable} ${textFont.className}` }>
+     
+      <Component {...pageProps} />
+    </main>
+  )
 }
 
 export default MyApp

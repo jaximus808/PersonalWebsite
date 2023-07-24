@@ -12,6 +12,8 @@ import { getCookies, getCookie, setCookies, removeCookies } from 'cookies-next';
 import Link from 'next/link'
 import * as jsonwebtoken from "jsonwebtoken";
 import { useState } from 'react'
+ 
+import Image from 'next/image'
 
 import {PrismaClient, Prisma, Projects} from "@prisma/client"
 
@@ -162,38 +164,43 @@ const Index: React.FC<props> = props => {
         <div className={styles.maincotainer}>
                 <div className={styles.textContainer}>
                     
-                <h3>
+                <div>
                     <Link href='/projects'>
                         <div style={{textDecoration: "underline", "cursor":"pointer"}} >{"<-"} Look At More Projects</div>
                     </Link>
-                </h3>
+                    
+                    <h1 className='text-3xl text-center'>
+                        Project: {props.projectData.name}
+                    </h1>
+                </div>
                 </div>
 
                 <div className={styles.textContainer}>
                 {(props.exist) ?
                 <div>
-                <h1>
-                    Project: {props.projectData.name}
-                </h1>
+                    
+                    <h2>
+                        Created on: {props.projectData.projectDate}
+                    </h2>
+                    <div >
+                        { (props.projectData.youtube) ?
+                        
 
-                <h2>
-                    Posted on: {props.projectData.projectDate}
-                </h2>
-                <div style={{paddingLeft:"20px"}}>
-                    { (props.projectData.youtube) ?
-                    <YoutubeVideo vId={props.projectData.mediaLink}/>
-                    :
-                    <img src={props.projectData.mediaLink} width="370" height="315" /> }
-                    <h3>
-                    {props.projectData.description}
-                    <p></p>
-                    <a rel="noreferrer" style={{textDecoration: "underline"}} target={"_blank"} href={`${props.projectData.linkName}`}>{"--> Check out the Repo"}</a>
-                    <p></p>
-                    {(props.projectData.projectLinks != "") ? <a rel="noreferrer" style={{textDecoration: "underline"}} target={"_blank"} href={`${props.projectData.projectLinks}`}>{"--> Check out more of the project"}</a>:<></>
-}
-                    </h3>
+                            <YoutubeVideo  vId={props.projectData.mediaLink}/>
+                            
+                        :
+                        <Image src={props.projectData.mediaLink} className='relative left-1/2 translate-x-[-50%]' width={700} height={500} alt='media'/> 
+                        
+                        }
+                        <h3 className='text-xl text-center'>
+                            {props.projectData.description}
+                            <p></p>
+                            <a rel="noreferrer" style={{textDecoration: "underline"}} target={"_blank"} href={`${props.projectData.linkName}`}>{"--> Check out the Repo"}</a>
+                            <p></p>
+                            {(props.projectData.projectLinks != "") ? <a rel="noreferrer" style={{textDecoration: "underline"}} target={"_blank"} href={`${props.projectData.projectLinks}`}>{"--> Check out more of the project"}</a>:<></>}
+                        </h3>
+                    </div>
                 </div>
-            </div>
             :
               
             <>

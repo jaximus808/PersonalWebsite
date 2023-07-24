@@ -110,24 +110,25 @@ const Index: React.FC<props> = props => {
         <div className={styles.maincotainer}>
                 <div className={styles.textContainer}>
                     
-                <h3>
-                    <Link href='/blogs'>
+                <div>
+                    <Link href='/blog'>
                         <div style={{textDecoration: "underline", "cursor":"pointer"}} >{"<-"} Look at more blogs</div>
                     </Link>
-                </h3>
+                    <h1 className='text-center text-4xl '>
+                     Blog: {props.blog.title}
+                </h1>
+                </div>
                 </div>
 
                 <div className={styles.textContainer}>
                 {(props.exist) ?
                 <div>
-                <h1>
-                    Project: {props.blog.title}
-                </h1>
+                
 
                 <h2>
                     Posted on: {props.blog.datePosted}
                 </h2>
-                <div style={{paddingLeft:"20px"}}>
+                <div className='text-2xl' style={{paddingLeft:"20px"}}>
                     
                     <h3>
                         {props.blog.content}

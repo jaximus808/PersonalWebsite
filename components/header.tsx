@@ -52,20 +52,21 @@ const Header: NextPage = () => {
   let headerRef:any = useRef(null);
 
   return (
-    <div ref={headerRef} className={styles.navBar}>
+    <div ref={headerRef}  className={`${styles.navBar}`}>
           
-          <div className={styles.links}>
-            <span className={styles.homeLink} style={{fontStyle:"italic", marginLeft:"2vw"}}>
-              <Link style={{textDecoration: "underline"}} href='/'>Jaxon Poentis</Link>
-              
-              </span>
-            <Link style={{textDecoration: "underline"}}  href='/projects'>Project Catalog</Link>
-            <Link style={{textDecoration: "underline"}}  href='/socials'>My Socials</Link>
+      <div className={`${styles.links} font-caviar relative top-1/2 translate-y-[-50%]`}>
+        <span className={styles.homeLink} style={{fontStyle:"italic", marginLeft:"2vw"}}>
+          <Link href='/'>Jaxon Poentis</Link>
+          
+          </span>
+        <Link   href='/projects'>Project Catalog</Link>
+        <Link href='/blog'>Blog</Link>
+        <Link href='/socials'>My Socials</Link>
 
-            <Link style={{textDecoration: "underline",}}  href='/blog'>Blog</Link>
 
-          </div>
-        </div>
+        <Link href='/'>Home</Link>
+      </div>
+    </div>
   )
 }
 

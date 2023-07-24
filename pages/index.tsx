@@ -147,7 +147,7 @@ function ScrollDown(props:any)
     return (
       <>
 
-        <h2 className={styles.scrollDownTitle} ref={scrollTitle} style={{"fontSize":"2vw","textAlign":"center"}}>v Scroll Down v</h2> 
+        <h2 className={`${styles.scrollDownTitle}`} ref={scrollTitle} style={{"fontSize":"2vw","textAlign":"center"}}>v Scroll Down v</h2> 
       </>
     )
 }
@@ -156,7 +156,7 @@ function ScrollDown(props:any)
 const Index:React.FC<props> = props => {
 
   return (
-    <div>
+    <div className='text-caviar'>
 
       <Background/> 
       <Head>
@@ -167,97 +167,90 @@ const Index:React.FC<props> = props => {
       {}
         <Header/>
         <div className={styles.mainTitleName}>
-          <div style={{"fontSize":"10vw","textAlign":"center"}}>Jaxon Poentis</div> 
+          <div className='font-tourner' style={{"fontSize":"10vw","textAlign":"center"}}>Jaxon Poentis</div> 
           <ScrollDown/>
         </div>
         <div className={styles.homeMaincotainer}>
           <div className={styles.textContainer}>
-            <h1 style={{"fontSize":"300%","textAlign":"center"}}>~Aloha~</h1>
-            <img src="/Frontimage2.jpg" style={{"borderRadius":"0.5rem"}} className={styles.frontImage}/>
-            <h2 style={{"textAlign":"center"}}>My name is Jaxon Poentis and I am born and raised from Hawaii! I am a self-taught programmer and enjoy creating many different types of projects from Website-Devolpment, Machine Learning, Networking, and Game Devolpment! I am currently attending Washington University in St. Lious of class 2027 studying Computer Science and Business! </h2>
+            <h1 style={{"fontSize":"300%","textAlign":"center"}}>Aloha 🤙</h1>
+            <div className={styles.frontImage}  >
+            <Image alt='front picture' src="/Frontimage2.jpg" fill style={{"borderRadius":"0.5rem"}}/>
+            </div>
+            
+            <h2 className='text-2xl mt-5' style={{"textAlign":"center"}}>My name is Jaxon Poentis and I am born and raised from Hawaii! I am a self-taught programmer and enjoy creating many different types of projects from Website-Devolpment, Machine Learning, Networking, and Game Devolpment! I am currently attending <span className='font-bold'>Washington University in St. Lious of class 2027</span> 🧸 studying Computer Science and Business! </h2>
             <h3 style={{"textAlign":"center"}}> </h3>
           </div>
           
           <div className={styles.textContainer} style={{"textAlign":"center"}}>
             
+            <Link href={'/blogs'}><h1 style={{"fontSize":"250%","textAlign":"center", "textDecoration":"underline", "cursor":"pointer"}}>Recent Blogs 💡</h1></Link>
+              
+            {(props.recentBlogs.length == 0) ? 
+                  
+                  <h3 style={{ "textAlign":"center",fontSize:"2vw"}}>Sorry blogs could not be loaded, try again!</h3>
+                  :
+                  props.recentBlogs.map((data:any) =>
+                  {
+                      return (
+                          <div onClick={()=>
+                          {
+                            window.location.href= `/blogs/${data.id}`
+                          }} key={data.id} className={`${styles.blogContainerText} rounded-md cursor-pointer`} style={{ "textAlign":"center",}} >
+                              <h2 >
+                                  <div className={`${styles.specialLink} font-caviar` } style={{ "cursor":"pointer",overflowWrap: "break-word",fontSize:"2.5vw",textDecoration: "underline"}}>{data.title}</div>
+                              
+                              </h2>
+                              <div >
+                                  
+                                  <h3 style={{fontSize:"1.5vw",'overflow':'hidden',WebkitLineClamp:4, WebkitBoxOrient:"vertical",display:"-webkit-box"}}>
+                                  {data.content}
+                                  </h3>
+                                  <p></p>
 
-
-          <Link href={'/blogs'}><h1 style={{"fontSize":"250%","textAlign":"center", "textDecoration":"underline", "cursor":"pointer"}}>～Blog～</h1></Link>
-            
-          {(props.recentBlogs.length == 0) ? 
-                
-                <h3 style={{ "textAlign":"center",fontSize:"2vw"}}>Sorry blogs could not be loaded, try again!</h3>
-                :
-                props.recentBlogs.map((data:any) =>
-                {
-                    return (
-                    <div key={data.id} className={styles.projectContainerText} style={{ "textAlign":"center",}} >
-                        <h2 >
-                        <Link className={styles.specialLink}  style={{fontSize:"2.5vw",textDecoration: "underline"}} href={`/blogs/${data.id}`}>
-                            <div className={styles.specialLink} style={{ "cursor":"pointer",overflowWrap: "break-word"}}>{data.title}</div>
-                        </Link>
-                        </h2>
-                        <div >
-                            
-                            <h3 style={{fontSize:"1.5vw",'overflow':'hidden',WebkitLineClamp:4, WebkitBoxOrient:"vertical",display:"-webkit-box"}}>
-                            {data.content}
-                            </h3>
-                            <p></p>
-
-                            
-                            <p></p>
-                            <Link style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/blogs/${data.id}`}><div style={{textDecoration: "underline", 'cursor':'pointer'}}>{"-> Read More Here"}</div></Link>
-                    
-                        </div>
-                    </div>
-                    )})}
-            {/* <h1 style={{"fontSize":"250%","textAlign":"center"}}>～Currently～</h1>
-            
-            <div>
-              <h2 style={{"fontSize":'2rem', "textDecoration":'underline'}}>College Preperation</h2>
-              <img  src="/washuimg.jpg" style={{"width":"70%","borderRadius":"0.5rem"}}/>
-              <h2 >At the moment I'm getting ready for college and am quite excited to start the next part of my journey at Washu! I'm still a little nervous if I'll be fully ready when I get there but that goes for everything right?</h2> 
-            </div>
-
-            <div>
-
-              <a href='https://www.fiverr.com/jaxoncoding/create-a-web-based-game-single-or-multiplayer-in-p5' style={{"fontSize":'2rem', "textDecoration":'underline'}}><h2>Fiverr Gig</h2></a>
-              <img  src="/FiverPic.png" style={{"width":"70%","borderRadius":"0.5rem"}}/>
-              <h2 >I've started to do a small freelancing business in which I create broswer games for clients through fiverr. It's been challenging but I've learned a lot! So far my gig has gotten 2,000 impressions and I've worked on around 6 projects, from a real estate guesser to a real-time fort battle game. I'm not sure how active I'll be once college starts, but I hope I can continue to work on this small business!</h2> 
-            </div>
-            <div>
-              <h2 style={{"fontSize":'2rem', "textDecoration":'underline'}}>FormFit AI</h2>
-              <img  src="/FormFit.png" style={{"width":"70%","borderRadius":"0.5rem"}}/>
-              <h2 >Another side project I'm currently working on is a formtracking AI app that will give instant feedback based on camera input about one's form when exercising. It's still in the works but I'm hoping I can launch a small service for those who want to improve their gym session as that's something I find really important for today's time of health/work balance.</h2> 
-            </div> */}
+                                  
+                                  <p></p>
+                                  <Link style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/blogs/${data.id}`}><div style={{textDecoration: "underline", 'cursor':'pointer'}}>{"Click to Read More 📖"}</div></Link>
+                          
+                              </div>
+                          </div>
+                      )})}
+          
           </div>
              
 
 
           <div className={styles.textContainer}>
-          <Link href={'/projects'}><h1 style={{"fontSize":"250%","textAlign":"center", "textDecoration":"underline", "cursor":"pointer"}}>～My Favorite Projects～</h1></Link>
+          <Link href={'/projects'}><h1 style={{"fontSize":"250%","textAlign":"center", "textDecoration":"underline", "cursor":"pointer"}}>My Favorite Projects 🧑‍💻</h1></Link>
           {props.pastProjFav.map((data:any) =>
               {
-                return (<div key={data.id} style={{"textAlign":"center"}}>
+                return (
+                
+                  <div onClick={()=>
+                    {
+                      window.location.href= `/projects/${data.name}`
+                    }} className='cursor-pointer' >
+                  
+                  <div  key={data.id}  className={`${styles.projectContainerText} rounded-xl`}style={{"textAlign":"center"}}>
                     <h2>
-                      <Link style={{ fontStyle:"italic"}}  href={`/projects/${data.name}`}>
-                        <div style={{overflowWrap: "break-word","cursor":"pointer",textDecoration: "underline",}}>{data.name}</div>
-                      </Link>
+                        
+                        <div className='text-3xl font-italic' style={{overflowWrap: "break-word","cursor":"pointer",textDecoration: "underline",}}>{data.name}</div>
+                      
                     </h2>
-                    <div >
+                    <div className='mt-2'>
                         { (data.youtube) ?
                         <YoutubeVideo vId={data.mediaLink}/>
                         :
-                         <img src={data.mediaLink} width="100%" height="100%" /> }
-                        <h3>
-                        {data.shortDescription}
-                        <p></p>
-                        <a rel="noreferrer" style={{textDecoration: "underline"}} target={"_blank"} href={`${data.linkName}`}>{"--> Check out the Repo"}</a>
-                        <p></p>
-                        <Link  href={`/projects/${data.name}`}><div style={{textDecoration: "underline","cursor":"pointer"}}>{"--> Learn More Here"}</div></Link>
-                  
+                         
+                        <Image alt='media picture' src={data.mediaLink} className='relative left-1/2 translate-x-[-50%]' width={700} height={500} />}
+                        <h3 className='text-xl'>
+                          {data.shortDescription}
+                          
+                          <p></p>
+                          <Link  href={`/projects/${data.name}`}><div style={{textDecoration: "underline","cursor":"pointer"}}>{"Click to Learn More 📖"}</div></Link>
+                    
                         </h3>
                     </div>
+                  </div>
                   </div>
                 )})} 
 

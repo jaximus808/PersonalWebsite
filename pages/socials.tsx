@@ -90,13 +90,13 @@ const Index = () => {
       {}
         <Header/>
         <div className={styles.mainTitleName}>
-          <div style={{"fontSize":"10vw","textAlign":"center"}}>My Socials</div> 
+          <div className='font-tourner'style={{"fontSize":"10vw","textAlign":"center"}}>My Socials</div> 
           <ScrollDown/>
         </div>
         <div className={styles.homeMaincotainer}>
           <div className={styles.textContainer}>
 
-          <h1 style={{"fontSize":"300%","textAlign":"center"}}>～Say Hello!～</h1>
+          <h1 style={{"fontSize":"300%","textAlign":"center"}}>Find Me Here 📬</h1>
           <h3>
 
             <div style={{textAlign:"center",fontSize:"130%",textDecoration: "underline"}}>

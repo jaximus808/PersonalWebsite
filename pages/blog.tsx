@@ -225,7 +225,7 @@ const Index:React.FC<props> = props => {
         </Head>
           <Header/>
           <div className={styles.mainTitleName}>
-            <div style={{"fontSize":"10vw","textAlign":"center"}}>My Blog</div> 
+            <div className='font-tourner' style={{"fontSize":"10vw","textAlign":"center"}}>My Blog</div> 
             <ScrollDown/>
           </div>
 
@@ -274,14 +274,14 @@ const Index:React.FC<props> = props => {
             <></>}
 
             <div className={styles.textContainer}>
-                <h1 style={{ "textAlign":"center",fontSize:"4vw"}}>~Blogs~</h1>
+                <h1 style={{ "textAlign":"center",fontSize:"4vw"}}>Blogs 💡</h1>
                 <h3 style={{ "textAlign":"center",fontSize:"1.5vw"}}>(Total:{props.blogs.length})</h3>
                 <h1 style={{ "textAlign":"center",fontSize:"2vw"}}>～(Page: {blogPage+1})～</h1>
 
                 <div style={{"textAlign":"center"}}>
-                    <button disabled={!showBackButton} onClick={MovePageBackward}>{"<"}</button>
+                    <button className='cursor-pointer bg-black hover:bg-[rgb(31,0,33)] p-2 rounded-3xl text-white' disabled={!showBackButton} onClick={MovePageBackward}>{"<"}</button>
                     <span style={{marginLeft:"25px"}}></span>
-                    <button disabled={!showForwardButton} onClick={MovePageForawrd}>{">"}</button>
+                    <button className='cursor-pointer bg-black p-2 hover:bg-[rgb(31,0,33)] rounded-3xl text-white'  disabled={!showForwardButton} onClick={MovePageForawrd}>{">"}</button>
                     </div>
                 <p></p>
                 {(props.blogs.length == 0) ? 
@@ -291,24 +291,28 @@ const Index:React.FC<props> = props => {
                 props.blogs.slice(blogPage*5, (props.blogs.length > (blogPage+1)*5 )?((blogPage+1)*5):props.blogs.length).map((data:any) =>
                 {
                     return (
-                    <div key={data.id} className={styles.projectContainerText} style={{ "textAlign":"center",}} >
-                        <h2 >
-                        <Link className={styles.specialLink}  style={{fontSize:"2.5vw",textDecoration: "underline"}} href={`/blogs/${data.id}`}>
-                            <div className={styles.specialLink} style={{ "cursor":"pointer",overflowWrap: "break-word"}}>{data.title}</div>
-                        </Link>
-                        </h2>
-                        <div >
-                            
-                            <h3 style={{fontSize:"1.5vw",'overflow':'hidden',WebkitLineClamp:4, WebkitBoxOrient:"vertical",display:"-webkit-box"}}>
-                            {data.content}
-                            </h3>
-                            <p></p>
+                      <div key={data.id} onClick={()=>
+                      {
+                        window.location.href = `/blogs/${data.id}`
+                      }} className='cursor-pointer'>
+                        <div   className={`${styles.projectContainerText} rounded-xl` } style={{ "textAlign":"center",}} >
+                          <h2 >
+                              <div className={styles.specialLink} style={{ "cursor":"pointer",overflowWrap: "break-word",fontSize:"2.5vw",textDecoration: "underline"}}>{data.title}</div>
+                          
+                          </h2>
+                          <div >
+                              
+                              <h3 style={{fontSize:"1.5vw",'overflow':'hidden',WebkitLineClamp:4, WebkitBoxOrient:"vertical",display:"-webkit-box"}}>
+                              {data.content}
+                              </h3>
+                              <p></p>
 
-                            
-                            <p></p>
-                            <Link style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/blogs/${data.id}`}><div style={{textDecoration: "underline", 'cursor':'pointer'}}>{"-> Read More Here"}</div></Link>
-                    
-                        </div>
+                              
+                              <p></p>
+                              <Link style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/blogs/${data.id}`}><div style={{textDecoration: "underline", 'cursor':'pointer'}}>{"-> Read More Here"}</div></Link>
+                      
+                          </div>
+                      </div>
                     </div>
                     )})}
 
