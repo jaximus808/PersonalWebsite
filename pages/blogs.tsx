@@ -49,6 +49,7 @@ const parsedCookies = cookies.parse(context.req.headers.cookie?context.req.heade
   try  
   {
         blogs = await prisma.blog.findMany()
+        blogs.reverse()
     }
     catch
     {
