@@ -177,6 +177,15 @@
 }
 
 
+.homeLink
+{
+  font-family: OpenSans, sans-serif;
+  color:white;
+}
+.homeLink:hover
+{
+  color:rgb(239, 43, 177);
+}
 .links>a
 {
 

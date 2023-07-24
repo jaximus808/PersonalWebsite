@@ -39,7 +39,8 @@ import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
 
 type props = 
 {
-  pastProjFav:any
+  pastProjFav:any,
+  recentBlogs:any
 }
 
 
@@ -62,12 +63,31 @@ export const getServerSideProps: GetServerSideProps = async (context) =>
   {
     pastFavoriteProjects = [];
   }
+  let  recentBlogs:any;
+  try
+  {
+    recentBlogs = await prisma.blog.findMany()
+
+    if(recentBlogs.length > 4)
+    {
+
+      recentBlogs.splice(0, recentBlogs.length - 4)
+    }
+    recentBlogs.reverse();
+
+  
+  }
+  catch
+  {
+    recentBlogs = [];
+  }
 
   
 
   return {
     props:{
-      pastProjFav: JSON.parse(JSON.stringify(pastFavoriteProjects))
+      pastProjFav: JSON.parse(JSON.stringify(pastFavoriteProjects)),
+      recentBlogs: JSON.parse(JSON.stringify(recentBlogs))
     }
   }
 }
@@ -160,7 +180,38 @@ const Index:React.FC<props> = props => {
           
           <div className={styles.textContainer} style={{"textAlign":"center"}}>
             
-            <h1 style={{"fontSize":"250%","textAlign":"center"}}>～Currently～</h1>
+
+
+          <Link href={'/blogs'}><h1 style={{"fontSize":"250%","textAlign":"center", "textDecoration":"underline", "cursor":"pointer"}}>～Blog～</h1></Link>
+            
+          {(props.recentBlogs.length == 0) ? 
+                
+                <h3 style={{ "textAlign":"center",fontSize:"2vw"}}>Sorry blogs could not be loaded, try again!</h3>
+                :
+                props.recentBlogs.map((data:any) =>
+                {
+                    return (
+                    <div key={data.id} className={styles.projectContainerText} style={{ "textAlign":"center",}} >
+                        <h2 >
+                        <Link className={styles.specialLink}  style={{fontSize:"2.5vw",textDecoration: "underline"}} href={`/blogs/${data.id}`}>
+                            <div className={styles.specialLink} style={{ "cursor":"pointer",overflowWrap: "break-word"}}>{data.title}</div>
+                        </Link>
+                        </h2>
+                        <div >
+                            
+                            <h3 style={{fontSize:"1.5vw",'overflow':'hidden',WebkitLineClamp:4, WebkitBoxOrient:"vertical",display:"-webkit-box"}}>
+                            {data.content}
+                            </h3>
+                            <p></p>
+
+                            
+                            <p></p>
+                            <Link style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/blogs/${data.id}`}><div style={{textDecoration: "underline", 'cursor':'pointer'}}>{"-> Read More Here"}</div></Link>
+                    
+                        </div>
+                    </div>
+                    )})}
+            {/* <h1 style={{"fontSize":"250%","textAlign":"center"}}>～Currently～</h1>
             
             <div>
               <h2 style={{"fontSize":'2rem', "textDecoration":'underline'}}>College Preperation</h2>
@@ -178,13 +229,13 @@ const Index:React.FC<props> = props => {
               <h2 style={{"fontSize":'2rem', "textDecoration":'underline'}}>FormFit AI</h2>
               <img  src="/FormFit.png" style={{"width":"70%","borderRadius":"0.5rem"}}/>
               <h2 >Another side project I'm currently working on is a formtracking AI app that will give instant feedback based on camera input about one's form when exercising. It's still in the works but I'm hoping I can launch a small service for those who want to improve their gym session as that's something I find really important for today's time of health/work balance.</h2> 
-            </div>
+            </div> */}
           </div>
              
 
 
           <div className={styles.textContainer}>
-          <h1 style={{"fontSize":"250%","textAlign":"center"}}>～My Favorite Projects～</h1>
+          <Link href={'/projects'}><h1 style={{"fontSize":"250%","textAlign":"center", "textDecoration":"underline", "cursor":"pointer"}}>～My Favorite Projects～</h1></Link>
           {props.pastProjFav.map((data:any) =>
               {
                 return (<div key={data.id} style={{"textAlign":"center"}}>

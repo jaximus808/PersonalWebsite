@@ -55,12 +55,14 @@ const Header: NextPage = () => {
     <div ref={headerRef} className={styles.navBar}>
           
           <div className={styles.links}>
-            <span style={{fontStyle:"italic", marginLeft:"2vw"}}><Link href='/'>Jaxon Poentis</Link></span>
+            <span className={styles.homeLink} style={{fontStyle:"italic", marginLeft:"2vw"}}>
+              <Link style={{textDecoration: "underline"}} href='/'>Jaxon Poentis</Link>
+              
+              </span>
             <Link style={{textDecoration: "underline"}}  href='/projects'>Project Catalog</Link>
             <Link style={{textDecoration: "underline"}}  href='/socials'>My Socials</Link>
 
-            <Link style={{textDecoration: "underline",}}  href='/blogs'>Blogs</Link>
-            <Link style={{textDecoration: "underline",}}  href='/'>Home</Link>
+            <Link style={{textDecoration: "underline",}}  href='/blog'>Blog</Link>
 
           </div>
         </div>
