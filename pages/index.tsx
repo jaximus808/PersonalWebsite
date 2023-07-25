@@ -252,7 +252,7 @@ const Index = (props:props) => {
                     
                         </div>
                     </div>
-                )}):<h3>Loading</h3>}
+                )}):<h3 className='text-center text-3xl'>Loading...</h3>}
           
           </div>
              
@@ -294,7 +294,7 @@ const Index = (props:props) => {
                       </div>
                     </div>
                   </div>
-                )}):<h3 className='text-center text-3xl'>Sorry Projects Could Not Be Loaded, Try Again!</h3>):<h3>Loading...</h3>} 
+                )}):<h3 className='text-center text-3xl'>Sorry Projects Could Not Be Loaded, Try Again!</h3>):<h3 className='text-center text-3xl' >Loading...</h3>} 
 
               </div>
               
