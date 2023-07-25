@@ -7,7 +7,9 @@ const titleFont = localFont({
   src:'./fonts/Tourner.ttf',
   weight:'400',
   style:'normal',
-  variable:'--font-tourner'
+  variable:'--font-tourner',
+
+  display:'swap'
 })
 
 const textFont = localFont({
@@ -16,6 +18,7 @@ const textFont = localFont({
     path:'./fonts/caviar_dreams/CaviarDreams.ttf',
   weight:'400',
   style:'normal',
+  
   },
   {
     path:'./fonts/caviar_dreams/CaviarDreams_Bold.ttf',
@@ -23,7 +26,8 @@ const textFont = localFont({
   style:'bold',
   }],
 
-  variable:'--font-caviarDreams'
+  variable:'--font-caviarDreams',
+  display:'swap'
 })
 
 
