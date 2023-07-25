@@ -45,53 +45,53 @@ type props =
 
 
 
-// export const getServerSideProps: GetServerSideProps = async (context) =>
-// {
+export const getServerSideProps: GetServerSideProps = async (context) =>
+{
 
-//   const prisma = new PrismaClient();
-//   let  pastFavoriteProjects:any;
-//   try
-//   {
-//     pastFavoriteProjects = await prisma.projects.findMany({
-//       where:
-//       {
-//         favorite:true
-//       }
-//     })
+  const prisma = new PrismaClient();
+  let  pastFavoriteProjects:any;
+  try
+  {
+    pastFavoriteProjects = await prisma.projects.findMany({
+      where:
+      {
+        favorite:true
+      }
+    })
   
-//   }
-//   catch
-//   {
-//     pastFavoriteProjects = [];
-//   }
-//   let  recentBlogs:any;
-//   try
-//   {
-//     recentBlogs = await prisma.blog.findMany()
+  }
+  catch
+  {
+    pastFavoriteProjects = [];
+  }
+  let  recentBlogs:any;
+  try
+  {
+    recentBlogs = await prisma.blog.findMany()
 
-//     if(recentBlogs.length > 4)
-//     {
+    if(recentBlogs.length > 4)
+    {
 
-//       recentBlogs.splice(0, recentBlogs.length - 4)
-//     }
-//     recentBlogs.reverse();
-
-  
-//   }
-//   catch
-//   {
-//     recentBlogs = [];
-//   }
+      recentBlogs.splice(0, recentBlogs.length - 4)
+    }
+    recentBlogs.reverse();
 
   
+  }
+  catch
+  {
+    recentBlogs = [];
+  }
 
-//   return {
-//     props:{
-//       pastProjFav: JSON.parse(JSON.stringify(pastFavoriteProjects)),
-//       recentBlogs: JSON.parse(JSON.stringify(recentBlogs))
-//     }
-//   }
-// }
+  
+
+  return {
+    props:{
+      pastProjFav: JSON.parse(JSON.stringify(pastFavoriteProjects)),
+      recentBlogs: JSON.parse(JSON.stringify(recentBlogs))
+    }
+  }
+}
 
 
 function ScrollDown(props:any)
@@ -269,48 +269,48 @@ const Index = (props:props) => {
   )
 }
 
-Index.getInitialProps = async (context:any) =>{
-  const prisma = new PrismaClient();
-  let  pastFavoriteProjects:any;
-  try
-  {
-    pastFavoriteProjects = await prisma.projects.findMany({
-      where:
-      {
-        favorite:true
-      }
-    })
+// Index.getInitialProps = async (context:any) =>{
+//   const prisma = new PrismaClient();
+//   let  pastFavoriteProjects:any;
+//   try
+//   {
+//     pastFavoriteProjects = await prisma.projects.findMany({
+//       where:
+//       {
+//         favorite:true
+//       }
+//     })
   
-  }
-  catch
-  {
-    pastFavoriteProjects = [];
-  }
-  let  recentBlogs:any;
-  try
-  {
-    recentBlogs = await prisma.blog.findMany()
+//   }
+//   catch
+//   {
+//     pastFavoriteProjects = [];
+//   }
+//   let  recentBlogs:any;
+//   try
+//   {
+//     recentBlogs = await prisma.blog.findMany()
 
-    if(recentBlogs.length > 4)
-    {
+//     if(recentBlogs.length > 4)
+//     {
 
-      recentBlogs.splice(0, recentBlogs.length - 4)
-    }
-    recentBlogs.reverse();
-
-  
-  }
-  catch
-  {
-    recentBlogs = [];
-  }
+//       recentBlogs.splice(0, recentBlogs.length - 4)
+//     }
+//     recentBlogs.reverse();
 
   
+//   }
+//   catch
+//   {
+//     recentBlogs = [];
+//   }
 
-  return {
-    pastProjFav: JSON.parse(JSON.stringify(pastFavoriteProjects)),
-      recentBlogs: JSON.parse(JSON.stringify(recentBlogs))
-  }
-}
+  
+
+//   return {
+//     pastProjFav: JSON.parse(JSON.stringify(pastFavoriteProjects)),
+//       recentBlogs: JSON.parse(JSON.stringify(recentBlogs))
+//   }
+// }
 
 export default Index
