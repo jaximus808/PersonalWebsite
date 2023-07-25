@@ -188,7 +188,8 @@ const Index = (props:props) => {
     useEffect(()=>
     {
       getInitialData(); 
-    })
+
+    }, [])
 
     const [frontData, setFrontData] = useState<frontData>({pastProjFav:undefined, recentBlogs:undefined, fail:false }) 
  
