@@ -44,53 +44,54 @@ type props =
 }
 
 
-export const getServerSideProps: GetServerSideProps = async (context) =>
-{
 
-  const prisma = new PrismaClient();
-  let  pastFavoriteProjects:any;
-  try
-  {
-    pastFavoriteProjects = await prisma.projects.findMany({
-      where:
-      {
-        favorite:true
-      }
-    })
+// export const getServerSideProps: GetServerSideProps = async (context) =>
+// {
+
+//   const prisma = new PrismaClient();
+//   let  pastFavoriteProjects:any;
+//   try
+//   {
+//     pastFavoriteProjects = await prisma.projects.findMany({
+//       where:
+//       {
+//         favorite:true
+//       }
+//     })
   
-  }
-  catch
-  {
-    pastFavoriteProjects = [];
-  }
-  let  recentBlogs:any;
-  try
-  {
-    recentBlogs = await prisma.blog.findMany()
+//   }
+//   catch
+//   {
+//     pastFavoriteProjects = [];
+//   }
+//   let  recentBlogs:any;
+//   try
+//   {
+//     recentBlogs = await prisma.blog.findMany()
 
-    if(recentBlogs.length > 4)
-    {
+//     if(recentBlogs.length > 4)
+//     {
 
-      recentBlogs.splice(0, recentBlogs.length - 4)
-    }
-    recentBlogs.reverse();
-
-  
-  }
-  catch
-  {
-    recentBlogs = [];
-  }
+//       recentBlogs.splice(0, recentBlogs.length - 4)
+//     }
+//     recentBlogs.reverse();
 
   
+//   }
+//   catch
+//   {
+//     recentBlogs = [];
+//   }
 
-  return {
-    props:{
-      pastProjFav: JSON.parse(JSON.stringify(pastFavoriteProjects)),
-      recentBlogs: JSON.parse(JSON.stringify(recentBlogs))
-    }
-  }
-}
+  
+
+//   return {
+//     props:{
+//       pastProjFav: JSON.parse(JSON.stringify(pastFavoriteProjects)),
+//       recentBlogs: JSON.parse(JSON.stringify(recentBlogs))
+//     }
+//   }
+// }
 
 
 function ScrollDown(props:any)
@@ -153,8 +154,9 @@ function ScrollDown(props:any)
 }
 
 
-const Index:React.FC<props> = props => {
+const Index = (props:props) => {
 
+  console.log(props)
   return (
     <div className='text-caviar'>
 
@@ -185,35 +187,36 @@ const Index:React.FC<props> = props => {
             
             <Link href={'/blogs'}><h1 style={{"fontSize":"250%","textAlign":"center", "textDecoration":"underline", "cursor":"pointer"}}>Recent Blogs 💡</h1></Link>
               
-            {(props.recentBlogs.length == 0) ? 
+            {(props.recentBlogs) ?
+            (props.recentBlogs.length == 0) ? 
                   
-                  <h3 style={{ "textAlign":"center",fontSize:"2vw"}}>Sorry blogs could not be loaded, try again!</h3>
-                  :
-                  props.recentBlogs.map((data:any) =>
-                  {
-                      return (
-                          <div onClick={()=>
-                          {
-                            window.location.href= `/blogs/${data.id}`
-                          }} key={data.id} className={`${styles.blogContainerText} rounded-md cursor-pointer`} style={{ "textAlign":"center",}} >
-                              <h2 >
-                                  <div className={`${styles.specialLink} font-caviar` } style={{ "cursor":"pointer",overflowWrap: "break-word",fontSize:"2.5vw",textDecoration: "underline"}}>{data.title}</div>
-                              
-                              </h2>
-                              <div >
-                                  
-                                  <h3 style={{fontSize:"1.5vw",'overflow':'hidden',WebkitLineClamp:4, WebkitBoxOrient:"vertical",display:"-webkit-box"}}>
-                                  {data.content}
-                                  </h3>
-                                  <p></p>
+            <h3 style={{ "textAlign":"center",fontSize:"2vw"}}>Sorry blogs could not be loaded, try again!</h3>
+            :
+            props.recentBlogs.map((data:any) =>
+            {
+                return (
+                    <div onClick={()=>
+                    {
+                      window.location.href= `/blogs/${data.id}`
+                    }} key={data.id} className={`${styles.blogContainerText} rounded-md cursor-pointer`} style={{ "textAlign":"center",}} >
+                        <h2 >
+                            <div className={`${styles.specialLink} font-caviar` } style={{ "cursor":"pointer",overflowWrap: "break-word",fontSize:"2.5vw",textDecoration: "underline"}}>{data.title}</div>
+                        
+                        </h2>
+                        <div >
+                            
+                            <h3 style={{fontSize:"1.5vw",'overflow':'hidden',WebkitLineClamp:4, WebkitBoxOrient:"vertical",display:"-webkit-box"}}>
+                            {data.content}
+                            </h3>
+                            <p></p>
 
-                                  
-                                  <p></p>
-                                  <Link style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/blogs/${data.id}`}><div style={{textDecoration: "underline", 'cursor':'pointer'}}>{"Click to Read More 📖"}</div></Link>
-                          
-                              </div>
-                          </div>
-                      )})}
+                            
+                            <p></p>
+                            <Link style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/blogs/${data.id}`}><div style={{textDecoration: "underline", 'cursor':'pointer'}}>{"Click to Read More 📖"}</div></Link>
+                    
+                        </div>
+                    </div>
+                )}):<h3>Loading</h3>}
           
           </div>
              
@@ -221,7 +224,8 @@ const Index:React.FC<props> = props => {
 
           <div className={styles.textContainer}>
           <Link href={'/projects'}><h1 style={{"fontSize":"250%","textAlign":"center", "textDecoration":"underline", "cursor":"pointer"}}>My Favorite Projects 🧑‍💻</h1></Link>
-          {props.pastProjFav.map((data:any) =>
+          {
+          (props.pastProjFav != undefined) ? props.pastProjFav.map((data:any) =>
               {
                 return (
                 
@@ -252,7 +256,7 @@ const Index:React.FC<props> = props => {
                       </div>
                     </div>
                   </div>
-                )})} 
+                )}):<h3>Loading...</h3>} 
 
               </div>
               
@@ -261,6 +265,50 @@ const Index:React.FC<props> = props => {
         </div>
     </div>
   )
+}
+
+Index.getInitialProps = async (context:any) =>{
+  const prisma = new PrismaClient();
+  let  pastFavoriteProjects:any;
+  try
+  {
+    pastFavoriteProjects = await prisma.projects.findMany({
+      where:
+      {
+        favorite:true
+      }
+    })
+  
+  }
+  catch
+  {
+    pastFavoriteProjects = [];
+  }
+  let  recentBlogs:any;
+  try
+  {
+    recentBlogs = await prisma.blog.findMany()
+
+    if(recentBlogs.length > 4)
+    {
+
+      recentBlogs.splice(0, recentBlogs.length - 4)
+    }
+    recentBlogs.reverse();
+
+  
+  }
+  catch
+  {
+    recentBlogs = [];
+  }
+
+  
+
+  return {
+    pastProjFav: JSON.parse(JSON.stringify(pastFavoriteProjects)),
+      recentBlogs: JSON.parse(JSON.stringify(recentBlogs))
+  }
 }
 
 export default Index

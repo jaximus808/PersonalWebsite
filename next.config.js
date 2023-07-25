@@ -12,6 +12,7 @@ const nextConfig = {
     // ],
     domains:['drive.google.com','cdn.discordapp.com']
   },
+  compress:true
 }
 
 module.exports = nextConfig
