@@ -273,7 +273,7 @@ const Index = (props:props) => {
                     <div    className={`${styles.projectContainerText} rounded-xl`}style={{"textAlign":"center"}}>
                       <h2>
                           
-                          <div className='text-3xl font-italic' style={{overflowWrap: "break-word","cursor":"pointer",textDecoration: "underline",}}>{data.name}</div>
+                          <div className='text-[2.5vw] font-italic' style={{overflowWrap: "break-word","cursor":"pointer",textDecoration: "underline",}}>{data.name}</div>
                         
                       </h2>
                       <div className='mt-2'>
@@ -284,7 +284,7 @@ const Index = (props:props) => {
                           :
                           
                           <Image alt='media picture' src={data.mediaLink} className='relative left-1/2 translate-x-[-50%]' width={700} height={500} />}
-                          <h3 className='text-xl'>
+                          <h3 className='text-[1.5vw]'>
                             {data.shortDescription}
                             
                             <p></p>
