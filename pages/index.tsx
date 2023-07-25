@@ -225,32 +225,32 @@ const Index:React.FC<props> = props => {
               {
                 return (
                 
-                  <div onClick={()=>
+                  <div key={data.id} onClick={()=>
                     {
                       window.location.href= `/projects/${data.name}`
                     }} className='cursor-pointer' >
                   
-                  <div  key={data.id}  className={`${styles.projectContainerText} rounded-xl`}style={{"textAlign":"center"}}>
-                    <h2>
-                        
-                        <div className='text-3xl font-italic' style={{overflowWrap: "break-word","cursor":"pointer",textDecoration: "underline",}}>{data.name}</div>
-                      
-                    </h2>
-                    <div className='mt-2'>
-                        { (data.youtube) ?
-                        <YoutubeVideo vId={data.mediaLink}/>
-                        :
-                         
-                        <Image alt='media picture' src={data.mediaLink} className='relative left-1/2 translate-x-[-50%]' width={700} height={500} />}
-                        <h3 className='text-xl'>
-                          {data.shortDescription}
+                    <div    className={`${styles.projectContainerText} rounded-xl`}style={{"textAlign":"center"}}>
+                      <h2>
                           
-                          <p></p>
-                          <Link  href={`/projects/${data.name}`}><div style={{textDecoration: "underline","cursor":"pointer"}}>{"Click to Learn More 📖"}</div></Link>
-                    
-                        </h3>
+                          <div className='text-3xl font-italic' style={{overflowWrap: "break-word","cursor":"pointer",textDecoration: "underline",}}>{data.name}</div>
+                        
+                      </h2>
+                      <div className='mt-2'>
+                          { (data.youtube) ?
+                          <YoutubeVideo vId={data.mediaLink}/>
+                          :
+                          
+                          <Image alt='media picture' src={data.mediaLink} className='relative left-1/2 translate-x-[-50%]' width={700} height={500} />}
+                          <h3 className='text-xl'>
+                            {data.shortDescription}
+                            
+                            <p></p>
+                            <Link  href={`/projects/${data.name}`}><div style={{textDecoration: "underline","cursor":"pointer"}}>{"Click to Learn More 📖"}</div></Link>
+                      
+                          </h3>
+                      </div>
                     </div>
-                  </div>
                   </div>
                 )})} 
 
