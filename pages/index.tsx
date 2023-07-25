@@ -7,7 +7,7 @@ import Header from '../components/header'
 import Footer from '../components/footer'
 import Background from '../components/backgroundThree'
 import { PrismaClient , Prisma} from '@prisma/client'
-import { useState,useEffect, useRef  } from 'react'
+import { useState,useEffect, useRef,Suspense  } from 'react'
 import prisma from '../lib/prisma'
 import cookies from "cookie"
 
@@ -242,7 +242,9 @@ const Index = (props:props) => {
                       </h2>
                       <div className='mt-2'>
                           { (data.youtube) ?
-                          <YoutubeVideo vId={data.mediaLink}/>
+                            <Suspense fallback={<h3>loading</h3>}>
+                              <YoutubeVideo vId={data.mediaLink}/>
+                            </Suspense>
                           :
                           
                           <Image alt='media picture' src={data.mediaLink} className='relative left-1/2 translate-x-[-50%]' width={700} height={500} />}
