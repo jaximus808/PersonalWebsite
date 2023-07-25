@@ -39,59 +39,69 @@ import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
 
 type props = 
 {
+  fail:boolean
+  pastProjFav:any,
+  recentBlogs:any
+}
+
+type frontData = 
+{
+  fail:boolean
   pastProjFav:any,
   recentBlogs:any
 }
 
 
 
-export const getServerSideProps: GetServerSideProps = async (context) =>
-{
 
-  const prisma = new PrismaClient();
-  let  pastFavoriteProjects:any;
-  try
-  {
-    pastFavoriteProjects = await prisma.projects.findMany({
-      where:
-      {
-        favorite:true
-      }
-    })
+// export const getServerSideProps: GetServerSideProps = async (context) =>
+// {
+
+//   const prisma = new PrismaClient();
+//   let  pastFavoriteProjects:any;
+//   try
+//   {
+//     pastFavoriteProjects = await prisma.projects.findMany({
+//       where:
+//       {
+//         favorite:true
+//       }
+//     })
   
-  }
-  catch
-  {
-    pastFavoriteProjects = [];
-  }
-  let  recentBlogs:any;
-  try
-  {
-    recentBlogs = await prisma.blog.findMany()
+//   }
+//   catch
+//   {
+//     pastFavoriteProjects = [];
+//   }
+//   let  recentBlogs:any;
+//   try
+//   {
+//     recentBlogs = await prisma.blog.findMany()
 
-    if(recentBlogs.length > 4)
-    {
+//     if(recentBlogs.length > 4)
+//     {
 
-      recentBlogs.splice(0, recentBlogs.length - 4)
-    }
-    recentBlogs.reverse();
-
-  
-  }
-  catch
-  {
-    recentBlogs = [];
-  }
+//       recentBlogs.splice(0, recentBlogs.length - 4)
+//     }
+//     recentBlogs.reverse();
 
   
+//   }
+//   catch
+//   {
+//     recentBlogs = [];
+//   }
 
-  return {
-    props:{
-      pastProjFav: JSON.parse(JSON.stringify(pastFavoriteProjects)),
-      recentBlogs: JSON.parse(JSON.stringify(recentBlogs))
-    }
-  }
-}
+  
+
+//   return {
+//     props:{
+//       pastProjFav: JSON.parse(JSON.stringify(pastFavoriteProjects)),
+//       recentBlogs: JSON.parse(JSON.stringify(recentBlogs))
+//     }
+//   }
+// }
+
 
 
 function ScrollDown(props:any)
@@ -155,8 +165,33 @@ function ScrollDown(props:any)
 
 
 const Index = (props:props) => {
+    async function getInitialData()
+    {
+      try 
+      {
+        const res = await fetch('/api/getFrontPageData/', {
+          method:"GET",
+          headers:
+              {
+                  'Content-Type': 'application/json',
+              },
+        })
+        const data = await res.json()
+        setFrontData(data)
+      }
+      catch  (e)
+      {
+        return{fail:true, pastProjFav:[], recentBlogs:[]}
+      }
+    }
+  
+    useEffect(()=>
+    {
+      getInitialData(); 
+    })
 
-  console.log(props)
+    const [frontData, setFrontData] = useState<frontData>({pastProjFav:undefined, recentBlogs:undefined, fail:false }) 
+ 
   return (
     <div className='text-caviar'>
 
@@ -187,18 +222,18 @@ const Index = (props:props) => {
             
             <Link href={'/blogs'}><h1 style={{"fontSize":"250%","textAlign":"center", "textDecoration":"underline", "cursor":"pointer"}}>Recent Blogs 💡</h1></Link>
               
-            {(props.recentBlogs) ?
-            (props.recentBlogs.length == 0) ? 
+            {(frontData.recentBlogs) ?
+            (frontData.recentBlogs.length == 0) ? 
                   
             <h3 style={{ "textAlign":"center",fontSize:"2vw"}}>Sorry blogs could not be loaded, try again!</h3>
             :
-            props.recentBlogs.map((data:any) =>
+            frontData.recentBlogs.map((data:any) =>
             {
                 return (
-                    <div onClick={()=>
+                    <div key={data.id} onClick={()=>
                     {
                       window.location.href= `/blogs/${data.id}`
-                    }} key={data.id} className={`${styles.blogContainerText} rounded-md cursor-pointer`} style={{ "textAlign":"center",}} >
+                    }}  className={`${styles.blogContainerText} rounded-md cursor-pointer`} style={{ "textAlign":"center",}} >
                         <h2 >
                             <div className={`${styles.specialLink} font-caviar` } style={{ "cursor":"pointer",overflowWrap: "break-word",fontSize:"2.5vw",textDecoration: "underline"}}>{data.title}</div>
                         
@@ -225,7 +260,7 @@ const Index = (props:props) => {
           <div className={styles.textContainer}>
           <Link href={'/projects'}><h1 style={{"fontSize":"250%","textAlign":"center", "textDecoration":"underline", "cursor":"pointer"}}>My Favorite Projects 🧑‍💻</h1></Link>
           {
-          (props.pastProjFav != undefined) ? props.pastProjFav.map((data:any) =>
+          (frontData.pastProjFav) ? ((frontData.pastProjFav.length > 0 ) ? frontData.pastProjFav.map((data:any) =>
               {
                 return (
                 
@@ -258,7 +293,7 @@ const Index = (props:props) => {
                       </div>
                     </div>
                   </div>
-                )}):<h3>Loading...</h3>} 
+                )}):<h3 className='text-center text-3xl'>Sorry Projects Could Not Be Loaded, Try Again!</h3>):<h3>Loading...</h3>} 
 
               </div>
               
@@ -269,48 +304,5 @@ const Index = (props:props) => {
   )
 }
 
-// Index.getInitialProps = async (context:any) =>{
-//   const prisma = new PrismaClient();
-//   let  pastFavoriteProjects:any;
-//   try
-//   {
-//     pastFavoriteProjects = await prisma.projects.findMany({
-//       where:
-//       {
-//         favorite:true
-//       }
-//     })
-  
-//   }
-//   catch
-//   {
-//     pastFavoriteProjects = [];
-//   }
-//   let  recentBlogs:any;
-//   try
-//   {
-//     recentBlogs = await prisma.blog.findMany()
-
-//     if(recentBlogs.length > 4)
-//     {
-
-//       recentBlogs.splice(0, recentBlogs.length - 4)
-//     }
-//     recentBlogs.reverse();
-
-  
-//   }
-//   catch
-//   {
-//     recentBlogs = [];
-//   }
-
-  
-
-//   return {
-//     pastProjFav: JSON.parse(JSON.stringify(pastFavoriteProjects)),
-//       recentBlogs: JSON.parse(JSON.stringify(recentBlogs))
-//   }
-// }
 
 export default Index

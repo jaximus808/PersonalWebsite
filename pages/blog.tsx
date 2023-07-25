@@ -157,8 +157,7 @@ const Index:React.FC<props> = props => {
         })
         const data = await response.json();
         if(data.pass)
-        {
-        }   
+        {location.reload();}   
         else 
         {
             setResponse(data.msg);
