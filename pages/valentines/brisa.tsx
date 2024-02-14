@@ -149,9 +149,9 @@ const Brisa = () => {
                             <h3 className='text-5xl'>{"YAY :)"}</h3>
                             <h3 className='text-3xl'>Happy Valentines Brisa!!!</h3>
                             <div className='mt-5 grid gap-5 grid-cols-3'>
-                                <img alt='front picture' src="/swag.JPG"  className='relative left-[50%] translate-x-[-50%]' style={{"borderRadius":"0.5rem"}}/>
+                                <img alt='front picture' src="/Swag.JPG"  className='relative left-[50%] translate-x-[-50%]' style={{"borderRadius":"0.5rem"}}/>
 
-                                <img alt='front picture' src="/LOL.jpg" className='relative left-[50%] translate-x-[-50%]' style={{"borderRadius":"0.5rem"}}/>
+                                <img alt='front picture' src="/LOL.JPG" className='relative left-[50%] translate-x-[-50%]' style={{"borderRadius":"0.5rem"}}/>
 
                                 <img alt='front picture' src="/doghug.gif" className='relative left-[50%] translate-x-[-50%]' style={{"borderRadius":"0.5rem"}}/>
                                 
@@ -159,7 +159,7 @@ const Brisa = () => {
 
                                 <img alt='front picture' src="/ohHellnaw.JPG"  className='relative left-[50%] translate-x-[-50%]' style={{"borderRadius":"0.5rem"}}/>
 
-                                <img alt='front picture' src="/mexicancat.png" className='relative left-[50%] translate-x-[-50%]' style={{"borderRadius":"0.5rem"}}/>
+                                <img alt='front picture' src="/mexicancat.PNG" className='relative left-[50%] translate-x-[-50%]' style={{"borderRadius":"0.5rem"}}/>
 
                             </div>
                             
