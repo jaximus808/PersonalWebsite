@@ -10,7 +10,6 @@ const prisma = new PrismaClient();
 
 export default async (req: NextApiRequest, res: NextApiResponse) =>
 {
-    console.log("L");
     try
     {
         if(req.method != "POST")

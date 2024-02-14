@@ -11,10 +11,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) =>
         return res.status(400).json({pass: false,message: "HM?"});
     }
 
-    console.log("MEOW")
-    console.log(req.body)
+
     const projectDetails = req.body;
-    console.log(req.body.name)
+   
 // projectName: projectN,
                 // projectDesc: projectDesc,
                 // ytLink: ytLink,
