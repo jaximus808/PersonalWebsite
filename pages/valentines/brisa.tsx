@@ -159,7 +159,7 @@ const Brisa = () => {
 
                                 <img alt='front picture' src="/ohHellnaw.JPG"  className='relative left-[50%] translate-x-[-50%]' style={{"borderRadius":"0.5rem"}}/>
 
-                                <img alt='front picture' src="/mexicancat.PNG" className='relative left-[50%] translate-x-[-50%]' style={{"borderRadius":"0.5rem"}}/>
+                                <img alt='front picture' src="/swagnation.jpg" className='relative left-[50%] translate-x-[-50%]' style={{"borderRadius":"0.5rem"}}/>
 
                             </div>
                             
