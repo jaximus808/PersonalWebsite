@@ -41,12 +41,39 @@ const prisma = new PrismaClient();
 
 type props = 
 {
+    blogid:number,
     exist:boolean
-    blog:any
+    blog:any,
+    authenticated:boolean
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // ...
+
+    const parsedCookies = cookies.parse(context.req.headers.cookie?context.req.headers.cookie:"");
+    
+    const token = parsedCookies.token;
+
+    let authenticated = false; 
+    if(!token) 
+    {
+      authenticated = false;
+      console.log("EMWO?")
+    }
+    else 
+    {
+      try
+      {
+        jsonwebtoken.verify(token, process.env.ADMIN_PASS!);
+        authenticated = true;
+      }
+      catch
+      {
+        authenticated = false;
+      }
+      
+    }
+    console.log(authenticated)
     const { blogId }  = context.query
     if(!blogId)
     {
@@ -73,8 +100,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         return{
             props:
             {
+                blogid: blogId,
                 blog:JSON.parse(JSON.stringify(blog)),
-                exist: true
+                exist: true,
+                authenticated:authenticated
             }
           }
     }
@@ -83,8 +112,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         return{
             props:
             {
+                blogid: blogId,
                 blog:{},
-                exist: false
+                exist: false,
+                authenticated:authenticated
             }
           }
     }
@@ -93,6 +124,25 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const Index: React.FC<props> = props => {
 
+
+  const deleteBlog = async () =>
+  {
+    
+      const response = await fetch("/api/admin/deleteblog", {
+        method:"POST",
+        headers:
+        {
+            'Content-Type': 'application/json',
+        },
+        body:JSON.stringify({
+          blogid:props.blogid
+        }) 
+      }).then(()=>
+      {
+        location.replace("/blog");
+      })
+    
+  }
   
   return ( 
   <div>
@@ -112,7 +162,7 @@ const Index: React.FC<props> = props => {
                     
                 <div>
                     <Link href='/blog'>
-                        <div style={{textDecoration: "underline", "cursor":"pointer"}} >{"<-"} Look at more blogs</div>
+                        <div style={{textDecoration: "underline", "cursor":"pointer"}} >&#8592; Look at more blogs</div>
                     </Link>
                     <h1 className='text-center text-4xl '>
                      Blog: {props.blog.title}
@@ -134,6 +184,14 @@ const Index: React.FC<props> = props => {
                         {props.blog.content}
                     </h3>
                 </div>
+                {(props.authenticated)?
+                
+                <div>
+                  <button onClick={deleteBlog}>delete</button>
+                </div>
+                
+                :
+                <div></div>}
             </div>
             :
               
@@ -143,20 +201,7 @@ const Index: React.FC<props> = props => {
             </div>
             
 
-                {/* <li>
-                    <div>
-                        <h2><a style={{textDecoration: "underline"}} href={"/projects/emailbriefer"}>
-                            Email Morning Briefer</a>
-                        </h2>
-                        <div style={{paddingLeft:"20px"}}>
-                            <img src='tsant.png' width="370" height="315" />
-                            <h3>
-                            This service allows a user to plan out one's day.
-                            <p></p>
-                            </h3>
-                        </div>
-                    </div>
-                </li> */}
+              
             <Footer authSense={false} authenticated={false}/>
         </div>
     </div>
