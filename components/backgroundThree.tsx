@@ -121,11 +121,14 @@ function Planet(props:any)
 
     const handleScroll =()=>
     {
-        const y = window.pageYOffset;
-        angle = angle + 0.003*(y-scrolPrev);
+        const y = window.scrollY;
+        //console.log(y)
+        console.log(0.03*(y-scrolPrev))
+        console.log(angle)
+        angle = angle + 0.03*(y-scrolPrev);
         scrolPrev = y;
-        if(angle > 2*Math.PI) angle = angle - 2*Math.PI;
-        if(angle < 0) angle = angle + 2*Math.PI;
+        // if(angle > 2*Math.PI) angle = angle - 2*Math.PI;
+        // if(angle < 0) angle = angle + 2*Math.PI;
         x = radius * Math.cos(angle)
         z = radius * Math.sin(angle)
         ref.current.position.x = x; 
@@ -220,7 +223,7 @@ export default function Background()
             <Canvas
                 shadows={true}
                 className={css.canvas}
-                style={{position:"fixed"}}  camera={{ zoom: 10, position: [0, 20, 100] }}
+                style={{position:"relative"}}  camera={{ zoom: 10, position: [0, 20, 100] }}
             >
             
             <ambientLight intensity={0.1}></ambientLight>
