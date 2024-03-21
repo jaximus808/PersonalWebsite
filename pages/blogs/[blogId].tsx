@@ -157,47 +157,38 @@ const Index: React.FC<props> = props => {
       </Head>
       
         <Header/>
-        <div className={styles.maincotainer}>
-                <div className={styles.textContainer}>
-                    
-                <div>
-                    <Link href='/blog'>
-                        <div style={{textDecoration: "underline", "cursor":"pointer"}} >&#8592; Look at more blogs</div>
-                    </Link>
-                    <h1 className='text-center text-4xl '>
-                     Blog: {props.blog.title}
-                </h1>
-                </div>
-                </div>
+        <div className={styles.maincotainerBlog}>
 
-                <div className={styles.textContainer}>
+                <div className={styles.textContainerBlog}>
                 {(props.exist) ?
                 <div>
-                
+                  <h1 className='text-center text-4xl '>
+                      Blog: {props.blog.title}
+                  </h1>
 
-                <h2>
-                    Posted on: {props.blog.datePosted}
-                </h2>
-                <div className='text-2xl' style={{paddingLeft:"20px"}}>
-                    
-                    <h3>
-                        {props.blog.content}
-                    </h3>
-                </div>
-                {(props.authenticated)?
+                  <h2>
+                      Posted on: {new Date(props.blog.datePosted).toLocaleDateString()}
+                  </h2>
+                  <div className='text-[1.5rem]' style={{paddingLeft:"20px"}}>
+                      
+                      <h3 style={{whiteSpace:'pre-wrap'}}>
+                          {props.blog.content}
+                      </h3>
+                  </div>
+                  {(props.authenticated)?
+                  
+                  <div>
+                    <button onClick={deleteBlog}>delete</button>
+                  </div>
+                  
+                  :
+                  <div></div>}
+              </div>
+              :
                 
-                <div>
-                  <button onClick={deleteBlog}>delete</button>
-                </div>
-                
-                :
-                <div></div>}
-            </div>
-            :
-              
-            <>
-                <div>Blog does not exist</div>
-            </>}
+              <>
+                  <div>Blog does not exist</div>
+              </>}
             </div>
             
 

@@ -205,8 +205,10 @@ const Index = (props:props) => {
       {}
         <Header/>
         <div className={styles.mainTitleName}>
-          <div className='font-tourner' style={{"fontSize":"10vw","textAlign":"center"}}>Jaxon Poentis</div> 
-          <ScrollDown/>
+          <div className={styles.centerRel}>
+            <div className='font-tourner' style={{"fontSize":"10vw","textAlign":"center"}}>Jaxon Poentis</div> 
+            <ScrollDown/>
+          </div>
         </div>
         <div className={styles.homeMaincotainer}>
           <div className={styles.textContainer}>
@@ -221,7 +223,7 @@ const Index = (props:props) => {
           
           <div className={styles.textContainer} style={{"textAlign":"center"}}>
             
-            <Link href={'/blogs'}><h1 style={{"fontSize":"250%","textAlign":"center", "textDecoration":"underline", "cursor":"pointer"}}>Recent Blogs 💡</h1></Link>
+            <Link href={'/blog'}><h1 style={{"fontSize":"250%","textAlign":"center", "textDecoration":"underline", "cursor":"pointer"}}>Recent Blogs 💡</h1></Link>
               
             {(frontData.recentBlogs) ?
             (frontData.recentBlogs.length == 0) ? 
@@ -298,9 +300,10 @@ const Index = (props:props) => {
 
               </div>
               
-            <Footer authSense={false} authenticated={false}/>
 
+              <Footer authSense={false} authenticated={false}/>
         </div>
+
     </div>
   )
 }

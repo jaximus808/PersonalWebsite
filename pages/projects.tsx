@@ -321,8 +321,10 @@ const Index: React.FC<props> = props => {
         
         <Header/>
         <div className={styles.mainTitleName}>
-          <div className='font-tourner' style={{"fontSize":"10vw","textAlign":"center"}}>My Projects</div> 
-          <ScrollDown/>
+          <div className={styles.centerRel}>
+            <div className='font-tourner' style={{"fontSize":"10vw","textAlign":"center"}}>My Projects</div> 
+            <ScrollDown/>
+          </div>
         </div>
        
         <div className={styles.homeMaincotainer}>
@@ -414,28 +416,28 @@ const Index: React.FC<props> = props => {
                       window.location.href = `/projects/${data.name}`
                     }} className='cursor-pointer'>
                       <div  className={`${styles.projectContainerText} rounded-xl`} style={{ "textAlign":"center",}} >
-                      <h2 >
+                        <h2 >
+                          
+                            <div className={styles.specialLink} style={{fontSize:"2.5vw",textDecoration: "underline", "cursor":"pointer",overflowWrap: "break-word"}}>{data.name}</div>
                         
-                          <div className={styles.specialLink} style={{fontSize:"2.5vw",textDecoration: "underline", "cursor":"pointer",overflowWrap: "break-word"}}>{data.name}</div>
-                       
-                      </h2>
-                      <div >
-                          { (data.youtube) ?
+                        </h2>
+                        <div >
+                            { (data.youtube) ?
 
-                            < YoutubeVideo vId={data.mediaLink}/>
-                          
-                          // <iframe width="100%" height="100%" src={data.mediaLink} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>  
-                          :
-                            <Image alt='media picture' src={data.mediaLink} width={700} height={500}  />
-                         }
-                          <h3 style={{fontSize:"1.5vw"}}>
-                          {data.shortDescription}
-                          <p></p>
-                          
-                          <Link style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/projects/${data.name}`}><div style={{textDecoration: "underline"}}>{"Click to Learn More!"}</div></Link>
-                    
-                          </h3>
-                      </div>
+                              < YoutubeVideo vId={data.mediaLink}/>
+                            
+                            // <iframe width="100%" height="100%" src={data.mediaLink} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>  
+                            :
+                              <Image alt='media picture' className={styles.centerRelX} src={data.mediaLink} width={700} height={500}  />
+                          }
+                            <h3 style={{fontSize:"1.5vw"}}>
+                            {data.shortDescription}
+                            <p></p>
+                            
+                            <Link style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/projects/${data.name}`}><div style={{textDecoration: "underline"}}>{"Click to Learn More!"}</div></Link>
+                      
+                            </h3>
+                        </div>
                     </div>
                     </div>
                   )})}

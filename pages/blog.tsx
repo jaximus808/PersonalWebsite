@@ -224,14 +224,17 @@ const Index:React.FC<props> = props => {
         </Head>
           <Header/>
           <div className={styles.mainTitleName}>
+            <div className={styles.centerRel}>
             <div className='font-tourner' style={{"fontSize":"10vw","textAlign":"center"}}>My Blog</div> 
             <ScrollDown/>
+            </div>
+            
           </div>
 
-          <div className={styles.homeMaincotainer}>
+          <div className={styles.homeMaincotainerBlog}>
             <p></p>
             {(props.auth) ?
-            <>
+            <div style={{position:"relative", zIndex:50}}>
               <h1 style={{fontSize:"300%"}}>Post Blog</h1>
               <form onSubmit={AddBlog}>
                 <label>
@@ -268,7 +271,7 @@ const Index:React.FC<props> = props => {
                 <input type={"submit"} value={"Post Blog"}/>
             </form>
             <button onClick={logOut}>Log Out</button>
-            </>:
+            </div>:
               
             <></>}
 
@@ -299,6 +302,10 @@ const Index:React.FC<props> = props => {
                               <div className={styles.specialLink} style={{ "cursor":"pointer",overflowWrap: "break-word",fontSize:"2.5vw",textDecoration: "underline"}}>{data.title}</div>
                           
                           </h2>
+                          <h3 >
+                              <div className={styles.specialLink} style={{ "cursor":"pointer",overflowWrap: "break-word",fontSize:"1.2vw",textDecoration: "underline"}}>{new Date(data.datePosted).toLocaleDateString()}</div>
+                          
+                          </h3>
                           <div >
                               
                               <h3 style={{fontSize:"1.5vw",'overflow':'hidden',WebkitLineClamp:4, WebkitBoxOrient:"vertical",display:"-webkit-box"}}>
@@ -322,8 +329,9 @@ const Index:React.FC<props> = props => {
             
           
   
-          <Footer authSense={true} authenticated={props.auth}/>
+            <Footer authSense={true} authenticated={props.auth}/>
       </div>
+
       </div>
     )
   }

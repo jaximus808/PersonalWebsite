@@ -56,8 +56,10 @@ const prisma = new PrismaClient();
 
 type props = 
 {
+    id:string,
     exist:boolean
-    projectData:any
+    projectData:any,
+    authenticated:boolean
 }
 
 // export async function getStaticProps({ params }:any)
@@ -101,6 +103,30 @@ type props =
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // ...
+
+    const parsedCookies = cookies.parse(context.req.headers.cookie?context.req.headers.cookie:"");
+    
+    const token = parsedCookies.token;
+
+    let authenticated = false; 
+    if(!token) 
+    {
+      authenticated = false;
+      console.log("EMWO?")
+    }
+    else 
+    {
+      try
+      {
+        jsonwebtoken.verify(token, process.env.ADMIN_PASS!);
+        authenticated = true;
+      }
+      catch
+      {
+        authenticated = false;
+      }
+      
+    }
     const { projectName }  = context.query
     if(!projectName)
     {
@@ -124,11 +150,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                 }
             }
         )
+        console.log(projectName.toString())
         return{
             props:
             {
                 projectData:JSON.parse(JSON.stringify(project))[0],
-                exist: true
+                exist: true,
+                authenticated:authenticated,
+                id:projectName,
             }
           }
     }
@@ -137,8 +166,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         return{
             props:
             {
+                id:projectName,
                 project:[],
-                exist: false
+                exist: false,
+                authenticated:authenticated
             }
           }
     }
@@ -146,7 +177,27 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 }
 
 const Index: React.FC<props> = props => {
-
+    const deleteProject = async () =>
+    {
+        console.log({
+            post_name:props.id
+          })
+      
+        const response = await fetch("/api/admin/deleteProjects", {
+          method:"POST",
+          headers:
+          {
+              'Content-Type': 'application/json',
+          },
+          body:JSON.stringify({
+            post_name:props.id
+          }) 
+        }).then(()=>
+        {
+          location.replace("/projects");
+        })
+      
+    }
   
   return ( 
   <div>
@@ -200,6 +251,16 @@ const Index: React.FC<props> = props => {
                             {(props.projectData.projectLinks != "") ? <a rel="noreferrer" style={{textDecoration: "underline"}} target={"_blank"} href={`${props.projectData.projectLinks}`}>{"--> Check out more of the project"}</a>:<></>}
                         </h3>
                     </div>
+                    {(props.authenticated) ?
+                  
+                    <div>
+                        <button onClick={deleteProject}>delete</button>
+                    </div>
+                    
+                    :
+
+                    <div></div>}
+
                 </div>
             :
               

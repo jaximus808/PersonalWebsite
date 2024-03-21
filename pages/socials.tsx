@@ -90,8 +90,10 @@ const Index = () => {
       {}
         <Header/>
         <div className={styles.mainTitleName}>
-          <div className='font-tourner'style={{"fontSize":"10vw","textAlign":"center"}}>My Socials</div> 
-          <ScrollDown/>
+          <div className={styles.centerRel}>
+            <div className='font-tourner' style={{"fontSize":"10vw","textAlign":"center"}}>My Socials</div> 
+            <ScrollDown/>
+          </div>
         </div>
         <div className={styles.homeMaincotainer}>
           <div className={styles.textContainer}>
@@ -112,7 +114,7 @@ const Index = () => {
                 <div style={{marginBottom: "20px"}} >
 
                     <img className={styles.gmailLogo} src='/gmailLogo.png'/>
-                    <a rel="noreferrer" target={"_blank"}href='jaximus808@gmail.com'><div style={{display:"block",marginBottom:"3vw"}}>Email: jaximus808@gmail.com</div></a>
+                    <div style={{display:"block",marginBottom:"3vw"}}>Email: jaxonp808@gmail.com</div>
                 
                 </div>
                 <div style={{marginBottom: "20px"}} >
