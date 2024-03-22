@@ -12,7 +12,13 @@ const nextConfig = {
     // ],
     domains:['drive.google.com','cdn.discordapp.com']
   },
-  compress:true
+  compress:true,
+	webpack(config, { dev }) {
+		if(dev) {
+			config.devtool = 'react_devtools_backend_compact'
+		}
+		return config;
+	}
 }
 
 module.exports = nextConfig
