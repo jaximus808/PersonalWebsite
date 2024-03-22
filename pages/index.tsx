@@ -158,7 +158,7 @@ function ScrollDown(props:any)
     return (
       <>
 
-        <h2 className={`${styles.scrollDownTitle}`} ref={scrollTitle} style={{"fontSize":"2vw","textAlign":"center"}}>v Scroll Down v</h2> 
+        <h2 className={`${styles.scrollDownTitle}`} ref={scrollTitle} style={{"fontSize":"2rem","textAlign":"center"}}>v Scroll Down v</h2> 
       </>
     )
 }
@@ -206,15 +206,15 @@ const Index = (props:props) => {
         <Header/>
         <div className={styles.mainTitleName}>
           <div className={styles.centerRel}>
-            <div className='font-tourner' style={{"fontSize":"10vw","textAlign":"center"}}>Jaxon Poentis</div> 
+            <div className='font-tourner text-center lg:text-[10vw] text-[80px]'  >Jaxon Poentis</div> 
             <ScrollDown/>
           </div>
         </div>
         <div className={styles.homeMaincotainer}>
           <div className={` ${styles.textContainer} text-black  bg-white`}>
             <h1 style={{"fontSize":"300%","textAlign":"center"}}><strong>Hey, Aloha, こんにちは, </strong> <br></br><span className={`${styles.fontNormal} font-normal`}>I'm Jaxon</span></h1>
-            <div className={styles.frontImage}  >
-            <Image  sizes="(max-width: 768px) 100vw, 33vw" alt='front picture' src="/Frontimage2.jpg" fill style={{"borderRadius":"0.5rem"}}/>
+            <div className={`${styles.frontImage} min-w-[300px] min-h-[400px] w-[42%] h-[50vw]`}  >
+            <Image  sizes="(min-width: 768px) 100vw, 33vw" alt='front picture' src="/Frontimage2.jpg" fill style={{"borderRadius":"0.5rem"}}/>
             </div>
             
             <h2 className={`${styles.fontNormal} font-light text-2xl mt-5`} style={{"textAlign":"center"}}>My name is Jaxon Poentis and I am born and raised from Hawaii! I am a self-taught programmer and am passionate about building projects that will empower the future 
@@ -224,12 +224,18 @@ const Index = (props:props) => {
           </div>
           <div className={` ${styles.textContainer} text-black  bg-[#faf7f5]`}>
             <h1 style={{"fontSize":"300%","textAlign":"center"}}><strong>My Path </strong>
-            <span className={`${styles.fontNormal} font-light`}>{`  |  `}</span>
-            <span className={`${styles.fontNormal} text-[2vw] font-extralight`}><i>{`   ${new Date().toLocaleDateString()}`}</i></span>
+            {/* <span className={`${styles.fontNormal} font-light`}>{`  |  `}</span> */}
+            <br></br>
+            <div className=''>
+              <div className='mt-4 relative left-1/2 w-1/2 translate-x-[-50%] border-b-2 border-black h-2 '>
+                
+              </div>
+            </div>
+            <span className={`${styles.fontNormal} text-2xl font-extralight`}><i>{`   ${new Date().toLocaleDateString()}`}</i></span>
             </h1>
-            <div className={`grid grid-cols-4 gap-4 mt-16 w-[90%] ${styles.centerRelX}`}>
+            <div className={`grid lg:grid-cols-4 gap-4 mt-16 w-[90%] ${styles.centerRelX}`}>
               
-              <div className={`${styles.journeyImage} h-[15vw] w-[90%]`}  >
+              <div className={`${styles.journeyImage} w-[70%] h-[40vw] lg:h-[15vw] lg:w-[90%]`}  >
                 <Image alt='front picture' src="/brookings.jpg" fill style={{"borderRadius":"0.5rem"}}/>
               </div>
               <div className='col-span-1'>
@@ -251,7 +257,7 @@ const Index = (props:props) => {
 
                 </p>
               </div>
-              <div className={`${styles.journeyImage} h-[10vw] w-[50%]`}  >
+              <div className={`${styles.journeyImage} h-[30vw] w-[40%] lg:h-[10vw] lg:w-[50%]`}  >
                 <Image alt='front picture' src="/robotics.png" fill style={{"borderRadius":"0.5rem"}}/>
               </div>
               <div className='col-span-1'>
@@ -296,12 +302,12 @@ const Index = (props:props) => {
                 
               </div>
             </div>
-            <div className={`grid grid-cols-4 gap-4 mt-16 w-[90%] ${styles.centerRelX}`}>
+            <div className={`grid lg:grid-cols-4 gap-4 mt-16 w-[90%] ${styles.centerRelX}`}>
               
-              <div className={`${styles.journeyImage} h-[15vw] w-[90%]`}  >
+              <div className={`${styles.journeyImage} h-[45vw] lg:h-[15vw] w-[70%] lg:w-[90%]`}  >
                 <Image alt='front picture' src="/EagleScoutPic.jpg" fill style={{"borderRadius":"0.5rem"}}/>
               </div>
-              <div className='col-span-1'>
+              <div className='lg:col-span-1'>
                 <h1 className={'text-3xl'}><strong>Boy Scouts</strong></h1>
                 <h1 className={'text-xl text-[#3885f2]'}><i>Troop 181 | Eagle Scout</i></h1>
                 <h1 className={'text-xl text-[#04007a]'}><i>2016 - 2023</i></h1>
@@ -314,7 +320,7 @@ const Index = (props:props) => {
                   To achieve the rank of Eagle Scout, I organized a service project to construct six benches for my High School. This took around four months of planning and two days to construct, paint, and install. This experience gave me real experience in being a leader and to better my community
                 </p>
               </div>
-              <div className={`${styles.journeyImage} h-[12vw] w-[55%]`}  >
+              <div className={`${styles.journeyImage} h-[30vw] w-[40%] lg:h-[12vw] lg:w-[55%]`}  >
                 <Image alt='front picture' src="/fiverrlogo.jpg" fill style={{"borderRadius":"0.5rem"}}/>
               </div>
               <div className='col-span-1'>
