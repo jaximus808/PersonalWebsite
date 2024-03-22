@@ -327,7 +327,7 @@ const Index = (props:props) => {
                 </p>
                 <br></br>
                 <p>
-                 The games worked ranged from a real-estate value guesser made with node.js and mongoDB, to a real time strategy fort battler gave with php. 
+                 The games worked ranged from a real-estate value guesser made with node.js and mongoDB, to a real time strategy fort battler game with php. 
                 </p>
                 <br></br>
                 <p>
