@@ -354,7 +354,7 @@ const Index = (props:props) => {
               </div>
             </div>
             
-              <div className='w-1/2 text-center relative left-1/2 translate-x-[-50%]'>
+              <div className='mt-4 w-1/2 text-center relative left-1/2 translate-x-[-50%]'>
                 <h1 className={'text-3xl'}><strong>Learning to Code and Build</strong></h1>
                 
                 <h1 className={'text-xl text-[#04007a]'}><i>2019 - Present</i></h1>
