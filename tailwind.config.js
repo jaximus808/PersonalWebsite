@@ -9,6 +9,13 @@ module.exports = {
         'tourner': ['var(--font-tourner)'],
         'caviar': ['var(--font-caviarDreams)']
       },
+      backgroundSize: {
+        'size-200': '200% 200%',
+      },
+      backgroundPosition: {
+        'pos-0': '0% 0%',
+        'pos-100': '100% 100%',
+      },
     },
   },
   plugins: [],

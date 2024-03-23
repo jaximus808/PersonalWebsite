@@ -19,16 +19,16 @@ function YoutubeVideo(props:any)
     event.target.pauseVideo();
   }
   const opts = {
-    height: "500vw",
-    width: "100%",
+    height: "100%",
+    width: "75%",
     playerVars: {
       autoplay: 1,
     },
   };
 
   return (
-    <div style={{height:"150%"}}>
-      <Youtube videoId={props.vId} 
+    <div className={`${styles.centerRelX}`} style={{ minHeight:"300px", height:"20vw"}}>
+      <Youtube className='relative left-1/2 translate-x-[-37%]' style={{width:'100%', height:'100%'}} videoId={props.vId} 
           opts={opts} onReady={_onReady} />
     </div>
   );
@@ -244,7 +244,7 @@ const Index = (props:props) => {
                 <h1 className={'text-xl text-[#04007a]'}><i>2023 - Present</i></h1>
                 <br></br>
                 <p>
-                  Being a current student at Washington University in St. Louis has allowed me to explore my branching interests in both software development and business. 
+                  Being a current student at Washington University in St. Louis has allowed me to explore my branching interests in software development and business. 
                 </p>
                 <br></br>
                 <p>
@@ -270,7 +270,8 @@ const Index = (props:props) => {
                 </p>
                 <br></br>
                 <p>
-                  In my first semester, I created a object recognition AI model with Yolov5 and a custom dataset that detects the target rubber balls in a video input feed. The robot will use this to detect the rubber balls when exploring and to align itself when collecting said balls. 
+                  In my first semester, I created a object recognition AI model with Yolov5 and a custom dataset that detects the target rubber balls in a video input feed. The robot will use this model to detect the rubber balls when exploring. The model will also help the robot align itself when capturing and bringing the balls home.
+ 
 
                 </p>
                 <br></br>
@@ -313,11 +314,12 @@ const Index = (props:props) => {
                 <h1 className={'text-xl text-[#04007a]'}><i>2016 - 2023</i></h1>
                 <br></br>
                 <p>
-                  My time in Boy Scouts was an enjoyable one that taught me leadership, comradery, and kindness. From spending time with fellow scouts during camp outs to helping create cubbies for Nu'uanu Elementary School, my fellow scouts were there along with me.
+                  My time in Boy Scouts was an enjoyable one and taught me leadership, comradery, and kindness. From spending time with fellow scouts during camp outs to helping create cubbies for Nu'uanu Elementary School, my fellow scouts were there with me.
                 </p>
                 <br></br>
                 <p>
-                  To achieve the rank of Eagle Scout, I organized a service project to construct six benches for my High School. This took around four months of planning and two days to construct, paint, and install. This experience gave me real experience in being a leader and to better my community
+                  
+                  To achieve the rank of Eagle Scout, I organized a service project to construct six benches for my High School. The project took around four months of planning and two days to construct, paint, and install. This experience gave me real experience in being a leader and a chance to better my community
                 </p>
               </div>
               <div className={`${styles.journeyImage} h-[30vw] w-[40%] lg:h-[12vw] lg:w-[55%]`}  >
@@ -329,15 +331,15 @@ const Index = (props:props) => {
                 <h1 className={'text-xl text-[#04007a]'}><i>2023</i></h1>
                 <br></br>
                 <p>
-                  One field I explored was offering my skills through a freelance gig on fiverr. My service consisted of creating a full-stack game that runs on the web browser. As a freelancer I was incharge of selling my services along with talking with clients. 
+                  One field I explored was offering my skills through a freelance gig on fiverr. My service consisted of creating a full-stack browser game. As a freelancer I was incharge of selling my services and talking with clients.
                 </p>
                 <br></br>
                 <p>
-                 The games worked ranged from a real-estate value guesser made with node.js and mongoDB, to a real time strategy fort battler game with php. 
+                  The projects I worked on range from real-time multiplayer experiences to platformer games. Some of my favorite tools I used were p5.js, node.js, and socket.io.
                 </p>
                 <br></br>
                 <p>
-                 Once college started, I decided to commit my time to focusing on school. Once I finished my gig generated over $1000 in profit to help pay for college
+                  Once college started, I decided to move on and commit my time to focusing on school. My gig allowed me to earn over $1000, and I used that money to help pay for school
                 </p>
               </div>
              
@@ -366,11 +368,12 @@ const Index = (props:props) => {
                 <h1 className={'text-xl text-[#04007a]'}><i>2019 - Present</i></h1>
                 <br></br>
                 <p>
-                  My time in Boy Scouts was an enjoyable one that taught me leadership, comradery, and kindness. From spending time with fellow scouts during camp outs to helping create cubbies for Nu'uanu Elementary School, my fellow scouts were there along with me.
+                  My journey in coding started during the year the covid-19 pandemic put the world into lockdown. Instead of just playing video games all day, I decided why not try and create my own. I then installed the game engine Unity, followed a couple of tutorials, and from there I followed a couple of tutorials and fell in love with coding. I began following online lectures, building side projects, and more. It was fascinating figuring out and learning new coding tools from Networking, Web Development, Training AI models, and more! 
                 </p>
-                <br></br>
+                <br>
+                </br>
                 <p>
-                  To achieve the rank of Eagle Scout, I organized a service project to construct six benches for my High School. This took around four months of planning and two days to construct, paint, and install. This experience gave me real experience in being a leader and to better my community
+                  Learning new exciting tools and focusing on growing as a person has became, and still is, a fundemental core of my character, and my mindset to this day.
                 </p>
               </div>
               <div className=''>
@@ -387,7 +390,7 @@ const Index = (props:props) => {
               </div>
           </div>
           
-          <div className={`${styles.textContainer} bg-[#171717] text-white`} style={{"textAlign":"center"}}>
+          <div className={`${styles.textContainer}  bg-[#171717] text-white`} style={{"textAlign":"center"}}>
             
             <Link href={'/blog'}><h1 style={{ "fontWeight":"400","fontSize":"250%","textAlign":"center", "cursor":"pointer"}}><strong className='hover:text-[#a3cbff] duration-200'>💡 Recent Blogs 💡</strong></h1></Link>
               
@@ -402,24 +405,23 @@ const Index = (props:props) => {
                     <div key={data.id} onClick={()=>
                     {
                       window.location.href= `/blogs/${data.id}`
-                    }}  className={`bg-[#242424] hover:bg-[#292929] pt-4 pb-8 px-8 mt-4  w-4/5 relative left-1/2 translate-x-[-50%] rounded-md cursor-pointer duration-200`} style={{ "textAlign":"center",}} >
+                    }}  className={`bg-[#242424] hover:bg-[#292929] pt-4 pb-8 px-8 mt-4  w-4/5 relative left-1/2 translate-x-[-50%] rounded-md cursor-pointer duration-200`} style={{ "textAlign":"left",}} >
                         <h2 >
-                            <div className={`${styles.specialLink} font-caviar` } style={{ "cursor":"pointer",overflowWrap: "break-word",fontSize:"2vw",textDecoration: "underline"}}>{data.title}</div>
+                            <div className={`text-2xl font-semibold font-caviar` } style={{ "cursor":"pointer",overflowWrap: "break-word"}}>{data.title}</div>
                         
                         </h2>
                         <div >
-                          <h3 className='font-light' style={{fontSize:"1.5vw",'overflow':'hidden',WebkitLineClamp:6, WebkitBoxOrient:"vertical",display:"-webkit-box"}}>
+                          <h3 className='text-xl font-light' style={{'overflow':'hidden',WebkitLineClamp:6, WebkitBoxOrient:"vertical",display:"-webkit-box"}}>
                             <i>{new Date(data.datePosted).toLocaleDateString()}
                             </i>
                             </h3>
-                            <h3 className='font-light' style={{fontSize:"1.5vw",'overflow':'hidden',WebkitLineClamp:6, WebkitBoxOrient:"vertical",display:"-webkit-box"}}>
+                            <br></br>
+                            <h3 className='font-light text-lg' style={{'overflow':'hidden',WebkitLineClamp:6, WebkitBoxOrient:"vertical",display:"-webkit-box"}}>
                             {data.content}
                             </h3>
-                            <p></p>
 
-                            
-                            <p></p>
-                            <Link style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/blogs/${data.id}`}><div style={{textDecoration: "underline", 'cursor':'pointer'}}>{"Click to Read More 📖"}</div></Link>
+                            <br></br>
+                            <Link className='text-lg' style={{textDecoration: "underline"}} href={`/blogs/${data.id}`}><div style={{textDecoration: "underline", 'cursor':'pointer'}}>{"Click to Read More 📖"}</div></Link>
                     
                         </div>
                     </div>
@@ -430,43 +432,53 @@ const Index = (props:props) => {
              
 
 
-          <div className={`${styles.textContainer} text-black bg-[#ebf8ff]`}>
-          <Link href={'/projects'}><h1 style={{"fontSize":"250%","textAlign":"center", "cursor":"pointer"}}><strong>My Favorite Projects 🧑‍💻</strong></h1></Link>
+          <div className={`${styles.textContainer} text-white bg-[#0f0f0f]`}>
+          <Link href={'/projects'}><h1 style={{"fontSize":"250%","textAlign":"center", "cursor":"pointer"}}><strong className='hover:text-[#a3cbff] duration-200'>My Favorite Projects 🧑‍💻</strong></h1></Link>
+          
           {
-          (frontData.pastProjFav) ? ((frontData.pastProjFav.length > 0 ) ? frontData.pastProjFav.map((data:any) =>
+          (frontData.pastProjFav) ? ((frontData.pastProjFav.length > 0 ) ? 
+          <div className='grid lg:grid-cols-2'>
+          {frontData.pastProjFav.map((data:any) =>
               {
-                return (
                 
-                  <div key={data.id} onClick={()=>
-                    {
-                      window.location.href= `/projects/${data.name}`
-                    }} className='cursor-pointer' >
-                  
-                    <div    className={`${styles.projectContainerText} rounded-xl`}style={{"textAlign":"center"}}>
-                      <h2>
-                          
-                          <div className='text-[2.5vw] font-italic' style={{overflowWrap: "break-word","cursor":"pointer",textDecoration: "underline",}}>{data.name}</div>
-                        
-                      </h2>
-                      <div className='mt-2'>
-                          { (data.youtube) ?
-                            <Suspense fallback={<h3>loading</h3>}>
-                              <YoutubeVideo vId={data.mediaLink}/>
-                            </Suspense>
-                          :
-                          
-                          <Image alt='media picture' src={data.mediaLink} className='relative left-1/2 translate-x-[-50%]' width={0} height={0} style={{ width: '100%', height: 'auto' }}/>}
-                          <h3 className='text-[1.5vw]'>
-                            {data.shortDescription}
+                return (
+                  <div className=''>
+                    <div key={data.id} onClick={()=>
+                      {
+                        window.location.href= `/projects/${data.name}`
+                      }} className='cursor-pointer' >
+                    
+                      <div    className={`${styles.projectContainerText} ${styles.gradent} transition-all duration-500 bg-pos-0 hover:bg-pos-100 rounded-xl bg-[#171717]`}style={{"textAlign":"center"}}>
+                        <h2>
                             
-                            <p></p>
-                            <Link  href={`/projects/${data.name}`}><div style={{textDecoration: "underline","cursor":"pointer"}}>{"Click to Learn More 📖"}</div></Link>
-                      
-                          </h3>
+                            <div className='text-3xl font-bold font-italic' style={{overflowWrap: "break-word","cursor":"pointer",textDecoration: "",}}>{data.name}</div>
+                          
+                        </h2>
+                        <div className='mt-4'>
+                            { (data.youtube) ?
+                              <Suspense fallback={<h3>loading</h3>}>
+                                <YoutubeVideo vId={data.mediaLink}/>
+                              </Suspense>
+                            :
+                            <div className={`${styles.journeyImage} h-[35 vw] lg:h-[25vw] w-[70%] lg:w-[90%]`}  >
+                              <Image alt='front picture'src={data.mediaLink} fill style={{"borderRadius":"0.5rem"}}/>
+                            </div>
+                            // <Image alt='media picture' src={data.mediaLink} className='relative left-1/2 translate-x-[-50%]' width={0} height={0} style={{ width: '100%', height: 'auto' }}/>
+                            }
+                            <h3 className='text-lg mt-4'>
+                              {data.shortDescription}
+                              
+                              <p></p>
+                              
+                              <Link  href={`/projects/${data.name}`}><div style={{textDecoration: "underline","cursor":"pointer"}}>{"Click to Learn More 📖"}</div></Link>
+                        
+                            </h3>
+                        </div>
                       </div>
                     </div>
                   </div>
-                )}):<h3 className='text-center text-3xl'>Sorry Projects Could Not Be Loaded, Try Again!</h3>):<h3 className='text-center text-3xl' >Loading...</h3>} 
+                )})}
+                </div>:<h3 className='text-center text-3xl'>Sorry Projects Could Not Be Loaded, Try Again!</h3>):<h3 className='text-center text-3xl' >Loading...</h3>} 
 
               </div>
               
