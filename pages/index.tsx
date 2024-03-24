@@ -421,8 +421,8 @@ const Index = (props:props) => {
               {
                 
                 return (
-                  <div className=''>
-                    <div key={data.id}  >
+                  <div key={data.id} className=''>
+                    <div   >
                     
                       <div onClick={()=>
                       {
