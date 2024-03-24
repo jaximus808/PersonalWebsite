@@ -11,6 +11,7 @@ import { useState,useEffect, useRef,Suspense  } from 'react'
 import prisma from '../lib/prisma'
 import cookies from "cookie"
 
+
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
 import Youtube from "react-youtube"
 function YoutubeVideo(props:any)
@@ -234,7 +235,7 @@ const Index = (props:props) => {
             <span className={`${styles.fontNormal} text-2xl font-extralight`}><i>{`   ${new Date().toLocaleDateString()}`}</i></span>
             </h1>
             <div className={`grid lg:grid-cols-4 gap-4 mt-16 w-[90%] ${styles.centerRelX}`}>
-              
+            
               <div className={`${styles.journeyImage} w-[70%] h-[40vw] lg:h-[15vw] lg:w-[90%]`}  >
                 <Image alt='front picture' src="/brookings.jpg" fill style={{"borderRadius":"0.5rem"}}/>
               </div>
@@ -280,8 +281,8 @@ const Index = (props:props) => {
                 </p>
               </div>
              
-
             </div>
+            
             <div className=''>
               <div className='mt-4 relative left-1/2 w-1/2 translate-x-[-50%] border-b-4 border-black h-8 border-x-4 rounded-b-xl'>
                 
@@ -389,8 +390,103 @@ const Index = (props:props) => {
                 </div>
               </div>
           </div>
+          <div className={`${styles.textContainer} text-center bg-[#020202] text-white `}>
+            <h1 className='text-3xl'>
+              <strong><i>Stand Proud, You're Strong</i></strong>
+            </h1>
+            <br></br>
+            <h1 className='text-2xl'>
+              <strong><i>誇れ、オマエは強い</i></strong>
+            </h1>
+            <h1>
+              <i>Ryomen Sukuna</i>
+            </h1>
+            <br></br>
+            <h1 className='text-2xl'>
+              <strong>Life is movement. Once you stop moving, you're dead. Choose life.</strong>
+            </h1>
+            <h1>
+              <i>Eugen Sandow</i>
+            </h1>
+          </div>
+
+
+          <div className={`${styles.textContainer} ${styles.projectGradientBackground} text-white `}>
+          <Link href={'/projects'}><h1 style={{"fontSize":"250%","textAlign":"center", "cursor":"pointer"}}><strong className='hover:text-[#a3cbff] duration-200'>My Favorite Projects 🧑‍💻</strong></h1></Link>
           
-          <div className={`${styles.textContainer}  bg-[#171717] text-white`} style={{"textAlign":"center"}}>
+          {
+          (frontData.pastProjFav) ? ((frontData.pastProjFav.length > 0 ) ? 
+          <div className='grid lg:grid-cols-2'>
+          {frontData.pastProjFav.map((data:any) =>
+              {
+                
+                return (
+                  <div className=''>
+                    <div key={data.id}  >
+                    
+                      <div onClick={()=>
+                      {
+                        window.location.href= `/projects/${data.name}`
+                      }}   className={`${styles.projectContainerText} ${styles.gradent} transition-all duration-500 bg-pos-0 hover:bg-pos-100 rounded-xl bg-[#171717] cursor-pointer`}style={{"textAlign":"center"}}>
+                        <h2>
+                            
+                            <div className='text-2xl font-bold font-italic' style={{overflowWrap: "break-word","cursor":"pointer",textDecoration: "",}}>{data.name}</div>
+                          
+                        </h2>
+                        <div className='mt-4'>
+                            { (data.youtube) ?
+                              <Suspense fallback={<h3>loading</h3>}>
+                                <YoutubeVideo vId={data.mediaLink}/>
+                              </Suspense>
+                            :
+                            <div className={`${styles.journeyImage} h-[35vw] lg:h-[15vw] w-[70%] lg:w-[50%]`}  >
+                              <Image alt='front picture'src={data.mediaLink} fill style={{"borderRadius":"0.5rem"}}/>
+                            </div>
+                            // <Image alt='media picture' src={data.mediaLink} className='relative left-1/2 translate-x-[-50%]' width={0} height={0} style={{ width: '100%', height: 'auto' }}/>
+                            }
+                            <h3 className='text-md mt-4'>
+                              {data.shortDescription}
+                              
+                              <p></p>
+                              
+                              <Link  href={`/projects/${data.name}`}><div style={{textDecoration: "underline","cursor":"pointer"}}>{"Click to Learn More 📖"}</div></Link>
+                        
+                            </h3>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )})}
+                </div>:<h3 className='text-center text-3xl'>Sorry Projects Could Not Be Loaded, Try Again!</h3>):<h3 className='text-center text-3xl' >Loading...</h3>} 
+
+              </div>
+              <div className={`${styles.textContainer} text-center bg-[#171717] text-white `}>
+            <h1 className='text-3xl'>
+              <strong>Connect With Me!</strong>
+            </h1>
+            <br></br>
+            <div className='grid grid-cols-4 w-4/5 relative left-1/2 translate-x-[-50%]'>
+                            
+              <div>
+                <div style={{marginBottom: "20px"}} >
+                  
+                    <a rel="noreferrer" target={"_blank"}href='https://www.linkedin.com/in/jaxon-poentis/'>
+                    <img  className={styles.gmailLogo} src='/linkdinLogo.png'/>
+                    </a>
+                  </div>
+                </div>
+              <div>
+                <div style={{marginBottom: "20px"}} >
+                  
+                    <a rel="noreferrer" target={"_blank"}href='https://twitter.com/Jaxonpoentis'>
+                    <img  className={styles.normallogo} src='/twitterlogo.png'/>
+                    </a>
+                  </div>
+                </div>
+            </div>
+          </div>
+
+          <div className={`${styles.textContainer}  bg-[#0a0a0a] text-white`} style={{"textAlign":"center"}}>
             
             <Link href={'/blog'}><h1 style={{ "fontWeight":"400","fontSize":"250%","textAlign":"center", "cursor":"pointer"}}><strong className='hover:text-[#a3cbff] duration-200'>💡 Recent Blogs 💡</strong></h1></Link>
               
@@ -405,7 +501,7 @@ const Index = (props:props) => {
                     <div key={data.id} onClick={()=>
                     {
                       window.location.href= `/blogs/${data.id}`
-                    }}  className={`bg-[#242424] hover:bg-[#292929] pt-4 pb-8 px-8 mt-4  w-4/5 relative left-1/2 translate-x-[-50%] rounded-md cursor-pointer duration-200`} style={{ "textAlign":"left",}} >
+                    }}  className={` ${styles.gradent2} bg-[#242424] hover:bg-[#292929] pt-4 pb-8 px-8 mt-4  w-4/5 relative left-1/2 translate-x-[-50%] rounded-md cursor-pointer duration-200`} style={{ "textAlign":"left",}} >
                         <h2 >
                             <div className={`text-2xl font-semibold font-caviar` } style={{ "cursor":"pointer",overflowWrap: "break-word"}}>{data.title}</div>
                         
@@ -431,56 +527,6 @@ const Index = (props:props) => {
           
              
 
-
-          <div className={`${styles.textContainer} text-white bg-[#0f0f0f]`}>
-          <Link href={'/projects'}><h1 style={{"fontSize":"250%","textAlign":"center", "cursor":"pointer"}}><strong className='hover:text-[#a3cbff] duration-200'>My Favorite Projects 🧑‍💻</strong></h1></Link>
-          
-          {
-          (frontData.pastProjFav) ? ((frontData.pastProjFav.length > 0 ) ? 
-          <div className='grid lg:grid-cols-2'>
-          {frontData.pastProjFav.map((data:any) =>
-              {
-                
-                return (
-                  <div className=''>
-                    <div key={data.id} onClick={()=>
-                      {
-                        window.location.href= `/projects/${data.name}`
-                      }} className='cursor-pointer' >
-                    
-                      <div    className={`${styles.projectContainerText} ${styles.gradent} transition-all duration-500 bg-pos-0 hover:bg-pos-100 rounded-xl bg-[#171717]`}style={{"textAlign":"center"}}>
-                        <h2>
-                            
-                            <div className='text-3xl font-bold font-italic' style={{overflowWrap: "break-word","cursor":"pointer",textDecoration: "",}}>{data.name}</div>
-                          
-                        </h2>
-                        <div className='mt-4'>
-                            { (data.youtube) ?
-                              <Suspense fallback={<h3>loading</h3>}>
-                                <YoutubeVideo vId={data.mediaLink}/>
-                              </Suspense>
-                            :
-                            <div className={`${styles.journeyImage} h-[35 vw] lg:h-[25vw] w-[70%] lg:w-[90%]`}  >
-                              <Image alt='front picture'src={data.mediaLink} fill style={{"borderRadius":"0.5rem"}}/>
-                            </div>
-                            // <Image alt='media picture' src={data.mediaLink} className='relative left-1/2 translate-x-[-50%]' width={0} height={0} style={{ width: '100%', height: 'auto' }}/>
-                            }
-                            <h3 className='text-lg mt-4'>
-                              {data.shortDescription}
-                              
-                              <p></p>
-                              
-                              <Link  href={`/projects/${data.name}`}><div style={{textDecoration: "underline","cursor":"pointer"}}>{"Click to Learn More 📖"}</div></Link>
-                        
-                            </h3>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )})}
-                </div>:<h3 className='text-center text-3xl'>Sorry Projects Could Not Be Loaded, Try Again!</h3>):<h3 className='text-center text-3xl' >Loading...</h3>} 
-
-              </div>
               
 
               <Footer authSense={false} authenticated={false}/>

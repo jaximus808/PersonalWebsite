@@ -210,10 +210,50 @@
 .gmailLogo
 {
   background-color: #bbb;
-  border-radius: 25%;
+  border-radius: 25px;
   display: inline;
   width: 8vw;
+  cursor: pointer;
 }
+.normallogo
+{ 
+  display: inline;
+  width: 8vw;
+  cursor: pointer;
+}
+.gradent2{
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(#242424, #424242) padding-box,
+              linear-gradient(to right, #D4145A, darkorchid,darkorchid, orange) border-box;
+  background-size: 300%;
+  background-position: left;
+  border-radius: 10px;
+  border-left: 4px solid transparent;
+  transition: background-position 1s;
+
+  transition: border 1s;
+  /* animation: bg-animation 1s infinite alternate; */
+  
+}
+
+.gradent2:hover{
+  background-position: right;
+  border-left: 10px solid transparent;
+  
+
+}
+
+.projectGradientBackground
+{
+  background: linear-gradient(90deg, #0F2027 ,#203A43,#203A43,#0F2027 ,#203A43);
+  background-size: 400%;
+  background-position: left;
+  transition: background-position 1s;
+  animation: bg-animation 10s infinite; 
+  
+}
+
 .gradent{
   position: relative;
   z-index: 1;
@@ -224,7 +264,7 @@
   border-radius: 10px;
   border: 4px solid transparent;
   transition: background-position 1s;
-  animation: bg-animation 1s infinite alternate;
+  /* animation: bg-animation 1s infinite alternate; */
   
 }
 
@@ -240,8 +280,10 @@
 } */
 @keyframes bg-animation {
   0% {background-position: left;}
-  100% {background-position: middle;}
+  100% {background-position: right;}
 }
+
+
 
 
 .projectContainerText
@@ -345,4 +387,20 @@
   top:0%;
   left:50%;
   transform: translate(-50%,0%);
+}
+
+.fadein {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+}
+
+
+
+.sectionSection{
+  
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 300ms ease-out, transform 300ms ease-out;
+  will-change: opacity, visibility;
 }

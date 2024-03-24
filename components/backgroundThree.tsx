@@ -191,7 +191,7 @@ function System(props:any):JSX.Element
         
         if(angle.current  > 2*Math.PI) angle.current  = angle.current  - 2*Math.PI;
         if(angle.current  < 0) angle.current  = angle.current  + 2*Math.PI;
-        let yPos = 10*yDist- 9*(yDist * Math.cos(2*angle.current))
+        let yPos = 8*yDist- 7*(yDist * Math.cos(2*angle.current))
         let zPos = Zdist * Math.cos(2*angle.current)
         // ref.current.position.x = x; 
         //new THREE.Vector3(1,0,0), 
