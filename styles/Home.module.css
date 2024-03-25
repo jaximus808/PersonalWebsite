@@ -6,6 +6,18 @@
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif; 
 }
 
+.ContactMaincotainer
+{
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 5vw);
+  /* gap: 20px; */
+  width:100%;
+  padding-top: 3rem;
+
+  position:relative;
+  z-index: 5;
+}
 .maincotainer
 {
   display: flex;
@@ -83,7 +95,8 @@
 
   font-size: calc(10px + 1vw);
   top:0;
-  z-index: 20;
+
+  z-index: 50;
 
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -101,7 +114,7 @@
 
   font-size: calc(10px + 1vw);
   top:0;
-  z-index: 20;
+  z-index: 50;
   transition: 1s;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -121,6 +134,21 @@
   background-attachment: fixed;
   background: none;
   
+}
+
+.textContainerContact
+{
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif; 
+
+  font-weight: 300;
+  font-weight: 400;
+  transition-duration: 0.5s;
+  width:100%;
+  position: relative;
+  padding-left: 40px;
+  padding-right: 40px;
+  left:50%;
+  transform: translate(-50%,0);
 }
 
 .textContainer
@@ -143,7 +171,6 @@
   left:50%;
   transform: translate(-50%,0);
   padding: 40px;
-  padding-bottom: 50px;
 }
 .textContainerBlog
 {
@@ -207,18 +234,48 @@
   display: inline;
   width: 8vw;
 }
+.gmailLogo:hover
+{
+  max-width: 8.5vw;;
+  width: 8.5vw;
+}
 .gmailLogo
 {
-  background-color: #bbb;
-  border-radius: 25px;
+  border-radius: 12.5%;
   display: inline;
   width: 8vw;
+  max-width: 100px;
+
+  min-width: 75px;
   cursor: pointer;
+  transition-duration: 1s;
+}
+.youLogo
+{
+  display: inline;
+  width: 20vw;
+  max-width: 100px;
+
+  min-width: 75px;
+  cursor: pointer;
+  transition-duration: 1s;
 }
 .normallogo
 { 
   display: inline;
   width: 8vw;
+  min-width: 75px;
+
+  max-width: 100px;
+  cursor: pointer;
+  transition-duration: 1s;
+}
+.normallogo:hover
+{ 
+  display: inline;
+  max-width: 8.5vw;;
+  width: 8.5vw;
+
   cursor: pointer;
 }
 .gradent2{

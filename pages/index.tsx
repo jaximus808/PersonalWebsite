@@ -116,6 +116,7 @@ function ScrollDown(props:any)
 
     const showFixed =() =>
     {
+      if(scrollTitle.current == null) return
       scrollTitle.current.style.top = "0";
 
       scrollTitle.current.style.color ="rgba(255,255,255,1)"
@@ -124,6 +125,7 @@ function ScrollDown(props:any)
     const hideFixed =() =>
     {
 
+      if(scrollTitle.current == null) return
       scrollTitle.current.style.color ="rgba(255,255,255,0)"
         scrollTitle.current.style.top = "50%";
     }
@@ -195,7 +197,7 @@ const Index = (props:props) => {
     const [frontData, setFrontData] = useState<frontData>({pastProjFav:undefined, recentBlogs:undefined, fail:false }) 
  
   return (
-    <div className='text-caviar'>
+    <div className='text-caviar '>
 
       <Background/> 
       <Head>
@@ -212,7 +214,7 @@ const Index = (props:props) => {
           </div>
         </div>
         <div className={styles.homeMaincotainer}>
-          <div className={` ${styles.textContainer} text-black  bg-white`}>
+          <div className={` ${styles.textContainer} bg-white text-black  `}>
             <h1 style={{"fontSize":"300%","textAlign":"center"}}><strong>Hey, Aloha, こんにちは, </strong> <br></br><span className={`${styles.fontNormal} font-normal`}>I'm Jaxon</span></h1>
             <div className={`${styles.frontImage} min-w-[300px] min-h-[400px] w-[42%] h-[50vw]`}  >
             <Image  sizes="(min-width: 768px) 100vw, 33vw" alt='front picture' src="/Frontimage2.jpg" fill style={{"borderRadius":"0.5rem"}}/>
@@ -403,7 +405,7 @@ const Index = (props:props) => {
             </h1>
             <br></br>
             <h1 className='text-2xl'>
-              <strong>Life is movement. Once you stop moving, you're dead. Choose life.</strong>
+              <strong><i>Life is movement. Once you stop moving, you're dead. Choose life.</i></strong>
             </h1>
             <h1>
               <i>Eugen Sandow</i>
@@ -416,7 +418,7 @@ const Index = (props:props) => {
           
           {
           (frontData.pastProjFav) ? ((frontData.pastProjFav.length > 0 ) ? 
-          <div className='grid lg:grid-cols-2'>
+          <div className='grid md:grid-cols-1 lg:grid-cols-2'>
           {frontData.pastProjFav.map((data:any) =>
               {
                 
@@ -427,10 +429,10 @@ const Index = (props:props) => {
                       <div onClick={()=>
                       {
                         window.location.href= `/projects/${data.name}`
-                      }}   className={`${styles.projectContainerText} ${styles.gradent} transition-all duration-500 bg-pos-0 hover:bg-pos-100 rounded-xl bg-[#171717] cursor-pointer`}style={{"textAlign":"center"}}>
+                      }}   className={`${styles.projectContainerText} ${styles.gradent}  rounded-xl bg-[#171717] cursor-pointer`}style={{"textAlign":"center"}}>
                         <h2>
                             
-                            <div className='text-2xl font-bold font-italic' style={{overflowWrap: "break-word","cursor":"pointer",textDecoration: "",}}>{data.name}</div>
+                            <div className='text-2xl font-bold font-italic' style={{overflowWrap: "break-word","cursor":"pointer",textDecoration: "",}}>{data.name.replace(/_/g," ")}</div>
                           
                         </h2>
                         <div className='mt-4'>
@@ -439,7 +441,7 @@ const Index = (props:props) => {
                                 <YoutubeVideo vId={data.mediaLink}/>
                               </Suspense>
                             :
-                            <div className={`${styles.journeyImage} h-[35vw] lg:h-[15vw] w-[70%] lg:w-[50%]`}  >
+                            <div className={`${styles.journeyImage} h-[35vw] lg:h-[15vw] w-[50%] lg:w-[50%]`}  >
                               <Image alt='front picture'src={data.mediaLink} fill style={{"borderRadius":"0.5rem"}}/>
                             </div>
                             // <Image alt='media picture' src={data.mediaLink} className='relative left-1/2 translate-x-[-50%]' width={0} height={0} style={{ width: '100%', height: 'auto' }}/>
@@ -460,12 +462,12 @@ const Index = (props:props) => {
                 </div>:<h3 className='text-center text-3xl'>Sorry Projects Could Not Be Loaded, Try Again!</h3>):<h3 className='text-center text-3xl' >Loading...</h3>} 
 
               </div>
-              <div className={`${styles.textContainer} text-center bg-[#171717] text-white `}>
-            <h1 className='text-3xl'>
-              <strong>Connect With Me!</strong>
+              <div className={`${styles.fontNormal} py-8 text-center bg-[#171717] text-white `}>
+            <h1 className='text-4xl'>
+              <strong> Connect With Me 👋</strong>
             </h1>
             <br></br>
-            <div className='grid grid-cols-4 w-4/5 relative left-1/2 translate-x-[-50%]'>
+            <div className=' mt-8 grid  md:grid-cols-3 w-4/5 relative left-1/2 translate-x-[-50%] gap-y-8'>
                             
               <div>
                 <div style={{marginBottom: "20px"}} >
@@ -480,6 +482,14 @@ const Index = (props:props) => {
                   
                     <a rel="noreferrer" target={"_blank"}href='https://twitter.com/Jaxonpoentis'>
                     <img  className={styles.normallogo} src='/twitterlogo.png'/>
+                    </a>
+                  </div>
+                </div>
+                <div>
+                <div   style={{marginBottom: "20px"}} >
+                  
+                    <a rel="noreferrer" target={"_blank"}href='https://github.com/jaximus808'> 
+                    <img  className={`${styles.normallogo} rounded-full` } src='/githublogo.png'/>
                     </a>
                   </div>
                 </div>

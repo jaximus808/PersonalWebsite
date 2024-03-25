@@ -41,6 +41,7 @@ function Stars(props:any)
 
     const handleScroll =()=>
     {
+        if(ref.current == null) return;
         const y = window.pageYOffset;
         angle.current = angle.current + 0.003*(y-scrolPrev);
         scrolPrev = y;

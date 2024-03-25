@@ -9,9 +9,9 @@ const Header: NextPage = () => {
 
   const handleScroll =()=>
   {
-      const y = window.pageYOffset;
+      const y = window.scrollY;
       yRef.current = y;
-      if(!scrolled.current && yRef.current > window.innerHeight*0.1 )
+      if(!scrolled.current && yRef.current > window.innerHeight*0.05 )
       {
         scrolled.current = true
         window.requestAnimationFrame(()=>
@@ -19,14 +19,14 @@ const Header: NextPage = () => {
           headerRef.current.className = styles.navBarMini;
         });
       }
-      if(scrolled.current && yRef.current <=window.innerHeight*0.1  )
+      if(scrolled.current && yRef.current <=window.innerHeight*0.05  )
       {
 
         scrolled.current = false
 
           window.requestAnimationFrame(()=>
           {
-
+            if(headerRef.current == null) return
             headerRef.current.className = styles.navBar;
           });
       }
@@ -36,7 +36,7 @@ const Header: NextPage = () => {
   {
       window.addEventListener("scroll", handleScroll)
       
-      const y = window.pageYOffset;
+      const y = window.scrollY;
       yRef.current = y;
       return () =>
       {
@@ -62,10 +62,9 @@ const Header: NextPage = () => {
               </span>
             <Link   href='/projects'>Project Catalog</Link>
             <Link href='/blog'>Blog</Link>
-            <Link href='/socials'>My Socials</Link>
+            <Link href='/contact'>About Me</Link>
     
     
-            <Link href='/'>Home</Link>
           </div>
         </div>
         <div  className={`${styles.navBarHolder}`}>
