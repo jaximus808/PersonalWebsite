@@ -145,7 +145,7 @@ const Index = () => {
                           <img className={`h-20 w-20`} src='/gmailLogo.png'/>
                             <div>
                                 <h1 className='text-2xl'>
-                                    <strong>Email: jaxonp808@gmail.com</strong>
+                                    <strong style={{overflowWrap: "break-word"}}>Email: jaxonp808 @ gmail.com</strong>
                                 </h1>
                                 <p>{"Need to contact me? Send me an email!"}</p>
                             </div>
