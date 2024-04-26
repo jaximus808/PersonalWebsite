@@ -437,7 +437,7 @@ const Index = (props:props) => {
                         </h2>
                         <div className='mt-4'>
                             { (data.youtube) ?
-                              <div className={` ${styles.journeyImage} w-[40rem] lg:w-[30rem] h-72`}>
+                              <div className={` ${styles.journeyImage} w-[10rem] lg:w-[30rem] h-72`}>
                               
                               <Suspense fallback={<h3>loading</h3>}>
 
@@ -445,7 +445,7 @@ const Index = (props:props) => {
                               </Suspense>
                               </div>
                             :
-                            <div className={`${styles.journeyImage} w-96 h-72`}  >
+                            <div className={`${styles.journeyImage} w-[15rem] sm:w-96 h-36 sm:h-72`}  >
                               <Image alt='front picture'src={data.mediaLink} fill style={{"borderRadius":"0.5rem"}}/>
                             </div>
                             // <Image alt='media picture' src={data.mediaLink} className='relative left-1/2 translate-x-[-50%]' width={0} height={0} style={{ width: '100%', height: 'auto' }}/>
