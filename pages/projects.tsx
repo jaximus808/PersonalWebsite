@@ -3,8 +3,10 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import Header from '../components/header'
 
-import Footer from '../components/footer'
+import Background from '../components/backgroundprojects'
 
+import Footer from '../components/footer'
+import { Suspense } from 'react'
 import Link from 'next/link'
 import cookies from "cookie"
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
@@ -15,7 +17,6 @@ import { useState,useEffect, useRef  } from 'react'
 import * as jsonwebtoken from "jsonwebtoken";
 import {PrismaClient, Prisma, Projects} from "@prisma/client"
 
-import Background from '../components/backgroundThree'
 
 import Youtube from "react-youtube"
 
@@ -37,7 +38,8 @@ const prisma = new PrismaClient();
 type props = 
 {
   auth:boolean;
-  projects:any
+  projects:any;
+  favorite_projects:any;
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -78,12 +80,28 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     projects = []
   }
  
+    let  pastFavoriteProjects:any;
+    try
+    {
+        pastFavoriteProjects = await prisma.projects.findMany({
+        where:
+        {
+            favorite:true
+        }
+        })
+    
+    }
+    catch
+    {
+        pastFavoriteProjects = [];
+    }
   //console.log(projects
   return {
     props: 
       {
         auth: authenticated,
         projects:JSON.parse(JSON.stringify(projects)),
+        favorite_projects:JSON.parse(JSON.stringify(pastFavoriteProjects))
       },
   }
 }
@@ -311,8 +329,7 @@ const Index: React.FC<props> = props => {
 
   return (
     <div>
-      
-<Background/> 
+       
       <Head>
         <title >Jaxon Poentis</title>
         <meta name="description" content="Personal Page For Jaxon Poentis" />
@@ -320,14 +337,15 @@ const Index: React.FC<props> = props => {
       </Head>
         
         <Header/>
-        <div className={styles.mainTitleName}>
+        {/* <div className={styles.mainTitleName}>
           <div className={styles.centerRel}>
             <div className='font-tourner' style={{"fontSize":"10vw","textAlign":"center"}}>My Projects</div> 
             <ScrollDown/>
           </div>
-        </div>
-       
-        <div className={styles.homeMaincotainer}>
+        </div> */}
+        <Background/>
+        
+        <div className={`${styles.homeMaincotainerBlog}  w-full  bg-[#121212] text-white`}>
             <p></p>
             {(props.auth) ?
             <>
@@ -395,54 +413,73 @@ const Index: React.FC<props> = props => {
             <></>}
 
             <div className={styles.textContainer}>
-              <h1 style={{ "textAlign":"center",fontSize:"4vw"}}>My Projects 🦾</h1>
-              <h3 style={{ "textAlign":"center",fontSize:"1.5vw"}}>(Total:{props.projects.length})</h3>
-              <h1 style={{ "textAlign":"center",fontSize:"2vw"}}>Page: {projectsPage+1}</h1>
-
-              <div style={{"textAlign":"center"}}>
-                    <button className='cursor-pointer bg-black hover:bg-[rgb(31,0,33)] p-2 rounded-3xl text-white' disabled={!showBackButton} onClick={MovePageBackward}>{"<"}</button>
-                    <span style={{marginLeft:"25px"}}></span>
-                    <button className='cursor-pointer bg-black hover:bg-[rgb(31,0,33)] p-2 rounded-3xl text-white' disabled={!showForwardButton} onClick={MovePageForawrd}>{">"}</button>
+              <div className='w-full bg-[#1c1c1c] p-8 '>
+                  <div className='grid md:grid-cols-3 w-full'>
+                    <h1 className='text-4xl' ><strong>My Projects 🦾</strong></h1>
+                    <h3 className='mt-2 md:text-center'><strong>Total Projects: {props.projects.length}</strong></h3>
+                    <h1 className='mt-2 md:text-center'><strong>Page: {projectsPage+1}</strong></h1>
                   </div>
-              <p></p>
+                  
+                </div>
+                <br></br>
+                <div className='ml-2 mb-4'>
+                    <button className='cursor-pointer hover:bg-[rgb(31,0,33)] text-xl duration-500 hover:text-3xl rounded-3xl text-white' onClick={MovePageBackward}>{showBackButton ? "⬅️" :""} </button>
+                    <button className='cursor-pointer hover:bg-[rgb(31,0,33)] text-xl duration-500 hover:text-3xl rounded-3xl text-white'  onClick={MovePageForawrd}>{showBackButton ? "➡️" :""}</button>
+                  </div>
+             
                 {(props.projects.length === 0 ) ? 
-                <h3 style={{ "textAlign":"center",fontSize:"2vw"}}>Sorry projects could not be loaded, try again!</h3>
+                <h3  style={{ "textAlign":"center",fontSize:"2vw"}}>Sorry projects could not be loaded, try again!</h3>
                 :
-                props.projects.slice(projectsPage*5, (props.projects.length > (projectsPage+1)*5 )?((projectsPage+1)*5):props.projects.length).map((data:any) =>
+                <div className='grid grid-cols-1 gap-16 p-4 lg:w-1/2'>
+                  {
+                props.projects.slice(projectsPage*6, (props.projects.length > (projectsPage+1)*6 )?((projectsPage+1)*6):props.projects.length).map((data:any) =>
                 {
                   return (
-                    <div key={data.id}  onClick={()=>
-                    {
-                      window.location.href = `/projects/${data.name}`
-                    }} className='cursor-pointer'>
-                      <div  className={`${styles.projectContainerText} rounded-xl`} style={{ "textAlign":"center",}} >
-                        <h2 >
+                   
+                    <div key={data.id} className=''>
+                    <div   >
+                    
+                      <div onClick={()=>
+                      {
+                        window.location.href= `/projects/${data.name}`
+                      }}   className={`${styles.projectContainerText} ${styles.gradent}  rounded-xl bg-[#171717] cursor-pointer`}style={{"textAlign":"center"}}>
+                        <h2>
+                            
+                            <div className='text-2xl font-bold font-italic' style={{overflowWrap: "break-word","cursor":"pointer",textDecoration: "",}}>{data.name.replace(/_/g," ")}</div>
                           
-                            <div className={styles.specialLink} style={{fontSize:"2.5vw",textDecoration: "underline", "cursor":"pointer",overflowWrap: "break-word"}}>{data.name}</div>
-                        
                         </h2>
-                        <div >
+                        <div className='mt-4'>
                             { (data.youtube) ?
+                            <div className={` ${styles.journeyImage} w-[22rem] h-72`}>
+                              
+                              <Suspense fallback={<h3>loading</h3>}>
 
-                              < YoutubeVideo vId={data.mediaLink}/>
-                            
-                            // <iframe width="100%" height="100%" src={data.mediaLink} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>  
+                                <YoutubeVideo   vId={data.mediaLink}/>
+                              </Suspense>
+                              </div>
                             :
-                              <Image alt='media picture' className={styles.centerRelX} src={data.mediaLink} width={700} height={500}  />
-                          }
-                            <h3 style={{fontSize:"1.5vw"}}>
-                            {data.shortDescription}
-                            <p></p>
-                            
-                            <Link style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/projects/${data.name}`}><div style={{textDecoration: "underline"}}>{"Click to Learn More!"}</div></Link>
-                      
+                            <div className={`${styles.journeyImage} w-96 h-72`}  >
+                              <Image alt='front picture'src={data.mediaLink} fill style={{"borderRadius":"0.5rem"}}/>
+                            </div>
+                            // <Image alt='media picture' src={data.mediaLink} className='relative left-1/2 translate-x-[-50%]' width={0} height={0} style={{ width: '100%', height: 'auto' }}/>
+                            }
+                            <h3 className='text-md mt-4'>
+                              {data.shortDescription}
+                              
+                              <p></p>
+                              
+                              <Link  href={`/projects/${data.name}`}><div style={{textDecoration: "underline","cursor":"pointer"}}>{"Click to Learn More 📖"}</div></Link>
+                        
                             </h3>
                         </div>
+                      </div>
                     </div>
-                    </div>
+                  </div>
                   )})}
 
-                
+                </div>
+
+                }
                 
 
             </div>
@@ -462,7 +499,6 @@ const Index: React.FC<props> = props => {
                         </div>
                     </div>
                 </li> */}
-            <Footer authSense={true} authenticated={props.auth}/>
         </div>
     </div>
   )

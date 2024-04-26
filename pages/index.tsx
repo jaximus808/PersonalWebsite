@@ -214,7 +214,7 @@ const Index = (props:props) => {
           </div>
         </div>
         <div className={styles.homeMaincotainer}>
-          <div className={` ${styles.textContainer} bg-white text-black  `}>
+          <div className={` ${styles.textContainer} bg-white text-black py-4 `}>
             <h1 style={{"fontSize":"300%","textAlign":"center"}}><strong>Hey, Aloha, こんにちは, </strong> <br></br><span className={`${styles.fontNormal} font-normal`}>I'm Jaxon</span></h1>
             <div className={`${styles.frontImage} min-w-[300px] min-h-[400px] w-[42%] h-[50vw]`}  >
             <Image  sizes="(min-width: 768px) 100vw, 33vw" alt='front picture' src="/Frontimage2.jpg" fill style={{"borderRadius":"0.5rem"}}/>
@@ -225,7 +225,7 @@ const Index = (props:props) => {
             </h2>
             <h3 style={{"textAlign":"center"}}> </h3>
           </div>
-          <div className={` ${styles.textContainer} text-black  bg-[#faf7f5]`}>
+          <div className={` py-4 ${styles.textContainer} text-black  bg-[#faf7f5]`}>
             <h1 style={{"fontSize":"300%","textAlign":"center"}}><strong>My Path </strong>
             {/* <span className={`${styles.fontNormal} font-light`}>{`  |  `}</span> */}
             <br></br>
@@ -392,7 +392,7 @@ const Index = (props:props) => {
                 </div>
               </div>
           </div>
-          <div className={`${styles.textContainer} text-center bg-[#020202] text-white `}>
+          <div className={`${styles.textContainer} py-4  text-center bg-[#020202] text-white `}>
             <h1 className='text-3xl'>
               <strong><i>Stand Proud, You're Strong</i></strong>
             </h1>
@@ -413,12 +413,12 @@ const Index = (props:props) => {
           </div>
 
 
-          <div className={`${styles.textContainer} ${styles.projectGradientBackground} text-white `}>
+          <div className={`${styles.textContainer} ${styles.projectGradientBackground} py-4  text-white `}>
           <Link href={'/projects'}><h1 style={{"fontSize":"250%","textAlign":"center", "cursor":"pointer"}}><strong className='hover:text-[#a3cbff] duration-200'>My Favorite Projects 🧑‍💻</strong></h1></Link>
           
           {
           (frontData.pastProjFav) ? ((frontData.pastProjFav.length > 0 ) ? 
-          <div className='grid md:grid-cols-1 lg:grid-cols-2'>
+          <div className='grid md:grid-cols-1 lg:grid-cols-2 mt-4 gap-16 p-4'>
           {frontData.pastProjFav.map((data:any) =>
               {
                 
@@ -437,11 +437,15 @@ const Index = (props:props) => {
                         </h2>
                         <div className='mt-4'>
                             { (data.youtube) ?
+                              <div className={` ${styles.journeyImage} w-[40rem] lg:w-[30rem] h-72`}>
+                              
                               <Suspense fallback={<h3>loading</h3>}>
-                                <YoutubeVideo vId={data.mediaLink}/>
+
+                                <YoutubeVideo   vId={data.mediaLink}/>
                               </Suspense>
+                              </div>
                             :
-                            <div className={`${styles.journeyImage} h-[35vw] lg:h-[15vw] w-[50%] lg:w-[50%]`}  >
+                            <div className={`${styles.journeyImage} w-96 h-72`}  >
                               <Image alt='front picture'src={data.mediaLink} fill style={{"borderRadius":"0.5rem"}}/>
                             </div>
                             // <Image alt='media picture' src={data.mediaLink} className='relative left-1/2 translate-x-[-50%]' width={0} height={0} style={{ width: '100%', height: 'auto' }}/>
@@ -496,9 +500,9 @@ const Index = (props:props) => {
             </div>
           </div>
 
-          <div className={`${styles.textContainer}  bg-[#0a0a0a] text-white`} style={{"textAlign":"center"}}>
+          <div className={`${styles.textContainer} py-4  bg-[#0a0a0a] text-white`} style={{"textAlign":"center"}}>
             
-            <Link href={'/blog'}><h1 style={{ "fontWeight":"400","fontSize":"250%","textAlign":"center", "cursor":"pointer"}}><strong className='hover:text-[#a3cbff] duration-200'>💡 Recent Blogs 💡</strong></h1></Link>
+            <Link href={'/blog'}><h1 style={{ "fontWeight":"400","fontSize":"250%","textAlign":"center", "cursor":"pointer"}}><strong className='hover:text-[#a3cbff] duration-200 '>💡 Recent Blogs 💡</strong></h1></Link>
               
             {(frontData.recentBlogs) ?
             (frontData.recentBlogs.length == 0) ? 

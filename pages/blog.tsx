@@ -67,6 +67,42 @@ const parsedCookies = cookies.parse(context.req.headers.cookie?context.req.heade
   }
 }
 
+function RecentBlog(props:any)
+{
+  console.log(props[0])
+  console.log(props[0])
+  const data = props[0]
+
+  return (
+  <div key={data.id} onClick={()=>
+  {
+    window.location.href = `/blogs/${data.id}`
+  }} className='cursor-pointer'>
+    <div   className={`${styles.projectContainerText} rounded-xl` } style={{ "textAlign":"center",}} >
+      <h2 >
+          <div className={styles.specialLink} style={{ "cursor":"pointer",overflowWrap: "break-word",fontSize:"2.5vw",textDecoration: "underline"}}>{data.title}</div>
+      
+      </h2>
+      <h3 >
+          <div className={styles.specialLink} style={{ "cursor":"pointer",overflowWrap: "break-word",fontSize:"1.2vw",textDecoration: "underline"}}>{new Date(data.datePosted).toLocaleDateString()}</div>
+      
+      </h3>
+      <div >
+          
+          <h3 style={{fontSize:"1.5vw",'overflow':'hidden',WebkitLineClamp:4, WebkitBoxOrient:"vertical",display:"-webkit-box"}}>
+          {data.content}
+          </h3>
+          <p></p>
+
+          
+          <p></p>
+          <Link style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/blogs/${data.id}`}><div style={{textDecoration: "underline", 'cursor':'pointer'}}>{"-> Read More Here"}</div></Link>
+  
+      </div>
+  </div>
+</div>)
+}
+
 
 function ScrollDown(props:any)
 {
@@ -180,7 +216,7 @@ const Index:React.FC<props> = props => {
 
     const [customDate, setCustomDate] = useState("false");
     
-    
+    console.log(showForwardButton)
     const MovePageForawrd = () =>
     {
       if(props.blogs.length <= (blogPage+1)*5) return; 
@@ -216,22 +252,15 @@ const Index:React.FC<props> = props => {
     return (
       <div>
   
-      <Background/> 
         <Head>
           <title>Jaxon Poentis</title>
           <meta name="description" content="Personal Page For Jaxon Poentis" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
           <Header/>
-          <div className={styles.mainTitleName}>
-            <div className={styles.centerRel}>
-            <div className='font-tourner' style={{"fontSize":"10vw","textAlign":"center"}}>My Blog</div> 
-            <ScrollDown/>
-            </div>
-            
-          </div>
+          
 
-          <div className={styles.homeMaincotainerBlog}>
+          <div className={`bg-[#141414] ${styles.homeMaincotainerBlog}`}>
             <p></p>
             {(props.auth) ?
             <div style={{position:"relative", zIndex:50}}>
@@ -276,60 +305,57 @@ const Index:React.FC<props> = props => {
             <></>}
 
             <div className={styles.textContainer}>
-                <h1 style={{ "textAlign":"center",fontSize:"4vw"}}>Blogs 💡</h1>
-                <h3 style={{ "textAlign":"center",fontSize:"1.5vw"}}>(Total:{props.blogs.length})</h3>
-                <h1 style={{ "textAlign":"center",fontSize:"2vw"}}>～(Page: {blogPage+1})～</h1>
+                <div className='w-full bg-[#1c1c1c] p-8 '>
+                  <div className='grid md:grid-cols-3 w-full'>
+                  <h1 className='text-4xl' ><strong>My Blogs 💡</strong></h1>
+                  <h3 className='mt-2 md:text-center'><strong>Total Blogs: {props.blogs.length}</strong></h3>
+                  <h1 className='mt-2 md:text-center'><strong>Page: {blogPage+1}</strong></h1>
+                  </div>
+                  
+                </div>
+                <br></br>
+                <div className='ml-2 mb-4'>
+                    <button className='cursor-pointer hover:bg-[rgb(31,0,33)] text-xl duration-500 hover:text-3xl rounded-3xl text-white' onClick={MovePageBackward}>{showBackButton ? "⬅️" :""} </button>
+                    <button className='cursor-pointer hover:bg-[rgb(31,0,33)] text-xl duration-500 hover:text-3xl rounded-3xl text-white'  onClick={MovePageForawrd}>{showBackButton ? "➡️" :""}</button>
+                  </div>
 
-                <div style={{"textAlign":"center"}}>
-                    <button className='cursor-pointer bg-black hover:bg-[rgb(31,0,33)] p-2 rounded-3xl text-white' disabled={!showBackButton} onClick={MovePageBackward}>{"<"}</button>
-                    <span style={{marginLeft:"25px"}}></span>
-                    <button className='cursor-pointer bg-black p-2 hover:bg-[rgb(31,0,33)] rounded-3xl text-white'  disabled={!showForwardButton} onClick={MovePageForawrd}>{">"}</button>
+                <div className='md:border-r-2 border-white border-solid md:mr-4 '>
+                  <div  onClick={()=>
+                    {
+                      window.location.href = `/blogs/${props.blogs[0].id}`
+                    }} className=' '>
+                      <div   className={`md:ml-14 ml-6 mr-6 ${styles.projectContainerText}  ${styles.gradent2} rounded-xl cursor-pointer `  }  >
+                        <h2 >
+                            <div className={`text-2xl`}><strong>{props.blogs[0].title}</strong></div>
+                        
+                        </h2>
+                        <h3 >
+                            <div  style={{ "cursor":"pointer",overflowWrap: "break-word"}}>{new Date(props.blogs[0].datePosted).toLocaleDateString()}</div>
+                        
+                        </h3>
+                        <div >
+                            
+                            <h3  className={"ml-4 text-xl my-4"} style={{'overflow':'hidden',WebkitLineClamp:4, WebkitBoxOrient:"vertical",display:"-webkit-box"}}>
+                            {props.blogs[0].content}
+                            </h3>
+                            <p></p>
+
+                            
+                            <p></p>
+                            <Link className='text-xl' style={{textDecoration: "underline"}} href={`/blogs/${props.blogs[0].id}`}><div style={{textDecoration: "underline", 'cursor':'pointer'}}>{"-> Read More Here"}</div></Link>
+                    
+                        </div>
                     </div>
-                <p></p>
-                {(props.blogs.length == 0) ? 
+                  </div>
+                </div>
                 
-                <h3 style={{ "textAlign":"center",fontSize:"2vw"}}>Sorry blogs could not be loaded, try again!</h3>
-                :
-                props.blogs.slice(blogPage*5, (props.blogs.length > (blogPage+1)*5 )?((blogPage+1)*5):props.blogs.length).map((data:any) =>
-                {
-                    return (
-                      <div key={data.id} onClick={()=>
-                      {
-                        window.location.href = `/blogs/${data.id}`
-                      }} className='cursor-pointer'>
-                        <div   className={`${styles.projectContainerText} rounded-xl` } style={{ "textAlign":"center",}} >
-                          <h2 >
-                              <div className={styles.specialLink} style={{ "cursor":"pointer",overflowWrap: "break-word",fontSize:"2.5vw",textDecoration: "underline"}}>{data.title}</div>
-                          
-                          </h2>
-                          <h3 >
-                              <div className={styles.specialLink} style={{ "cursor":"pointer",overflowWrap: "break-word",fontSize:"1.2vw",textDecoration: "underline"}}>{new Date(data.datePosted).toLocaleDateString()}</div>
-                          
-                          </h3>
-                          <div >
-                              
-                              <h3 style={{fontSize:"1.5vw",'overflow':'hidden',WebkitLineClamp:4, WebkitBoxOrient:"vertical",display:"-webkit-box"}}>
-                              {data.content}
-                              </h3>
-                              <p></p>
-
-                              
-                              <p></p>
-                              <Link style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/blogs/${data.id}`}><div style={{textDecoration: "underline", 'cursor':'pointer'}}>{"-> Read More Here"}</div></Link>
-                      
-                          </div>
-                      </div>
-                    </div>
-                    )})}
-
                     
                 
-
             </div>
             
           
-  
-            <Footer authSense={true} authenticated={props.auth}/>
+{/*   
+            <Footer authSense={false} authenticated={props.auth}/> */}
       </div>
 
       </div>
