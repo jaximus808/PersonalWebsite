@@ -28,7 +28,7 @@ function YoutubeVideo(props:any)
   };
 
   return (
-    <div className={`${styles.centerRelX}`} style={{ minHeight:"300px", height:"20vw"}}>
+    <div className={`${styles.centerRelX} ${props.className}`} >
       <Youtube className='relative left-1/2 translate-x-[-37%]' style={{width:'100%', height:'100%'}} videoId={props.vId} 
           opts={opts} onReady={_onReady} />
     </div>
@@ -220,9 +220,11 @@ const Index = (props:props) => {
             <Image  sizes="(min-width: 768px) 100vw, 33vw" alt='front picture' src="/Frontimage2.jpg" fill style={{"borderRadius":"0.5rem"}}/>
             </div>
             
-            <h2 className={`${styles.fontNormal} font-light text-2xl mt-5`} style={{"textAlign":"center"}}>My name is Jaxon Poentis and I am born and raised from Hawaii! I am a self-taught programmer and am passionate about building projects that will empower the future 
-            {/* I am currently attending <span className='font-bold'>Washington University in St. Louis</span> 🧸 studying Computer Science and Business!  */}
+            <div className='w-3/5 relative left-1/2 translate-x-[-50%]'>
+              <h2 className={`${styles.fontNormal}  font-meduim text-2xl mt-5`} style={{"textAlign":"center"}}>My name is Jaxon Poentis and I am born and raised from Hawaii! I am a self-taught programmer and am passionate about building projects that will empower the future 
+              {/* I am currently attending <span className='font-bold'>Washington University in St. Louis</span> 🧸 studying Computer Science and Business!  */}
             </h2>
+            </div>
             <h3 style={{"textAlign":"center"}}> </h3>
           </div>
           <div className={` py-4 ${styles.textContainer} text-black  bg-[#faf7f5]`}>
@@ -260,7 +262,7 @@ const Index = (props:props) => {
 
                 </p>
               </div>
-              <div className={`${styles.journeyImage} h-[30vw] w-[40%] lg:h-[10vw] lg:w-[50%]`}  >
+              <div className={`${styles.journeyImage} h-[30vw] w-[35%] lg:h-[10vw] lg:w-[50%]`}  >
                 <Image alt='front picture' src="/robotics.png" fill style={{"borderRadius":"0.5rem"}}/>
               </div>
               <div className='col-span-1'>
@@ -325,7 +327,7 @@ const Index = (props:props) => {
                   To achieve the rank of Eagle Scout, I organized a service project to construct six benches for my High School. The project took around four months of planning and two days to construct, paint, and install. This experience gave me real experience in being a leader and a chance to better my community
                 </p>
               </div>
-              <div className={`${styles.journeyImage} h-[30vw] w-[40%] lg:h-[12vw] lg:w-[55%]`}  >
+              <div className={`${styles.journeyImage} h-[30vw] w-[35%] lg:h-[12vw] lg:w-[55%]`}  >
                 <Image alt='front picture' src="/fiverrlogo.jpg" fill style={{"borderRadius":"0.5rem"}}/>
               </div>
               <div className='col-span-1'>
@@ -437,13 +439,13 @@ const Index = (props:props) => {
                         </h2>
                         <div className='mt-4'>
                             { (data.youtube) ?
-                              <div className={` ${styles.journeyImage} w-[10rem] lg:w-[30rem] h-72`}>
+                               <div className={` ${styles.journeyImage} md:w-full  `}>
                               
-                              <Suspense fallback={<h3>loading</h3>}>
-
-                                <YoutubeVideo   vId={data.mediaLink}/>
-                              </Suspense>
-                              </div>
+                               <Suspense fallback={<h3>loading</h3>}>
+ 
+                                 <YoutubeVideo className={'h-52 sm:h-72'}  vId={data.mediaLink}/>
+                               </Suspense>
+                               </div>
                             :
                             <div className={`${styles.journeyImage} w-[15rem] sm:w-96 h-36 sm:h-72`}  >
                               <Image alt='front picture'src={data.mediaLink} fill style={{"borderRadius":"0.5rem"}}/>

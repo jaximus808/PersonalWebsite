@@ -111,8 +111,7 @@ const Footer: NextPage<Props> = (props) => {
 
                     <h5 style={{}}>The background is inspired by the Einstein Rosen Bridge theory where a black hole at time zero, when its embedded in mathematics, creates a geometric &quot;funnel&quot; shape with an empty center in the middle in both the positive and negative direction, aka a theoretical wormhole.</h5>
                     <p></p>
-                    <a rel="noreferrer" style={{textDecoration: "underline",display:"block"}} target={"_blank"} href={"https://github.com/jaximus808/PersonalWebsite"}><h5>{"Visit this website's source code here"}</h5></a>
-                </div>
+                     </div>
             </div>
     )
 }

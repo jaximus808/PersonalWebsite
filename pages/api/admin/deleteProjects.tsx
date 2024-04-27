@@ -11,12 +11,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) =>
         return res.status(400).json({pass: false,message: "HM?"});
     }
 
-    const blogDetails = req.body;
-    console.log(blogDetails)
+    const projectDetails = req.body;
+    console.log(projectDetails)
     try{
         const savedDetails = await prisma.projects.delete({
             where: {
-                name: blogDetails.post_name
+                name: projectDetails.post_name
             }
         });
         res.json({

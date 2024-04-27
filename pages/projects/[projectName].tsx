@@ -12,7 +12,7 @@ import { getCookies, getCookie, setCookies, removeCookies } from 'cookies-next';
 import Link from 'next/link'
 import * as jsonwebtoken from "jsonwebtoken";
 import { useState } from 'react'
- 
+import { Suspense } from 'react'
 import Image from 'next/image'
 
 import {PrismaClient, Prisma, Projects} from "@prisma/client"
@@ -202,7 +202,6 @@ const Index: React.FC<props> = props => {
   return ( 
   <div>
 
-<Background/> 
       <Head>
         <title>Jaxon Poentis</title>
         <meta name="description" content="Personal Page For Jaxon Poentis" />
@@ -212,32 +211,39 @@ const Index: React.FC<props> = props => {
       </Head>
       
         <Header/>
-        <div className={styles.maincotainer}>
-                <div className={styles.textContainer}>
+        <div className={`${styles.maincotainer_project} `}>
+            <div className={styles.textContainer}>
+
                     
                 <div>
-                    <Link href='/projects'>
+                    {/* <Link href='/projects'>
                         <div style={{textDecoration: "underline", "cursor":"pointer"}} >{"<-"} Look At More Projects</div>
-                    </Link>
+                    </Link> */}
                     
                     <h1 className='text-3xl text-center'>
-                        Project: {props.projectData.name}
-                    </h1>
+                        {props.projectData.name.replace(/_/g," ")}
+                    </h1><br></br>
                 </div>
                 </div>
 
                 <div className={styles.textContainer}>
                 {(props.exist) ?
-                <div>
+                <div className='px-4'> 
                     
                     <h2>
-                        Created on: {props.projectData.projectDate}
+                        Created on: {new Date(props.projectData.projectDate).toLocaleDateString()}
                     </h2>
+                    <br></br>
                     <div >
                         { (props.projectData.youtube) ?
                         
-
-                            <YoutubeVideo  vId={props.projectData.mediaLink}/>
+                        <div className={` ${styles.journeyImage} w-[22rem] h-72`}>
+                              
+                        <Suspense fallback={<h3>loading</h3>}>
+                          <YoutubeVideo  vId={props.projectData.mediaLink}/>
+                        </Suspense>
+                        </div>
+                            
                             
                         :
                         <Image src={props.projectData.mediaLink} className='relative left-1/2 translate-x-[-50%]' width={700} height={500} alt='media'/> 
@@ -284,7 +290,6 @@ const Index: React.FC<props> = props => {
                         </div>
                     </div>
                 </li> */}
-            <Footer authSense={false} authenticated={false}/>
         </div>
     </div>
   )

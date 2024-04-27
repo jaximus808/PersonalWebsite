@@ -157,8 +157,7 @@ const Index: React.FC<props> = props => {
       
         <Header/>
         <div className={styles.MainContainerBlog}>
-
-                <div className={`bg-[#121212] ${styles.fontNormal} p-4 mt-4`}>
+            <div className={`bg-[#121212] ${styles.fontNormal} p-4 mt-4`}>
                 {(props.exist) ?
                 <div>
                   <h1 className='text-center text-5xl border-b-2 pb-4'>

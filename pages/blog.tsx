@@ -319,12 +319,12 @@ const Index:React.FC<props> = props => {
                     <button className='cursor-pointer hover:bg-[rgb(31,0,33)] text-xl duration-500 hover:text-3xl rounded-3xl text-white'  onClick={MovePageForawrd}>{showBackButton ? "➡️" :""}</button>
                   </div>
 
-                <div className='md:border-r-2 border-white border-solid md:mr-4 '>
+                <div className='md:border-r-2 border-white border-solid md:mr-4  pb-4'>
                   <div  onClick={()=>
                     {
                       window.location.href = `/blogs/${props.blogs[0].id}`
                     }} className=' '>
-                      <div   className={`md:ml-14 ml-6 mr-6 ${styles.projectContainerText}  ${styles.gradent2} rounded-xl cursor-pointer `  }  >
+                      <div   className={`md:ml-14 ml-6 mr-6  ${styles.projectContainerText}  ${styles.gradent2} rounded-xl cursor-pointer `  }  >
                         <h2 >
                             <div className={`text-2xl`}><strong>{props.blogs[0].title}</strong></div>
                         

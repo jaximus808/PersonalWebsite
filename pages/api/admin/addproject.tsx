@@ -22,7 +22,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) =>
                 // githubLink: githubLink,
                 // date:date
 
-    console.log("MEOW")
     try{
         const savedDetails = await prisma.projects.create({
             data: projectDetails
