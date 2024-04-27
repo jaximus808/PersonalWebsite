@@ -5,7 +5,18 @@
 {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif; 
 }
+.BlogMaincotainer
+{
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 5vw);
+  /* gap: 20px; */
+  width:100%;
+  padding-top: 3rem;
 
+  position:relative;
+  z-index: 5;
+}
 .ContactMaincotainer
 {
   display: flex;
@@ -114,7 +125,7 @@
 
   background-repeat: no-repeat;
   background-attachment: fixed;
-  background-image: linear-gradient(to top, #ce81d3,#2b2f77);
+  background-color: #2b2f77 ;
   transition: 1s;
   
 }
@@ -132,7 +143,8 @@
   transition: 1s;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  background-image: linear-gradient(to top, #ce81d3,#2b2f77);
+  background-color:#2b2f77 ;
+  /* background-image: linear-gradient(to top, #ce81d3,#2b2f77); */
   
 }
 
@@ -185,6 +197,7 @@
 .textContainerBlog
 {
   
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif; 
 
   border-radius: 15px;
   color:black;

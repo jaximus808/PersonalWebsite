@@ -147,7 +147,6 @@ const Index: React.FC<props> = props => {
   return ( 
   <div>
 
-<Background/> 
       <Head>
         <title>Jaxon Poentis</title>
         <meta name="description" content="Personal Page For Jaxon Poentis" />
@@ -157,19 +156,19 @@ const Index: React.FC<props> = props => {
       </Head>
       
         <Header/>
-        <div className={styles.maincotainerBlog}>
+        <div className={styles.MainContainerBlog}>
 
-                <div className={styles.textContainerBlog}>
+                <div className={`bg-[#121212] ${styles.fontNormal} p-4 mt-4`}>
                 {(props.exist) ?
                 <div>
-                  <h1 className='text-center text-4xl '>
-                      Blog: {props.blog.title}
+                  <h1 className='text-center text-5xl border-b-2 pb-4'>
+                     <strong>{props.blog.title}</strong>
                   </h1>
 
-                  <h2>
+                  <h2 className='mt-4'>
                       Posted on: {new Date(props.blog.datePosted).toLocaleDateString()}
                   </h2>
-                  <div className='text-[1.5rem]' style={{paddingLeft:"20px"}}>
+                  <div className='mt-4 text-[1.5rem]' style={{paddingLeft:"20px"}}>
                       
                       <h3 style={{whiteSpace:'pre-wrap'}}>
                           {props.blog.content}
@@ -193,7 +192,6 @@ const Index: React.FC<props> = props => {
             
 
               
-            <Footer authSense={false} authenticated={false}/>
         </div>
     </div>
   )
