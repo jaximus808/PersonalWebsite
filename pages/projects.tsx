@@ -460,7 +460,7 @@ const Index: React.FC<props> = props => {
                               </Suspense>
                               </div>
                             :
-                            <div className={`${styles.journeyImage} w-96 h-72`}  >
+                            <div className={`${styles.journeyImage} w-full sm:w-96 h-64`}  >
                               <Image alt='front picture'src={data.mediaLink} fill style={{"borderRadius":"0.5rem"}}/>
                             </div>
                             // <Image alt='media picture' src={data.mediaLink} className='relative left-1/2 translate-x-[-50%]' width={0} height={0} style={{ width: '100%', height: 'auto' }}/>
