@@ -213,8 +213,8 @@ const Index = (props:props) => {
             <ScrollDown/>
           </div>
         </div>
-        <div className={styles.homeMaincotainer}>
-          <div className={` ${styles.textContainer} bg-white text-black py-4 `}>
+        <div className={`${styles.homeMaincotainer}`}>
+          <div className={` ${styles.textContainer} bg-white text-black py-4   border-t-[1rem] border-[#f2f2f2]`}>
             <h1 style={{"fontSize":"300%","textAlign":"center"}}><strong>Hey, Aloha, こんにちは, </strong> <br></br><span className={`${styles.fontNormal} font-normal`}>I'm Jaxon</span></h1>
             <div className={`${styles.frontImage} min-w-[300px] min-h-[400px] w-[42%] h-[50vw]`}  >
             <Image  sizes="(min-width: 768px) 100vw, 33vw" alt='front picture' src="/Frontimage2.jpg" fill style={{"borderRadius":"0.5rem"}}/>
