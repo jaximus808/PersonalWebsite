@@ -413,7 +413,7 @@ const Index: React.FC<props> = props => {
             <></>}
 
             <div className={styles.textContainer}>
-              <div className='w-full bg-[#1c1c1c] p-8 '>
+              <div className='w-full bg-[#1c1c1c] p-8 mt-8'>
                   <div className='grid md:grid-cols-3 w-full'>
                     <h1 className='text-4xl' ><strong>My Projects 🦾</strong></h1>
                     <h3 className='mt-2 md:text-center'><strong>Total Projects: {props.projects.length}</strong></h3>
