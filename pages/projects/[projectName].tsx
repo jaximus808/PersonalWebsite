@@ -221,13 +221,13 @@ const Index: React.FC<props> = props => {
                     </Link> */}
                     
                     <h1 className='text-3xl text-center'>
-                        {props.projectData.name.replace(/_/g," ")}
+                        <strong>{props.projectData.name.replace(/_/g," ")}</strong>
                     </h1><br></br>
                 </div>
                 </div>
 
                 <div className={styles.textContainer}>
-                {(props.exist) ?
+                  {(props.exist) ?
                 <div className='px-4'> 
                     
                     <h2>
@@ -249,11 +249,14 @@ const Index: React.FC<props> = props => {
                         <Image src={props.projectData.mediaLink} className='relative left-1/2 translate-x-[-50%]' width={700} height={500} alt='media'/> 
                         
                         }
-                        <h3 className='text-xl text-center'>
+                        <h3 className='text-xl text-center' style={{whiteSpace:'pre-wrap'}}>
+                          <br></br>
                             {props.projectData.description}
                             <p></p>
+
+                            <br></br>
                             <a rel="noreferrer" style={{textDecoration: "underline"}} target={"_blank"} href={`${props.projectData.linkName}`}>{"--> Check out the Repo"}</a>
-                            <p></p>
+                            
                             {(props.projectData.projectLinks != "") ? <a rel="noreferrer" style={{textDecoration: "underline"}} target={"_blank"} href={`${props.projectData.projectLinks}`}>{"--> Check out more of the project"}</a>:<></>}
                         </h3>
                     </div>
@@ -266,13 +269,15 @@ const Index: React.FC<props> = props => {
                     :
 
                     <div></div>}
-
+                  <br></br>
                 </div>
+                
             :
               
             <>
                 <div>Project does not exist</div>
             </>}
+
             </div>
             
 
