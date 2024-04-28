@@ -261,7 +261,7 @@ function System(props:any):JSX.Element
         {
             if(window.innerWidth > 1024)
             {
-                camera.lookAt(-3,4.5,36) 
+                camera.lookAt(-2.5,4.5,36) 
             }
             else 
             {
@@ -275,7 +275,7 @@ function System(props:any):JSX.Element
         console.log(60*(2000/window.innerWidth))
         if(window.innerWidth > 1024)
             {
-                camera.lookAt(-3,4.5,36) 
+                camera.lookAt(-2.5,4.5,36) 
             }
             else 
             {
