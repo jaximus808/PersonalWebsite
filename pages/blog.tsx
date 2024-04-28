@@ -318,38 +318,39 @@ const Index:React.FC<props> = props => {
                     <button className='cursor-pointer hover:bg-[rgb(31,0,33)] text-xl duration-500 hover:text-3xl rounded-3xl text-white' onClick={MovePageBackward}>{showBackButton ? "⬅️" :""} </button>
                     <button className='cursor-pointer hover:bg-[rgb(31,0,33)] text-xl duration-500 hover:text-3xl rounded-3xl text-white'  onClick={MovePageForawrd}>{showBackButton ? "➡️" :""}</button>
                   </div>
-
-                <div className='md:border-r-2 border-white border-solid md:mr-4  pb-4'>
+                {props.blogs.slice(blogPage*5, (props.blogs.length > (blogPage+1)*5 )?((blogPage+1)*5):props.blogs.length).map((data:any) =>{
+                  return (
+                <div key={data.id} className='md:border-r-2 border-white border-solid md:mr-4  pb-4'>
                   <div  onClick={()=>
                     {
-                      window.location.href = `/blogs/${props.blogs[0].id}`
+                      window.location.href = `/blogs/${data.id}`
                     }} className=' '>
                       <div   className={`md:ml-14 ml-6 mr-6  ${styles.projectContainerText}  ${styles.gradent2} rounded-xl cursor-pointer `  }  >
                         <h2 >
-                            <div className={`text-2xl`}><strong>{props.blogs[0].title}</strong></div>
+                            <div className={`text-2xl`}><strong>{data.title}</strong></div>
                         
                         </h2>
                         <h3 >
-                            <div  style={{ "cursor":"pointer",overflowWrap: "break-word"}}>{new Date(props.blogs[0].datePosted).toLocaleDateString()}</div>
+                            <div  style={{ "cursor":"pointer",overflowWrap: "break-word"}}>{new Date(data.datePosted).toLocaleDateString()}</div>
                         
                         </h3>
                         <div >
                             
                             <h3  className={"ml-4 text-xl my-4"} style={{'overflow':'hidden',WebkitLineClamp:4, WebkitBoxOrient:"vertical",display:"-webkit-box"}}>
-                            {props.blogs[0].content}
+                            {data.content}
                             </h3>
                             <p></p>
 
                             
                             <p></p>
-                            <Link className='text-xl' style={{textDecoration: "underline"}} href={`/blogs/${props.blogs[0].id}`}><div style={{textDecoration: "underline", 'cursor':'pointer'}}>{"-> Read More Here"}</div></Link>
+                            <Link className='text-xl' style={{textDecoration: "underline"}} href={`/blogs/${data.id}`}><div style={{textDecoration: "underline", 'cursor':'pointer'}}>{"-> Read More Here"}</div></Link>
                     
                         </div>
                     </div>
                   </div>
                 </div>
                 
-                    
+                )})}
                 
             </div>
             
