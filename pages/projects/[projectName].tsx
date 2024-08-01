@@ -18,14 +18,16 @@ import Image from 'next/image'
 import {PrismaClient, Prisma, Projects} from "@prisma/client"
 
 import Youtube from "react-youtube"
+
 function YoutubeVideo(props:any)
 {
   function _onReady(event:any) {
     event.target.pauseVideo();
   }
   const opts = {
-    height: "390",
-    width: "640",
+
+    height: "380",
+    width: "100%",
     playerVars: {
       autoplay: 1,
     },
@@ -39,6 +41,7 @@ function YoutubeVideo(props:any)
   );
   
 }
+
 const prisma = new PrismaClient();
 // type ProjectProp =
 // {
@@ -151,10 +154,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             }
         )
         console.log(projectName.toString())
+        const proj_data = JSON.parse(JSON.stringify(project))[0]
+        if(!proj_data)
+        {
+          throw "error"
+        }
         return{
             props:
             {
-                projectData:JSON.parse(JSON.stringify(project))[0],
+                projectData:proj_data,
                 exist: true,
                 authenticated:authenticated,
                 id:projectName,
@@ -164,13 +172,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     catch
     {
         return{
-            props:
-            {
-                id:projectName,
-                project:[],
-                exist: false,
-                authenticated:authenticated
-            }
+          redirect: {
+            permanent: false,
+            destination: "/projects",
+          },
+          props:{},
           }
     }
   
@@ -220,7 +226,7 @@ const Index: React.FC<props> = props => {
                         <div style={{textDecoration: "underline", "cursor":"pointer"}} >{"<-"} Look At More Projects</div>
                     </Link> */}
                     
-                    <h1 className='text-3xl text-center'>
+                    <h1 className='text-3xl text-center px-4'>
                         <strong>{props.projectData.name.replace(/_/g," ")}</strong>
                     </h1><br></br>
                 </div>
@@ -237,12 +243,13 @@ const Index: React.FC<props> = props => {
                     <div >
                         { (props.projectData.youtube) ?
                         
-                        <div className={` ${styles.journeyImage} w-[22rem] h-72`}>
+                        <div className={` ${styles.journeyImage} sm:w-[40rem] h-96`}>
                               
-                        <Suspense fallback={<h3>loading</h3>}>
-                          <YoutubeVideo  vId={props.projectData.mediaLink}/>
-                        </Suspense>
-                        </div>
+                              <Suspense fallback={<h3>loading</h3>}>
+
+                                <YoutubeVideo   vId={props.projectData.mediaLink}/>
+                              </Suspense>
+                            </div>
                             
                             
                         :
@@ -251,13 +258,15 @@ const Index: React.FC<props> = props => {
                         }
                         <h3 className='text-xl text-center' style={{whiteSpace:'pre-wrap'}}>
                           <br></br>
-                            {props.projectData.description}
+                              <div style={{whiteSpace:'pre-wrap'}}>
+                                {props.projectData.description}
+                              </div>
                             <p></p>
 
                             <br></br>
-                            <a rel="noreferrer" style={{textDecoration: "underline"}} target={"_blank"} href={`${props.projectData.linkName}`}>{"--> Check out the Repo"}</a>
-                            
-                            {(props.projectData.projectLinks != "") ? <a rel="noreferrer" style={{textDecoration: "underline"}} target={"_blank"} href={`${props.projectData.projectLinks}`}>{"--> Check out more of the project"}</a>:<></>}
+                            <a rel="noreferrer" style={{textDecoration: "underline"}} target={"_blank"} href={`${props.projectData.linkName}`}>{"➡️ Check out the Repo"}</a>
+                            <br></br>
+                            {(props.projectData.projectLinks != "") ? <a rel="noreferrer" style={{textDecoration: "underline"}} target={"_blank"} href={`${props.projectData.projectLinks}`}>{"➡️ Check out more of the project"}</a>:<></>}
                         </h3>
                     </div>
                     {(props.authenticated) ?

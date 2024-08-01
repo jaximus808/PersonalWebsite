@@ -80,27 +80,27 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     projects = []
   }
  
-    let  pastFavoriteProjects:any;
-    try
-    {
-        pastFavoriteProjects = await prisma.projects.findMany({
-        where:
-        {
-            favorite:true
-        }
-        })
-    
-    }
-    catch
-    {
-        pastFavoriteProjects = [];
-    }
+  let  pastFavoriteProjects:any;
+  try
+  {
+      pastFavoriteProjects = await prisma.projects.findMany({
+      where:
+      {
+          favorite:true
+      }
+      })
+  
+  }
+  catch
+  {
+      pastFavoriteProjects = [];
+  }
   //console.log(projects
   return {
     props: 
       {
         auth: authenticated,
-        projects:JSON.parse(JSON.stringify(projects)),
+        projects:JSON.parse(JSON.stringify(projects)).reverse(),
         favorite_projects:JSON.parse(JSON.stringify(pastFavoriteProjects))
       },
   }
@@ -448,6 +448,11 @@ const Index: React.FC<props> = props => {
                         <h2>
                             
                             <div className='text-2xl font-bold font-italic' style={{overflowWrap: "break-word","cursor":"pointer",textDecoration: "",}}>{data.name.replace(/_/g," ")}</div>
+                          
+                        </h2>
+                        <h2>
+                            
+                            <div className='text-1xl  font-italic' style={{overflowWrap: "break-word","cursor":"pointer",textDecoration: "",}}>{data.projectDate}</div>
                           
                         </h2>
                         <div className='mt-4'>
