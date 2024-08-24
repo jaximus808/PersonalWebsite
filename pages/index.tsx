@@ -267,7 +267,7 @@ const Index = (props:props) => {
               </div>
               <div className='col-span-1'>
                 <h1 className={'text-3xl'}><strong>WU Robotics</strong></h1>
-                <h1 className={'text-xl text-[#3885f2]'}><i>Swarm Team | Software | AI and Navigation</i></h1>
+                <h1 className={'text-xl text-[#3885f2]'}><i>Swarm Team | Software Lead | AI and Navigation</i></h1>
                 <h1 className={'text-xl text-[#04007a]'}><i>2023 - Present</i></h1>
                 <br></br>
                 <p>
