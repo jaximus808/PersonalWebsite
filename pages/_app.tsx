@@ -2,6 +2,7 @@ import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import localFont from 'next/font/local'
 import Head from 'next/head'
+import { Analytics } from '@vercel/analytics/react';
 const titleFont = localFont({
   
   src:'./fonts/Tourner.ttf',
@@ -37,6 +38,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <main className={`${titleFont.variable} ${textFont.className}` }>
      
       <Component {...pageProps} />
+      <Analytics />
     </main>
   )
 }
