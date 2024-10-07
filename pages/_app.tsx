@@ -3,6 +3,7 @@ import type { AppProps } from 'next/app'
 import localFont from 'next/font/local'
 import Head from 'next/head'
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 const titleFont = localFont({
   
   src:'./fonts/Tourner.ttf',
@@ -39,6 +40,7 @@ function MyApp({ Component, pageProps }: AppProps) {
      
       <Component {...pageProps} />
       <Analytics />
+      <SpeedInsights />
     </main>
   )
 }
