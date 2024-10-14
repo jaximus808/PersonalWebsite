@@ -215,13 +215,20 @@ const Index = (props:props) => {
         </div>
         <div className={`${styles.homeMaincotainer}`}>
           <div className={` ${styles.textContainer} bg-white text-black py-4   border-t-[1rem] border-[#f2f2f2]`}>
-            <h1 style={{"fontSize":"300%","textAlign":"center"}}><strong>Hey, Aloha, こんにちは, </strong> <br></br><span className={`${styles.fontNormal} font-normal`}>I'm Jaxon</span></h1>
-            <div className={`${styles.frontImage} min-w-[300px] min-h-[400px] w-[42%] h-[50vw]`}  >
-            <Image  sizes="(min-width: 768px) 100vw, 33vw" alt='front picture' src="/Frontimage2.jpg" fill style={{"borderRadius":"0.5rem"}}/>
+            <h1 style={{"textAlign":"center"}} className='text-5xl'><strong>Aloha 🤙 </strong> </h1>
+            <br></br>
+            <div className={`${styles.frontImage} min-w-[250px] min-h-[300px] w-[25vw] h-[30vw]`}  >
+            <Image  sizes="(min-width: 768px) 100vw, 30w" alt='front picture' src="/prof_pic.jpg" fill style={{"borderRadius":"0.5rem"}}/>
             </div>
-            
+
+           
             <div className='w-3/5 relative left-1/2 translate-x-[-50%]'>
-              <h2 className={`${styles.fontNormal}  font-meduim text-2xl mt-5`} style={{"textAlign":"center"}}>My name is Jaxon Poentis and I am born and raised from Hawaii! I am a self-taught programmer and am passionate about building projects that will empower the future 
+              <h3 
+              className={`${styles.fontNormal} mt-4 font-semibold relative text-[2rem] lg:text-[3.5vw]`} 
+              style={{ textAlign:'center'}}>
+              I'm Jaxon
+              </h3>
+              <h2 className={`${styles.fontNormal}  font-meduim text-xl mt-5`} style={{"textAlign":"center"}}>My name is Jaxon Poentis and I am born and raised from Hawaii! I am a self-taught programmer and am passionate about building projects that will empower the future 
               {/* I am currently attending <span className='font-bold'>Washington University in St. Louis</span> 🧸 studying Computer Science and Business!  */}
             </h2>
             </div>
