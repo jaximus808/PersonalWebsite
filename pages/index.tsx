@@ -217,22 +217,48 @@ const Index = (props:props) => {
           <div className={` ${styles.textContainer} bg-white text-black py-4   border-t-[1rem] border-[#f2f2f2]`}>
             <h1 style={{"textAlign":"center"}} className='text-5xl'><strong>Aloha 🤙 </strong> </h1>
             <br></br>
-            <div className={`${styles.frontImage} min-w-[250px] min-h-[300px] w-[25vw] h-[30vw]`}  >
-            <Image  sizes="(min-width: 768px) 100vw, 30w" alt='front picture' src="/prof_pic.jpg" fill style={{"borderRadius":"0.5rem"}}/>
-            </div>
+            <div className='grid md:grid-cols-2 w-[85%] relative left-1/2 translate-x-[-50%] gap-x-24'>
+              <div className={`${styles.frontImage}  md:w-[22rem] md:h-[27rem] min-w-[250px] min-h-[300px] w-[25vw] h-[30vw]`}  >
+                <Image  sizes="(min-width: 768px) 100vw, 30w" alt='front picture' src="/prof_pic.jpg" fill style={{"borderRadius":"0.5rem"}}/>
+              </div>
 
-           
-            <div className='w-3/5 relative left-1/2 translate-x-[-50%]'>
-              <h3 
-              className={`${styles.fontNormal} mt-4 font-semibold relative text-[2rem] lg:text-[3.5vw]`} 
-              style={{ textAlign:'center'}}>
-              I'm Jaxon
-              </h3>
-              <h2 className={`${styles.fontNormal}  font-meduim text-xl mt-5`} style={{"textAlign":"center"}}>My name is Jaxon Poentis and I am born and raised from Hawaii! I am a self-taught programmer and am passionate about building projects that will empower the future 
-              {/* I am currently attending <span className='font-bold'>Washington University in St. Louis</span> 🧸 studying Computer Science and Business!  */}
-            </h2>
+            
+              <div className='w-full md:w-4/5'>
+                <br></br>
+                <h2 className={`${styles.fontNormal}  font-meduim text-xl mt-5 md:text-left text-center` }><span>I'm Jaxon,</span> I am born and raised from Hawaii! I am a self-taught programmer and now studying CS + Math at WashU. I am very passionate about building software projects that will empower the future  </h2>
+                <br></br>
+                <h1 className='text-3xl md:text-left text-center'>
+                  <strong> Connect With Me 👋</strong>
+                </h1>
+              <br></br>
+              <div className=' mt-8 grid grid-cols-2 w-4/5 md:w-full relative left-1/2 translate-x-[-50%] gap-y-8'>
+                              
+                <div>
+                  <div style={{marginBottom: "20px"}} className='relative left-1/2 md:left-0 translate-x-[-25%] md:translate-x-[0] ' >
+                    
+                      <a rel="noreferrer" target={"_blank"}href='https://www.linkedin.com/in/jaxon-poentis/'>
+                      <img  className={styles.gmailLogo} src='/linkdinLogo.png'/>
+                      </a>
+                    </div>
+                  </div>
+                <div>
+                  
+                <div   style={{marginBottom: "20px"}} className='relative left-1/2 md:left-0 md:translate-x-[0] ' >
+                  
+                    <a rel="noreferrer" target={"_blank"}href='https://github.com/jaximus808'> 
+                    <img  className={`${styles.normallogo} rounded-full` } src='/githublogo.png'/>
+                    </a>
+                  </div>
+                </div>
+              </div>
+                {/* I am currently attending <span className='font-bold'>Washington University in St. Louis</span> 🧸 studying Computer Science and Business!  */}
+               
+                <br></br>
+                <br></br>
+                <br></br>
             </div>
-            <h3 style={{"textAlign":"center"}}> </h3>
+            
+           
           </div>
           <div className={` py-4 ${styles.textContainer} text-black  bg-[#faf7f5]`}>
             <h1 style={{"fontSize":"300%","textAlign":"center"}}><strong>My Path </strong>
@@ -475,38 +501,7 @@ const Index = (props:props) => {
                 </div>:<h3 className='text-center text-3xl'>Sorry Projects Could Not Be Loaded, Try Again!</h3>):<h3 className='text-center text-3xl' >Loading...</h3>} 
 
               </div>
-              <div className={`${styles.fontNormal} py-8 text-center bg-[#171717] text-white `}>
-            <h1 className='text-4xl'>
-              <strong> Connect With Me 👋</strong>
-            </h1>
-            <br></br>
-            <div className=' mt-8 grid  md:grid-cols-3 w-4/5 relative left-1/2 translate-x-[-50%] gap-y-8'>
-                            
-              <div>
-                <div style={{marginBottom: "20px"}} >
-                  
-                    <a rel="noreferrer" target={"_blank"}href='https://www.linkedin.com/in/jaxon-poentis/'>
-                    <img  className={styles.gmailLogo} src='/linkdinLogo.png'/>
-                    </a>
-                  </div>
-                </div>
-              <div>
-                <div style={{marginBottom: "20px"}} >
-                  
-                    <a rel="noreferrer" target={"_blank"}href='https://twitter.com/Jaxonpoentis'>
-                    <img  className={styles.normallogo} src='/twitterlogo.png'/>
-                    </a>
-                  </div>
-                </div>
-                <div>
-                <div   style={{marginBottom: "20px"}} >
-                  
-                    <a rel="noreferrer" target={"_blank"}href='https://github.com/jaximus808'> 
-                    <img  className={`${styles.normallogo} rounded-full` } src='/githublogo.png'/>
-                    </a>
-                  </div>
-                </div>
-            </div>
+             
           </div>
 
           <div className={`${styles.textContainer} py-4  bg-[#0a0a0a] text-white`} style={{"textAlign":"center"}}>

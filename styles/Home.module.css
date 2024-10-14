@@ -271,15 +271,19 @@
 }
 .gmailLogo:hover
 {
-  max-width: 8.5vw;;
-  width: 8.5vw;
+  max-width: 6rem;
+  transform: translate(-5%,0);
+  width: 9vw;
+  min-width: 5rem;
 }
 .gmailLogo
 {
   border-radius: 12.5%;
   display: inline;
+
   width: 8vw;
-  max-width: 100px;
+  max-width: 5rem;
+  min-width: 4rem;
 
   min-width: 75px;
   cursor: pointer;
@@ -288,7 +292,8 @@
 .youLogo
 {
   display: inline;
-  width: 20vw;
+  width: 8vw;
+  min-width: 4rem;
   max-width: 100px;
 
   min-width: 75px;
@@ -299,17 +304,20 @@
 { 
   display: inline;
   width: 8vw;
+  max-width: 5rem;
+  min-width: 4rem;
   min-width: 75px;
 
-  max-width: 100px;
   cursor: pointer;
   transition-duration: 1s;
 }
 .normallogo:hover
 { 
   display: inline;
-  max-width: 8.5vw;;
-  width: 8.5vw;
+  max-width: 6rem;
+  transform: translate(-5%,0);
+  width: 9vw;
+  min-width: 5rem;
 
   cursor: pointer;
 }
