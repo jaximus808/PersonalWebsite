@@ -213,19 +213,19 @@ const Index = (props:props) => {
             <ScrollDown/>
           </div>
         </div>
-        <div className={`${styles.homeMaincotainer}`}>
+        <div className={`${styles.homeMaincotainer} `}>
           <div className={` ${styles.textContainer} bg-white text-black py-4   border-t-[1rem] border-[#f2f2f2]`}>
             <h1 style={{"textAlign":"center"}} className='text-5xl'><strong>Aloha 🤙 </strong> </h1>
             <br></br>
-            <div className='grid md:grid-cols-2 w-[85%] relative left-1/2 translate-x-[-50%] gap-x-24'>
-              <div className={`${styles.frontImage}  md:w-[22rem] md:h-[27rem] min-w-[250px] min-h-[300px] w-[25vw] h-[30vw]`}  >
-                <Image  sizes="(min-width: 768px) 100vw, 30w" alt='front picture' src="/prof_pic.jpg" fill style={{"borderRadius":"0.5rem"}}/>
+            <div className='grid md:grid-cols-2 w-full h-full py-4 relative left-1/2 translate-x-[-50%] gap-x-24'>
+              <div className={`${styles.frontImage} md:ml-10 md:w-[30vw] md:min-h-[28rem] md:min-w-[24rem] md:h-[35vw] min-w-[250px] min-h-[300px] w-[20vw] h-[40vw]`}  >
+                <img  className='w-full h-full' alt='front picture' src="/swag_f.jpg"  style={{"borderRadius":"0.5rem"}}/>
               </div>
 
             
               <div className='w-full md:w-4/5'>
                 <br></br>
-                <h2 className={`${styles.fontNormal}  font-meduim text-xl mt-5 md:text-left text-center` }><span>I'm Jaxon,</span> I am born and raised from Hawaii! I am a self-taught programmer and now studying CS + Math at WashU. I am very passionate about building software projects that will empower the future  </h2>
+                <h2 className={`${styles.fontNormal}  font-meduim text-xl mt-5 md:text-left px-4  text-center` }><span>I'm Jaxon,</span> I am born and raised from Hawaii! I am a self-taught programmer and now studying CS + Math at WashU. I am very passionate about building software projects that will empower the future  </h2>
                 <br></br>
                 <h1 className='text-3xl md:text-left text-center'>
                   <strong> Connect With Me 👋</strong>
@@ -449,6 +449,7 @@ const Index = (props:props) => {
 
 
           <div className={`${styles.textContainer} ${styles.projectGradientBackground} py-4  text-white `}>
+          
           <Link href={'/projects'}><h1 style={{"fontSize":"250%","textAlign":"center", "cursor":"pointer"}}><strong className='hover:text-[#a3cbff] duration-200'>My Favorite Projects 🧑‍💻</strong></h1></Link>
           
           {

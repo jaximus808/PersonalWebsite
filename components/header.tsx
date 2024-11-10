@@ -55,8 +55,8 @@ const Header: NextPage = () => {
     <>
       <div ref={headerRef}  className={`${styles.navBar}`}>
           
-          <div className={`${styles.links} font-caviar relative top-1/2 translate-y-[-50%]`}>
-            <span className={styles.homeLink} style={{fontStyle:"italic", marginLeft:"2vw"}}>
+          <div className={`${styles.links} font-caviar font-bold relative top-1/2 translate-y-[-50%]`}>
+            <span className={styles.homeLink} style={{ marginLeft:"2vw"}}>
               <Link href='/'>Jaxon Poentis</Link>
               
               </span>

@@ -97,6 +97,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                 }
             }
         )
+
+        
         return{
             props:
             {
@@ -157,21 +159,43 @@ const Index: React.FC<props> = props => {
       
         <Header/>
         <div className={styles.MainContainerBlog}>
-            <div className={`bg-[#121212] ${styles.fontNormal} p-4 mt-4`}>
+            <div className={`bg-[#121212] ${styles.fontNormal} p-4 mt-8`}>
                 {(props.exist) ?
                 <div>
-                  <h1 className='text-center text-5xl border-b-2 pb-4'>
+                  <h1 className='text-center text-5xl border-b-2 pb-4 '>
                      <strong>{props.blog.title}</strong>
                   </h1>
 
-                  <h2 className='mt-4'>
+                  <h2 className='mt-4 text-center'>
                       Posted on: {new Date(props.blog.datePosted).toLocaleDateString()}
                   </h2>
-                  <div className='mt-4 text-[1.5rem]' style={{paddingLeft:"20px"}}>
+                  <div className='mt-4 text-[1.25rem] w-4/5 min-w-[20rem] sm:w-3/5 sm:min-w-[30rem] relative left-1/2 translate-x-[-50%] font-[350] bg-[#222222] p-4 rounded-lg' >
                       
-                      <h3 style={{whiteSpace:'pre-wrap'}}>
-                          {props.blog.content}
-                      </h3>
+                      {props.blog.content.split("*").map((data:any, key:any) =>{
+                        
+                        if(data.length == 0) return <div key={key}></div>
+                        if(data.length >= 3 && data.substring(0, 3) == "<i>")
+                        {
+                          return <img key={key} src={data.substring(3)}/>
+                        }
+                        else if (data.length >= 3 && data.substring(0, 3) == "<b>")
+                        {
+                          return <h3 key={key} className='font-bold' style={{whiteSpace:'pre-wrap'}}>
+                          {data.substring(3)}
+                        </h3>
+                        }
+                        else
+                        {
+                          return <h3 key={key} style={{whiteSpace:'pre-wrap'}}>
+                            {data}
+                          </h3>
+                        }
+                        
+
+
+                      })}
+                      
+                     
                   </div>
                   {(props.authenticated)?
                   

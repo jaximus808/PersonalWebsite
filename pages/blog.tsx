@@ -12,7 +12,6 @@ import Link from 'next/link'
 
 import jsonwebtoken from 'jsonwebtoken'
 
-const prisma = new PrismaClient();
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
 type props = 
 {
@@ -45,23 +44,12 @@ const parsedCookies = cookies.parse(context.req.headers.cookie?context.req.heade
     }
     
   }
-  let blogs:any;
-  try  
-  {
-        blogs = await prisma.blog.findMany()
-        blogs.reverse()
-    }
-    catch
-    {
-        blogs = []; 
-    }
-
+  
   
 
     console.log(authenticated)
   return {
     props:{
-      blogs: JSON.parse(JSON.stringify(blogs)),
       auth:authenticated
     }
   }
@@ -165,6 +153,36 @@ function ScrollDown(props:any)
 
 const Index:React.FC<props> = props => {
 
+  const [loading, isLoading] = useState(true)
+  const [blogs, setBlogs] = useState([])
+
+  async function getInitialData()
+    {
+      try 
+      {
+        const res = await fetch('/api/getBlogs/', {
+          method:"GET",
+          headers:
+              {
+                  'Content-Type': 'application/json',
+              },
+        })
+        const data = await res.json()
+        data.blogs.reverse()
+        setBlogs(data.blogs)
+        isLoading(false)
+      }
+      catch  (e)
+      {
+        return{fail:true, pastProjFav:[], recentBlogs:[]}
+      }
+    }
+  
+    useEffect(()=>
+    {
+      getInitialData(); 
+
+    }, [])
     console.log(props)
     const AddBlog = async(e:any) => 
     {
@@ -206,7 +224,7 @@ const Index:React.FC<props> = props => {
     }
     const [blogPage, setProjectPage] = useState(0);
 
-    const [showForwardButton, setShowForwardButton] = useState(props.blogs.length > 5 );
+    const [showForwardButton, setShowForwardButton] = useState(blogs.length > 5 );
     const [showBackButton, setShowBackButton] = useState(false);
   
     const [blogName, setBlogName] = useState("");
@@ -219,9 +237,9 @@ const Index:React.FC<props> = props => {
     console.log(showForwardButton)
     const MovePageForawrd = () =>
     {
-      if(props.blogs.length <= (blogPage+1)*5) return; 
+      if(blogs.length <= (blogPage+1)*6) return; 
       setProjectPage(blogPage+1);
-      if(props.blogs.length <= (blogPage+2)*5)
+      if(blogs.length <= (blogPage+2)*6)
       {
         setShowForwardButton(false)
       }
@@ -235,7 +253,7 @@ const Index:React.FC<props> = props => {
     }
     const MovePageBackward = () =>
     {
-      if(props.blogs.length <= (blogPage-1)*5) return; 
+      if(blogs.length <= (blogPage-1)*6) return; 
       setProjectPage(blogPage-1);
       if((blogPage-2)*5 < 0 )
       {
@@ -308,7 +326,7 @@ const Index:React.FC<props> = props => {
                 <div className='w-full bg-[#1c1c1c] p-8 '>
                   <div className='grid md:grid-cols-3 w-full'>
                   <h1 className='text-4xl' ><strong>My Blogs 💡</strong></h1>
-                  <h3 className='mt-2 md:text-center'><strong>Total Blogs: {props.blogs.length}</strong></h3>
+                  <h3 className='mt-2 md:text-center'><strong>Total Blogs: {blogs.length}</strong></h3>
                   <h1 className='mt-2 md:text-center'><strong>Page: {blogPage+1}</strong></h1>
                   </div>
                   
@@ -318,16 +336,23 @@ const Index:React.FC<props> = props => {
                     <button className='cursor-pointer hover:bg-[rgb(31,0,33)] text-xl duration-500 hover:text-3xl rounded-3xl text-white' onClick={MovePageBackward}>{showBackButton ? "⬅️" :""} </button>
                     <button className='cursor-pointer hover:bg-[rgb(31,0,33)] text-xl duration-500 hover:text-3xl rounded-3xl text-white'  onClick={MovePageForawrd}>{showBackButton ? "➡️" :""}</button>
                   </div>
-                {props.blogs.slice(blogPage*5, (props.blogs.length > (blogPage+1)*5 )?((blogPage+1)*5):props.blogs.length).map((data:any) =>{
+                {(loading) ? 
+                <div className='md:ml-14 ml-6 mr-6 font-bold text-xl'>
+                  Loading...
+                </div> 
+                :
+                <div className='grid grid-cols-1 md:grid-cols-2 px-8 gap-y-4 gap-x-8'>
+                  {
+                blogs.slice(blogPage*6, (blogs.length > (blogPage+1)*6 )?((blogPage+1)*6):blogs.length).map((data:any) =>{
                   return (
-                <div key={data.id} className='md:border-r-2 border-white border-solid md:mr-4  pb-4'>
+                <div key={data.id} className='pb-4'>
                   <div  onClick={()=>
                     {
                       window.location.href = `/blogs/${data.id}`
                     }} className=' '>
-                      <div   className={`md:ml-14 ml-6 mr-6  ${styles.projectContainerText}  ${styles.gradent2} rounded-xl cursor-pointer `  }  >
+                      <div   className={`  ${styles.projectContainerText}  ${styles.gradent2} rounded-xl cursor-pointer `  }  >
                         <h2 >
-                            <div className={`text-2xl`}><strong>{data.title}</strong></div>
+                            <div className={`text-2xl`} style={{'overflow':'hidden',WebkitLineClamp:1, WebkitBoxOrient:"vertical",display:"-webkit-box"}} ><strong>{data.title}</strong></div>
                         
                         </h2>
                         <h3 >
@@ -337,7 +362,27 @@ const Index:React.FC<props> = props => {
                         <div >
                             
                             <h3  className={"ml-4 text-xl my-4"} style={{'overflow':'hidden',WebkitLineClamp:4, WebkitBoxOrient:"vertical",display:"-webkit-box"}}>
-                            {data.content}
+                            {
+                            
+                              data.content.split("*").map((data:any, key:any) =>{
+                        
+                                  if(data.length == 0) return ""
+                                  if(data.length >= 3 && data.substring(0, 3) == "<i>")
+                                  {
+                                    return ""
+                                  }
+                                  else if(data.length >= 3 && data.substring(0, 3) == "<b>")
+                                    {
+                                      return data.substring(4)
+                                    }
+                                  else
+                                  {
+                                    return data
+                                  }
+                                })
+                            
+                            
+                            }
                             </h3>
                             <p></p>
 
@@ -350,7 +395,7 @@ const Index:React.FC<props> = props => {
                   </div>
                 </div>
                 
-                )})}
+                )})}</div> }
                 
             </div>
             
