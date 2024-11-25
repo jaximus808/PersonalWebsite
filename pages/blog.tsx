@@ -170,6 +170,7 @@ const Index:React.FC<props> = props => {
         const data = await res.json()
         data.blogs.reverse()
         setBlogs(data.blogs)
+        setShowForwardButton(data.blogs.length > 6)
         isLoading(false)
       }
       catch  (e)
@@ -224,7 +225,7 @@ const Index:React.FC<props> = props => {
     }
     const [blogPage, setProjectPage] = useState(0);
 
-    const [showForwardButton, setShowForwardButton] = useState(blogs.length > 5 );
+    const [showForwardButton, setShowForwardButton] = useState(blogs.length > 6 );
     const [showBackButton, setShowBackButton] = useState(false);
   
     const [blogName, setBlogName] = useState("");
@@ -329,13 +330,14 @@ const Index:React.FC<props> = props => {
                   <h3 className='mt-2 md:text-center'><strong>Total Blogs: {blogs.length}</strong></h3>
                   <h1 className='mt-2 md:text-center'><strong>Page: {blogPage+1}</strong></h1>
                   </div>
-                  
+                  {(showForwardButton || showBackButton) ?<div className='ml-2 mt-4'>
+                    <h1 > <strong>Move pages: </strong></h1>
+                    <button className='cursor-pointer hover:bg-[rgb(31,0,33)] text-xl duration-500 hover:text-3xl rounded-3xl text-white' onClick={MovePageBackward}>{showBackButton ? "⬅️" :""} </button>
+                    <button className='cursor-pointer hover:bg-[rgb(31,0,33)] text-xl duration-500 hover:text-3xl rounded-3xl text-white'  onClick={MovePageForawrd}>{showForwardButton ? "➡️" :""}</button>
+                  </div> :<></>}
                 </div>
                 <br></br>
-                <div className='ml-2 mb-4'>
-                    <button className='cursor-pointer hover:bg-[rgb(31,0,33)] text-xl duration-500 hover:text-3xl rounded-3xl text-white' onClick={MovePageBackward}>{showBackButton ? "⬅️" :""} </button>
-                    <button className='cursor-pointer hover:bg-[rgb(31,0,33)] text-xl duration-500 hover:text-3xl rounded-3xl text-white'  onClick={MovePageForawrd}>{showBackButton ? "➡️" :""}</button>
-                  </div>
+              
                 {(loading) ? 
                 <div className='md:ml-14 ml-6 mr-6 font-bold text-xl'>
                   Loading...
