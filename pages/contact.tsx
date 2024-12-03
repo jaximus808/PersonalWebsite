@@ -10,6 +10,8 @@ import { useState,useEffect, useRef  } from 'react'
 import prisma from '../lib/prisma'
 import cookies from "cookie"
 
+import Link from 'next/link'
+
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
 
 
@@ -168,6 +170,8 @@ const Index = () => {
                 </div>
                 <div className='lg:pr-4 px-4 py-4'>
                     <h1 className='text-2xl'><strong>About Me</strong></h1>
+
+                    <Link className='underline text-blue-500' href={'./resume'}>📘 Resume</Link>
                     <div className='text-xl pl-4 py-4'>
                         <h1 >
                             I'm born and raised from Hawaii on the island of Hawaii, Honolulu. I am mixed with hawaiian, japanese, filippino, korean, and spanish. Currently I'm learning to speak Japanese and I'm planning to keep learning new languages!
