@@ -343,7 +343,7 @@ const Index: React.FC<props> = props => {
             <ScrollDown/>
           </div>
         </div> */}
-        <Background/>
+        {/* <Background/> */}
         
         <div className={`${styles.homeMaincotainerBlog}  w-full  bg-[#121212] text-white`}>
             <p></p>
@@ -432,7 +432,7 @@ const Index: React.FC<props> = props => {
                 {(props.projects.length === 0 ) ? 
                 <h3  style={{ "textAlign":"center",fontSize:"2vw"}}>Sorry projects could not be loaded, try again!</h3>
                 :
-                <div className='grid grid-cols-1 gap-16 p-4 lg:w-1/2'>
+                <div className='grid grid-cols-1 lg:grid-cols-2 gap-16 p-4 '>
                   {
                 props.projects.slice(projectsPage*6, (props.projects.length > (projectsPage+1)*6 )?((projectsPage+1)*6):props.projects.length).map((data:any) =>
                 {

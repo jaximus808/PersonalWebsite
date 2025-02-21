@@ -55,102 +55,6 @@ const parsedCookies = cookies.parse(context.req.headers.cookie?context.req.heade
   }
 }
 
-function RecentBlog(props:any)
-{
-  console.log(props[0])
-  console.log(props[0])
-  const data = props[0]
-
-  return (
-  <div key={data.id} onClick={()=>
-  {
-    window.location.href = `/blogs/${data.id}`
-  }} className='cursor-pointer'>
-    <div   className={`${styles.projectContainerText} rounded-xl` } style={{ "textAlign":"center",}} >
-      <h2 >
-          <div className={styles.specialLink} style={{ "cursor":"pointer",overflowWrap: "break-word",fontSize:"2.5vw",textDecoration: "underline"}}>{data.title}</div>
-      
-      </h2>
-      <h3 >
-          <div className={styles.specialLink} style={{ "cursor":"pointer",overflowWrap: "break-word",fontSize:"1.2vw",textDecoration: "underline"}}>{new Date(data.datePosted).toLocaleDateString()}</div>
-      
-      </h3>
-      <div >
-          
-          <h3 style={{fontSize:"1.5vw",'overflow':'hidden',WebkitLineClamp:4, WebkitBoxOrient:"vertical",display:"-webkit-box"}}>
-          {data.content}
-          </h3>
-          <p></p>
-
-          
-          <p></p>
-          <Link style={{fontSize:"1.5vw",textDecoration: "underline"}} href={`/blogs/${data.id}`}><div style={{textDecoration: "underline", 'cursor':'pointer'}}>{"-> Read More Here"}</div></Link>
-  
-      </div>
-  </div>
-</div>)
-}
-
-
-function ScrollDown(props:any)
-{
-
-    
-    const yRef = useRef(0);
-    const moved = useRef(false)
-    const scrollTitle:any = useRef(null);
-
-
-    const showFixed =() =>
-    {
-      scrollTitle.current.style.top = "0";
-
-      scrollTitle.current.style.color ="rgba(255,255,255,1)"
-    }
-
-    const hideFixed =() =>
-    {
-
-      scrollTitle.current.style.color ="rgba(255,255,255,0)"
-        scrollTitle.current.style.top = "50%";
-    }
-    const handleScroll =()=>
-    {
-        const y = window.pageYOffset;
-        yRef.current = y;
-        if(!moved.current && yRef.current > 0 )
-        {
-            moved.current = true
-            window.requestAnimationFrame(hideFixed);
-        }
-        if(moved.current && yRef.current ==0 )
-        {
-
-            moved.current = false
-            window.requestAnimationFrame(showFixed);
-        }
-    }
-
-    useEffect(() => 
-    {
-        window.addEventListener("scroll", handleScroll)
-        
-        const y = window.pageYOffset;
-        yRef.current = y;
-        return () =>
-        {
-            window.removeEventListener("scroll", handleScroll)
-        }
-        
-    },[])
-    return (
-      <>
-
-        <h2 className={styles.scrollDownTitle} ref={scrollTitle} style={{"fontSize":"2vw","textAlign":"center"}}>v Scroll Down v</h2> 
-      </>
-    )
-}
-
 const Index:React.FC<props> = props => {
 
   const [loading, isLoading] = useState(true)
@@ -375,7 +279,7 @@ const Index:React.FC<props> = props => {
                                   }
                                   else if(data.length >= 3 && data.substring(0, 3) == "<b>")
                                     {
-                                      return data.substring(4)
+                                      return data.substring(3)
                                     }
                                   else
                                   {

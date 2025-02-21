@@ -465,6 +465,12 @@
   top:0;
   transition-duration: 1s;
 }
+.scrollBarTitle
+{
+  position:relative;
+  top:0;
+  transition-duration: 1s;
+}
 
 .centerRel
 {

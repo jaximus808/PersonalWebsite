@@ -265,7 +265,7 @@ function System(props:any):JSX.Element
             }
             else 
             {
-                camera.lookAt(1.4,8.5,36) 
+                
             }
         }
     

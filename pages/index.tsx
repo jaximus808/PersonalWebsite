@@ -55,54 +55,6 @@ type frontData =
 
 
 
-// export const getServerSideProps: GetServerSideProps = async (context) =>
-// {
-
-//   const prisma = new PrismaClient();
-//   let  pastFavoriteProjects:any;
-//   try
-//   {
-//     pastFavoriteProjects = await prisma.projects.findMany({
-//       where:
-//       {
-//         favorite:true
-//       }
-//     })
-  
-//   }
-//   catch
-//   {
-//     pastFavoriteProjects = [];
-//   }
-//   let  recentBlogs:any;
-//   try
-//   {
-//     recentBlogs = await prisma.blog.findMany()
-
-//     if(recentBlogs.length > 4)
-//     {
-
-//       recentBlogs.splice(0, recentBlogs.length - 4)
-//     }
-//     recentBlogs.reverse();
-
-  
-//   }
-//   catch
-//   {
-//     recentBlogs = [];
-//   }
-
-  
-
-//   return {
-//     props:{
-//       pastProjFav: JSON.parse(JSON.stringify(pastFavoriteProjects)),
-//       recentBlogs: JSON.parse(JSON.stringify(recentBlogs))
-//     }
-//   }
-// }
-
 
 
 function ScrollDown(props:any)
@@ -112,13 +64,15 @@ function ScrollDown(props:any)
     const yRef = useRef(0);
     const moved = useRef(false)
     const scrollTitle:any = useRef(null);
+    const scrollbar:any = useRef(null);
 
 
     const showFixed =() =>
     {
       if(scrollTitle.current == null) return
       scrollTitle.current.style.top = "0";
-
+      scrollbar.current.style.top = "0"
+      scrollbar.current.style.opacity = "1"
       scrollTitle.current.style.color ="rgba(255,255,255,1)"
     }
 
@@ -128,6 +82,8 @@ function ScrollDown(props:any)
       if(scrollTitle.current == null) return
       scrollTitle.current.style.color ="rgba(255,255,255,0)"
         scrollTitle.current.style.top = "50%";
+        scrollbar.current.style.top = "50%";
+      scrollbar.current.style.opacity = "0"
     }
     const handleScroll =()=>
     {
@@ -161,7 +117,15 @@ function ScrollDown(props:any)
     return (
       <>
 
-        <h2 className={`${styles.scrollDownTitle}`} ref={scrollTitle} style={{"fontSize":"2rem","textAlign":"center"}}>v Scroll Down v</h2> 
+        <h2 className={`${styles.scrollDownTitle} lg:text-[2vw] text-2xl text-center font-semibold`} ref={scrollTitle} >v Scroll Down v</h2> 
+        <div  ref={scrollbar} className={`mt-4 ${styles.scrollBarTitle} flex flex-row justify-center items-center gap-8 w-[25rem] md:w-1/2 text-center p-4 rounded-full bg-[#1f2126]  lg:text-[2vw] text-2xl underline font-bold ${styles.centerRelX}`}>
+
+          <a href='#whoIam' className='hover:text-blue-300 duration-300'>Me</a>
+          <a href='#path' className='hover:text-blue-300 duration-300'>Path</a>
+          <a href='#projects' className='hover:text-blue-300 duration-300'>Projects</a>
+          <a href='#blogs' className='hover:text-blue-300 duration-300'>Blog</a>
+
+        </div>
       </>
     )
 }
@@ -209,12 +173,12 @@ const Index = (props:props) => {
         <Header/>
         <div className={styles.mainTitleName}>
           <div className={styles.centerRel}>
-            <div className='font-tourner text-center lg:text-[10vw] text-[80px]'  >Jaxon Poentis</div> 
+            <div className='font-tourner text-center md:text-[10vw] text-[80px] px-2'  >Jaxon Poentis</div> 
             <ScrollDown/>
           </div>
         </div>
-        <div className={`${styles.homeMaincotainer} `}>
-          <div className={` ${styles.textContainer} bg-white text-black py-4   border-t-[1rem] border-[#f2f2f2]`}>
+        <div id='whoIam' className={`${styles.homeMaincotainer} `}>
+          <div  className={` ${styles.textContainer} bg-white text-black pt-4   border-t-[1rem] border-[#f2f2f2]`}>
             <h1 style={{"textAlign":"center"}} className='text-5xl'><strong>Aloha 🤙 </strong> </h1>
             <br></br>
             <div className='grid md:grid-cols-2 w-full h-full py-4 relative left-1/2 translate-x-[-50%] gap-x-24'>
@@ -264,10 +228,11 @@ const Index = (props:props) => {
                 <br></br>
             </div>
             
+            <div id='path'></div>
            
           </div>
-          <div className={` py-4 ${styles.textContainer} text-black  bg-[#faf7f5]`}>
-            <h1 style={{"fontSize":"300%","textAlign":"center"}}><strong>My Path </strong>
+          <div  className={` py-4 ${styles.textContainer} text-black  bg-[#faf7f5]`}>
+            <h1  style={{"fontSize":"300%","textAlign":"center"}}><strong>My Path </strong>
             {/* <span className={`${styles.fontNormal} font-light`}>{`  |  `}</span> */}
             <br></br>
             <div className=''>
@@ -448,13 +413,13 @@ const Index = (props:props) => {
             <h1 className='text-2xl'>
               <strong><i>Life is movement. Once you stop moving, you're dead. Choose life.</i></strong>
             </h1>
-            <h1>
+            <h1 id='projects'>
               <i>Eugen Sandow</i>
             </h1>
           </div>
 
 
-          <div className={`${styles.textContainer} ${styles.projectGradientBackground} py-4  text-white `}>
+          <div  className={`${styles.textContainer} ${styles.projectGradientBackground} py-4  text-white `}>
           
           <Link href={'/projects'}><h1 style={{"fontSize":"250%","textAlign":"center", "cursor":"pointer"}}><strong className='hover:text-[#a3cbff] duration-200'>My Favorite Projects 🧑‍💻</strong></h1></Link>
           
@@ -503,12 +468,13 @@ const Index = (props:props) => {
                         </div>
                       </div>
                     </div>
+
                   </div>
                 )})}
                 </div>:<h3 className='text-center text-3xl'>Sorry Projects Could Not Be Loaded, Try Again!</h3>):<h3 className='text-center text-3xl' >Loading...</h3>} 
 
+                <div id='blogs'></div>
               </div>
-             
           </div>
 
           <div className={`${styles.textContainer} py-4  bg-[#0a0a0a] text-white`} style={{"textAlign":"center"}}>
@@ -538,7 +504,22 @@ const Index = (props:props) => {
                             </h3>
                             <br></br>
                             <h3 className='font-light text-lg' style={{'overflow':'hidden',WebkitLineClamp:6, WebkitBoxOrient:"vertical",display:"-webkit-box"}}>
-                            {data.content}
+                            {data.content.split("*").map((data:any, key:any) =>{
+                        
+                                  if(data.length == 0) return ""
+                                  if(data.length >= 3 && data.substring(0, 3) == "<i>")
+                                  {
+                                    return ""
+                                  }
+                                  else if(data.length >= 3 && data.substring(0, 3) == "<b>")
+                                    {
+                                      return data.substring(3)
+                                    }
+                                  else
+                                  {
+                                    return data
+                                  }
+                                })}
                             </h3>
 
                             <br></br>
