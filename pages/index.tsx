@@ -201,7 +201,7 @@ const Index = (props:props) => {
                   <strong> Connect With Me 👋</strong>
                 </h1>
               <br></br>
-              <div className=' mt-8 grid grid-cols-2 w-4/5 md:w-full relative left-1/2 translate-x-[-50%] gap-y-8'>
+              <div className=' mt-8 grid grid-cols-3 w-4/5 md:w-full relative left-1/2 translate-x-[-50%] gap-y-8'>
                               
                 <div>
                   <div style={{marginBottom: "20px"}} className='relative left-1/2 md:left-0 translate-x-[-25%] md:translate-x-[0] ' >
@@ -211,16 +211,27 @@ const Index = (props:props) => {
                       </a>
                     </div>
                   </div>
-                <div>
-                  
-                <div   style={{marginBottom: "20px"}} className='relative left-1/2 md:left-0 md:translate-x-[0] ' >
-                  
-                    <a rel="noreferrer" target={"_blank"}href='https://github.com/jaximus808'> 
-                    <img  className={`${styles.normallogo} rounded-full` } src='/githublogo.png'/>
-                    </a>
+                  <div>
+                    
+                    
+                  <div   style={{marginBottom: "20px"}} className='relative mt-2 left-1/2 md:left-0 md:translate-x-[0] ' >
+                    
+                      <a rel="noreferrer" target={"_blank"}href='https://www.youtube.com/@jaxonpoentis'> 
+                      <img  className={`${styles.normallogo} ` } src='/youlogo.png'/>
+                      </a>
+                    </div>
+                  </div>
+                  <div>
+                    
+                    
+                  <div   style={{marginBottom: "20px"}} className='relative left-1/2 md:left-0 md:translate-x-[0] ' >
+                    
+                      <a rel="noreferrer" target={"_blank"}href='https://github.com/jaximus808'> 
+                      <img  className={`${styles.normallogo} rounded-full` } src='/githublogo.png'/>
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
                 {/* I am currently attending <span className='font-bold'>Washington University in St. Louis</span> 🧸 studying Computer Science and Business!  */}
                
                 <br></br>
