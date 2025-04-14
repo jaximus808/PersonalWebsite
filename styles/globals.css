@@ -37,7 +37,12 @@ a {
   }
 }
 
-
+li {
+  margin-top: 4px;
+}
+ul {
+  margin-left: 1rem;
+}
 
 .fontP
 {

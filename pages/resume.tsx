@@ -5,7 +5,7 @@ export default function PDFPage() {
     
     <div className="flex flex-col h-screen">
         <Header/>
-        <iframe className="mt-4 w-full flex-grow" src='./resume_current_jaxon_p.pdf' />
+        <iframe className="mt-4 w-full flex-grow" src='./SWE_Resume_Jaxon_4_9_2025.pdf' />
     </div>
     
   )

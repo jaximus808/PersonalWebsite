@@ -235,71 +235,252 @@ const Index = (props:props) => {
                 {/* I am currently attending <span className='font-bold'>Washington University in St. Louis</span> 🧸 studying Computer Science and Business!  */}
                
                 <br></br>
-                <br></br>
-                <br></br>
             </div>
             
             <div id='path'></div>
            
           </div>
-          <div  className={` py-4 ${styles.textContainer} text-black  bg-[#faf7f5]`}>
+          <div  className={`lg:text-left text-center py-4 ${styles.textContainer} text-black  bg-[#faf7f5]`}>
             <h1  style={{"fontSize":"300%","textAlign":"center"}}><strong>My Path </strong>
             {/* <span className={`${styles.fontNormal} font-light`}>{`  |  `}</span> */}
+            
             <br></br>
             <div className=''>
               <div className='mt-4 relative left-1/2 w-1/2 translate-x-[-50%] border-b-2 border-black h-2 '>
                 
               </div>
             </div>
+
+           
             <span className={`${styles.fontNormal} text-2xl font-extralight`}><i>{`   ${new Date().toLocaleDateString()}`}</i></span>
             </h1>
+
             <div className={`grid lg:grid-cols-4 gap-4 mt-16 w-[90%] ${styles.centerRelX}`}>
             
-              <div className={`${styles.journeyImage} w-[70%] h-[40vw] lg:h-[15vw] lg:w-[90%]`}  >
+              
+            <div className={`${styles.journeyImage} h-[30vw] w-[35%] lg:h-[15vw] lg:w-[70%]`}  >
+                <Image alt='front picture' src="/spectrum.png" fill style={{"borderRadius":"0.5rem"}}/>
+              </div>
+
+              <div className='col-span-1'>
+                <h1 className={'text-3xl'}><strong>Spectrum (Charter Comm.)</strong></h1>
+                <h1 className={'text-xl text-[#3885f2]'}><i>Incoming SWE intern</i></h1>
+                <h1 className={'text-xl text-[#04007a]'}><i>May - August</i></h1>
+                <br></br> 
+                <p> Incoming SWE intern in Spectrum's St. Louis office :)</p>
+                <br></br>
+                <p> Working on CI/CD pipelines</p>
+             
+               
+              </div>
+
+            <div className={`${styles.journeyImage} w-[70%] h-[40vw] lg:h-[15vw] lg:w-[90%]`}  >
                 <Image alt='front picture' src="/brookings.jpg" fill style={{"borderRadius":"0.5rem"}}/>
               </div>
               <div className='col-span-1'>
                 <h1 className={'text-3xl'}><strong>Washington University in St. Louis</strong></h1>
                 <h1 className={'text-xl text-[#3885f2]'}><i>Working Towards BS CS + Math | Business </i></h1>
-                <h1 className={'text-xl text-[#04007a]'}><i>2023 - Present</i></h1>
-                <br></br>
-                <p>
-                  Being a current student at Washington University in St. Louis has allowed me to explore my branching interests in software development and business. 
-                </p>
-                <br></br>
-                <p>
-                  My current involvement as a Teacher Assistant for Data Structures and Algorithms and Discrete Math has given me the opportunity to benefit my collegues and connect with my community. 
+                <h1 className={'text-xl text-[#04007a]'}><i>January - Present</i></h1>
+      
+                <p className='mt-2'><span className='underline font-bold'>Spring Semester:</span> CS class gameplay 🤓 </p>
 
-                </p>
-                <br></br>
-                <p>
-                  WashU has given me a place to struggle, to overcome, and to grow
+                <p className='underline mt-2'>Notable classes:</p>
+                <ul className='list-disc'>
+                  <li>System Software</li>
+                  <li>OOP Lab (C++)</li>
+                  <li>Parallel and Concurrent Programming</li>
+                  <li>Digital Logic and Computer Design</li>
+                  <li>Graph Theory</li>
+                </ul>
 
-                </p>
+                <p className='mt-4'>Some fun stuff I do:</p>
+                <ul className='list-disc'>
+                  <li>LNYF MM</li>
+                  <li>VSA</li>
+                  <li>CSA dragon warrior</li>
+                </ul>
+              
               </div>
+
+             
+              
               <div className={`${styles.journeyImage} h-[30vw] w-[35%] lg:h-[10vw] lg:w-[50%]`}  >
                 <Image alt='front picture' src="/robotics.png" fill style={{"borderRadius":"0.5rem"}}/>
               </div>
+
               <div className='col-span-1'>
                 <h1 className={'text-3xl'}><strong>WU Robotics</strong></h1>
-                <h1 className={'text-xl text-[#3885f2]'}><i>Swarm Team | Software Lead | AI and Navigation</i></h1>
-                <h1 className={'text-xl text-[#04007a]'}><i>2023 - Present</i></h1>
-                <br></br>
-                <p>
-                  My part in WashU robotics is working on the software portion for controlling a swarm robot. The end goal for these swarm robots are to explore a maze, find rubber balls, and bring them home. 
-                </p>
-                <br></br>
-                <p>
-                  In my first semester, I created a object recognition AI model with Yolov5 and a custom dataset that detects the target rubber balls in a video input feed. The robot will use this model to detect the rubber balls when exploring. The model will also help the robot align itself when capturing and bringing the balls home.
- 
-
-                </p>
-                <br></br>
-                <p>
-                  Currently our navigation software team is working on using Active Slam, ROS 2, and Nav2 to get our first robots able to create a localized map, move from point a and b, and maximize its exploration to find the target balls
-                </p>
-              </div>
+                <h1 className={'text-xl text-[#3885f2]'}><i>Swarm Team | Software Lead </i></h1>
+                <h1 className={'text-xl text-[#04007a]'}><i>January - Present</i></h1>
+                <br></br> 
+                <p><span className='underline font-bold'>Spring Semester:</span> Robot Control and Plan Execution</p>
              
+                <ul className='mt-2 list-disc'>
+                  <li>
+                    Architected modular control system for interlocking self-assembling swarm robots using <b>ROS 2</b> and <b>C++</b>, enabling coordinated docking and undocking behavior.
+                  </li>
+                  <li>
+                    Created a custom PID action server in <b>ROS 2</b> and <b>C++</b> to enable smooth and accurate low-level control of robot actuators for precise movement.
+                  </li>
+                  <li>
+                    Implemented path execution logic to unfold and dispatch high-level paths into low-level motion commands using a control algorithm layered over the PID server.
+                  </li>
+                  <li>
+                    Developed testing action clients in <b>Python</b> to simulate and validate behavior across control and planning layers, enabling full-system debugging and reliability.
+                  </li>
+                  <li>
+                    Led a cross-functional robotics team, coordinating simulation, perception, and control efforts while managing sprint planning and system integration.
+                  </li>
+                </ul>
+              </div>
+              <div className={`${styles.journeyImage} h-[30vw] w-[60%] lg:h-[10vw] lg:w-[80%]`}  >
+                <Image alt='front picture' src="/palantir.png" fill style={{"borderRadius":"0.5rem"}}/>
+              </div>
+
+              <div className='col-span-1'>
+                <h1 className={'text-3xl'}><strong>Palantir Launch</strong></h1>
+                <h1 className={'text-xl text-[#04007a]'}><i>March</i></h1>
+                <p className='mt-2'>Selected as a Palantir Launcher to visit their DC office and learn more about the company</p>
+                <p className='mt-2 underline'>Some stuff i did:</p>
+                <ul className='list-disc mt-2'>
+                  <li>Created a Fullstack using Palantir's Foundry, <strong>React</strong>, and <strong>TypeScript</strong> to convert conversations with client into a Client Landscape</li>
+                  <li>The Client landscape would allow users to see who reports to who, their roles, contact, and iterates off previous states, meaning its use scales exponentially. </li>
+                  <li>Devloped using Palantir's Ontology, and no convos are stored, given increased privacy.</li>
+                </ul>
+                <br></br>
+               
+          
+              </div>
+
+            </div>
+            
+            <div className=''>
+              <div className='mt-4 relative left-1/2 w-1/2 translate-x-[-50%] border-b-4 border-black h-8 border-x-4 rounded-b-xl'>
+                
+              </div>
+            </div>
+            <div className=''>
+              <div className='w-1/2 border-r-4 border-black h-16'>
+                
+              </div>
+            </div>
+            <div className='text-center text-xl p-4'><i>2025</i></div>
+            <div className=''>
+              <div className='w-1/2 border-r-4 border-black h-16'>
+                
+              </div>
+            </div>
+            <div className=''>
+              <div className=' relative left-1/2 w-1/2 translate-x-[-50%] border-t-4 border-black h-8 border-x-4 rounded-t-xl'>
+                
+              </div>
+            </div>
+            <div className={`grid lg:grid-cols-4 gap-4 mt-16 w-[90%] py-4 ${styles.centerRelX}`}>
+            
+              <div>
+                <div className={`${styles.journeyImage} w-[40%] h-[20vw] lg:h-[11vw] lg:w-[90%]`}  >
+                  <Image alt='front picture' src="/metaquest.png" fill style={{"borderRadius":"0.5rem"}}/>
+                </div>
+
+                <div className={`${styles.journeyImage} w-[35%] h-[30vw] lg:h-[18vw] lg:w-[90%] mt-4`}  >
+                  <Image alt='front picture' src="/GDG.png" fill style={{"borderRadius":"0.5rem"}}/>
+                </div>
+              </div>
+              <div className='col-span-1'>
+                <h1 className={'text-3xl'}><strong>WashU GDG: XR Healthcare</strong></h1>
+                <h1 className={'text-xl text-[#3885f2]'}><i>Software Project Lead</i></h1>
+                <h1 className={'text-xl text-[#04007a]'}><i>September - December</i></h1>
+
+                <p className='underline mt-2'>Some Stuff I Did:</p>
+              <ul className='list-disc'>
+                <li>Led a team of 5 student developers to create an XR Healthcare assistant, winning <strong>1st place</strong> at St. Louis Tech Confluence Demo Day.</li>
+                <li>Built wrist-mounted passthrough toggle in <strong>Unity</strong> and <strong>C#</strong> for MetaQuest to blend XR with real-world view.</li>
+                <li>Added wrist button that sends image and context to ChatGPT API for real-time analysis and feedback.</li>
+                <li>Created floating XR window UI to display simplified AI-generated responses and image insights.</li>
+                <li>Collaborated directly with the client to define feature requirements, iterate on design feedback, and deliver a functional MVP under a 3-month timeline.</li>
+                <li>Integrated FastAPI backend with Unity to handle image uploads and prompt-response flow.</li>
+              </ul>
+              </div>
+              <div className={`${styles.journeyImage} w-[70%] h-[40vw] lg:h-[15vw] lg:w-[90%]`}  >
+                <Image alt='front picture' src="/brookings.jpg" fill style={{"borderRadius":"0.5rem"}}/>
+              </div>
+              <div className='col-span-1 pb-4'>
+                <h1 className={'text-3xl'}><strong>Washington University in St. Louis</strong></h1>
+                <h1 className={'text-xl text-[#3885f2]'}><i>Working Towards BS CS + Math | Business </i></h1>
+                <h1 className={'text-xl text-[#04007a]'}><i>January - December</i></h1>
+                <p className='mt-2'><span className='underline font-bold'>Fall Semester:</span> Computer Science, Business, and Recruitment 💀</p>
+           
+                <p className='underline mt-2'>Notable classes:</p>
+                <ul className='list-disc'>
+                  <li>Intro to CE</li>
+                  <li>Intro to Data Science</li>
+                  <li>Prob and Stats</li>
+                  <li>High Foundations of Mathematics</li>
+                  <li>Micro Econ & Acct</li>
+                </ul>
+                <br></br>
+                <p><span className='underline font-bold'>Spring Semester:</span> Breadth of Classes, DS & Algo TA</p>
+
+                <p className='underline mt-2'>Notable classes:</p>
+                <ul className='list-disc'>
+                  <li>Rapid Prototype Development and Creative Programming </li>
+                  <li>Physics 2</li>
+                  <li>MGT 100 (case comp finalist :O)</li>
+                  <li>High Foundations of Mathematics</li>
+                </ul>
+              </div>
+              
+              <div className={`${styles.journeyImage} h-[30vw] w-[35%] lg:h-[10vw] lg:w-[50%]`}  >
+                <Image alt='front picture' src="/robotics.png" fill style={{"borderRadius":"0.5rem"}}/>
+              </div>
+
+              <div className='col-span-1'>
+                <h1 className={'text-3xl'}><strong>WU Robotics</strong></h1>
+                <h1 className={'text-xl text-[#3885f2]'}><i>Swarm Team | Software Lead </i></h1>
+                <h1 className={'text-xl text-[#04007a]'}><i>January - December</i></h1>
+                <p className='mt-2'><span className='underline font-bold'>Fall Semester:</span> Pivoted robotic project to be an interlocking modular self-assembly swarm robots</p>
+                <ul className='list-disc mt-2'>
+                  <li className=''>Designed and implemented a ROS 2 data pipeline for real-time robot position tracking and mapping using overhead camera input, leveraging <strong>Python</strong> and <strong>C++</strong>.</li>
+                  <li className=''>Created robot tracking using <strong>HSV filtering</strong> from overhead camera to create publishers of robot orientation.</li>
+                </ul>
+                <br></br>
+                <p><span className='underline font-bold'>Spring Semester:</span> Simulated Path planning and Exploration</p>
+             
+                <ul className='list-disc mt-2'>
+                  <li>Implemented SLAM and Nav2 path finding with simulated robot</li>
+                  <li>Developed Active SLAM exploration algorithm with <strong>Python</strong></li>
+
+                </ul>
+          
+              </div>
+
+              <div className={`${styles.journeyImage} h-[30vw] w-[35%] lg:h-[13vw] lg:w-[90%]`}  >
+                <Image alt='front picture' src="/flashcardify.png" fill style={{"borderRadius":"0.5rem"}}/>
+              </div>
+
+              <div className='col-span-1'>
+                <h1 className={'text-3xl'}><strong>Flashcardify.ai</strong></h1>
+                <h1 className={'text-xl text-[#3885f2]'}><i>Software Engineering Intern</i></h1>
+                <h1 className={'text-xl text-[#04007a]'}><i>September - December</i></h1>
+                <p className='mt-2'>A WashU startup focused on bringing the next gen of education using AI</p>
+                <p className='underline mt-2'>Some Stuff I Did:</p>
+                <ul className='list-disc mt-2'>
+                  <li>
+                    Developed a community-sharing feature for flashcards using <b>Next.js</b> and <b>PostgreSQL</b>, enabling users to share decks via unique links and access public study materials.
+                  </li>
+                  <li>
+                    Integrated keyword-based search with <b>PostgreSQL</b> full-text search and <b>TypeScript</b> to efficiently query public decks.
+                  </li>
+                  <li>
+                    Designed and implemented UX improvements for deck customization, including settings updates, visibility toggles, and deck metadata editing using <b>Supabase</b> as the backend.
+                  </li>
+                  <li>
+                    Presented the project at the WashU Venture Competition, winning <b>Semi-Finalist</b> and <b>People’s Choice Awards</b>.
+                  </li>
+                </ul>
+                
+          
+              </div>
             </div>
             
             <div className=''>
@@ -323,53 +504,87 @@ const Index = (props:props) => {
                 
               </div>
             </div>
-            <div className={`grid lg:grid-cols-4 gap-4 mt-16 w-[90%] ${styles.centerRelX}`}>
+            <div className={`grid lg:grid-cols-4 gap-4 mt-16 w-[90%] ${styles.centerRelX}  py-4`}>
               
               <div className={`${styles.journeyImage} h-[45vw] lg:h-[15vw] w-[70%] lg:w-[90%]`}  >
                 <Image alt='front picture' src="/EagleScoutPic.jpg" fill style={{"borderRadius":"0.5rem"}}/>
               </div>
               <div className='lg:col-span-1'>
-                <h1 className={'text-3xl'}><strong>Boy Scouts</strong></h1>
-                <h1 className={'text-xl text-[#3885f2]'}><i>Troop 181 | Eagle Scout</i></h1>
-                <h1 className={'text-xl text-[#04007a]'}><i>2016 - 2023</i></h1>
-                <br></br>
-                <p>
-                  My time in Boy Scouts was an enjoyable one and taught me leadership, comradery, and kindness. From spending time with fellow scouts during camp outs to helping create cubbies for Nu'uanu Elementary School, my fellow scouts were there with me.
-                </p>
-                <br></br>
-                <p>
-                  
-                  To achieve the rank of Eagle Scout, I organized a service project to construct six benches for my High School. The project took around four months of planning and two days to construct, paint, and install. This experience gave me real experience in being a leader and a chance to better my community
-                </p>
+                <h1 className={'text-3xl'}><strong>Eagle Scout</strong></h1>
+                <h1 className={'text-xl text-[#3885f2]'}><i>Troop 181 | Boy Scouts</i></h1>
+                <h1 className={'text-xl text-[#04007a]'}><i>March</i></h1>
+               
+                <ul className='mt-2 list-disc'>
+                  <li>My time in Boy Scouts was enjoyable and taught me leadership, camaraderie, and kindness.</li>
+                  <li>To achieve the rank of Eagle Scout, I organized a service project to construct six benches for my high school.</li>
+                  <li>The project involved around four months of planning and two days of construction, painting, and installation.</li>
+                  <li>This experience gave me hands-on leadership practice and an opportunity to give back to my community.</li>
+                </ul>
               </div>
+              
+              <div className={`${styles.journeyImage} w-[70%] h-[40vw] lg:h-[15vw] lg:w-[90%]`}  >
+                <Image alt='front picture' src="/brookings.jpg" fill style={{"borderRadius":"0.5rem"}}/>
+              </div>
+              <div className='col-span-1'>
+                <h1 className={'text-3xl'}><strong>Washington University in St. Louis</strong></h1>
+                <h1 className={'text-xl text-[#3885f2]'}><i>Working Towards BS CS + Math | Business </i></h1>
+                <h1 className={'text-xl text-[#04007a]'}><i>August - December</i></h1>
+      
+                <p className='mt-2'><span className='underline font-bold'>Fall Semester:</span> First Semester in College 🤓 </p>
+
+                <p className='underline mt-2'>Notable classes:</p>
+                <ul className='list-disc'>
+                  <li>Data Structure and Algorithm</li>
+                  <li>Discrete Math</li>
+                  <li>Calc III</li>
+                </ul>
+              </div>
+              
+              <div className={`${styles.journeyImage} h-[30vw] w-[35%] lg:h-[10vw] lg:w-[50%]`}  >
+                <Image alt='front picture' src="/robotics.png" fill style={{"borderRadius":"0.5rem"}}/>
+              </div>
+
+              <div className='col-span-1'>
+                <h1 className={'text-3xl'}><strong>WU Robotics</strong></h1>
+                <h1 className={'text-xl text-[#3885f2]'}><i>Swarm Team | Software Team | AI and SLAM</i></h1>
+                <h1 className={'text-xl text-[#04007a]'}><i>September - December</i></h1>
+                
+                <p className='mt-2'><span className='underline font-bold'>Fall Semester:</span>Worked on ball detection for resource targets symbolized by rubber balls</p>
+                
+
+                <ul className='list-disc mt-2'>
+                  <li>Built an object recognition AI model using <strong>YOLOv5</strong> and a <strong>custom dataset</strong>.</li>
+                  <li>Model detects rubber balls in video feeds.</li>
+                </ul>
+              </div>
+             
               <div className={`${styles.journeyImage} h-[30vw] w-[35%] lg:h-[12vw] lg:w-[55%]`}  >
                 <Image alt='front picture' src="/fiverrlogo.jpg" fill style={{"borderRadius":"0.5rem"}}/>
               </div>
+              
               <div className='col-span-1'>
                 <h1 className={'text-3xl'}><strong>Freelance Browser Game Developer</strong></h1>
                 <h1 className={'text-xl text-[#3885f2]'}><i>Freelancer | Developer</i></h1>
-                <h1 className={'text-xl text-[#04007a]'}><i>2023</i></h1>
-                <br></br>
-                <p>
-                  One field I explored was offering my skills through a freelance gig on fiverr. My service consisted of creating a full-stack browser game. As a freelancer I was incharge of selling my services and talking with clients.
-                </p>
-                <br></br>
-                <p>
-                  The projects I worked on range from real-time multiplayer experiences to platformer games. Some of my favorite tools I used were p5.js, node.js, and socket.io.
-                </p>
-                <br></br>
-                <p>
-                  Once college started, I decided to move on and commit my time to focusing on school. My gig allowed me to earn over $1000, and I used that money to help pay for school
-                </p>
+                <h1 className={'text-xl text-[#04007a]'}><i>March - September</i></h1>
+            
+                <ul className='mt-2 list-disc'>
+                  <li>Explored freelancing by offering my skills on Fiverr, creating full-stack browser games.</li>
+                  <li>As a freelancer, I was responsible for selling my services and communicating with clients.</li>
+                  <li>Worked on a variety of projects, including real-time multiplayer experiences and platformer games.</li>
+                  <li>Used tools like p5.js, Node.js, and Socket.io—some of my favorites.</li>
+                  <li>Transitioned away from freelancing to focus on college once it began.</li>
+                  <li>Earned over $1000 through my gig, which I used to help pay for school.</li>
+                </ul>
               </div>
-             
 
             </div>
+            
             <div className=''>
               <div className='mt-4 relative left-1/2 w-1/2 translate-x-[-50%] border-b-4 border-black h-8 border-x-4 rounded-b-xl'>
                 
               </div>
             </div>
+            
             <div className=''>
               <div className='w-1/2 border-r-4 border-black h-16'>
                 
@@ -395,7 +610,9 @@ const Index = (props:props) => {
                 <p>
                   Learning new exciting tools and focusing on growing as a person has became, and still is, a fundemental core of my character, and my mindset to this day.
                 </p>
+                
               </div>
+              
               <div className=''>
                 <div className='mt-4 w-1/2 border-r-4 border-black h-16'>
                   
@@ -410,16 +627,7 @@ const Index = (props:props) => {
               </div>
           </div>
           <div className={`${styles.textContainer} py-4  text-center bg-[#020202] text-white `}>
-            <h1 className='text-3xl'>
-              <strong><i>Stand Proud, You're Strong</i></strong>
-            </h1>
-            <br></br>
-            <h1 className='text-2xl'>
-              <strong><i>誇れ、オマエは強い</i></strong>
-            </h1>
-            <h1>
-              <i>Ryomen Sukuna</i>
-            </h1>
+            
             <br></br>
             <h1 className='text-2xl'>
               <strong><i>Life is movement. Once you stop moving, you're dead. Choose life.</i></strong>
