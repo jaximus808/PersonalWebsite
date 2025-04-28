@@ -256,7 +256,7 @@ const Index = (props:props) => {
             <span className={`${styles.fontNormal} text-2xl font-extralight`}><i>{`   ${new Date().toLocaleDateString()}`}</i></span>
             </h1>
 
-            <div className={`grid lg:grid-cols-4 gap-4 mt-16 w-[90%] ${styles.centerRelX}`}>
+            <div className={`grid lg:grid-cols-4 gap-4 gap-y-16 mt-16 w-[90%] ${styles.centerRelX}`}>
             
               
             <div className={`${styles.journeyImage} h-[30vw] w-[35%] lg:h-[15vw] lg:w-[70%]`}  >
@@ -284,22 +284,24 @@ const Index = (props:props) => {
                 <h1 className={'text-xl text-[#04007a]'}><i>January - Present</i></h1>
       
                 <p className='mt-2'><span className='underline font-bold'>Spring Semester:</span> CS class gameplay 🤓 </p>
+                <details className="mt-2">
+                  <summary className="cursor-pointer text-blue-600">Notable classes + more info</summary>
+                  <ul className='list-disc'>
+                    <li>System Software</li>
+                    <li>OOP Lab (C++)</li>
+                    <li>Parallel and Concurrent Programming</li>
+                    <li>Digital Logic and Computer Design</li>
+                    <li>Graph Theory</li>
+                  </ul>
 
-                <p className='underline mt-2'>Notable classes:</p>
-                <ul className='list-disc'>
-                  <li>System Software</li>
-                  <li>OOP Lab (C++)</li>
-                  <li>Parallel and Concurrent Programming</li>
-                  <li>Digital Logic and Computer Design</li>
-                  <li>Graph Theory</li>
-                </ul>
-
-                <p className='mt-4'>Some fun stuff I do:</p>
-                <ul className='list-disc'>
-                  <li>LNYF MM</li>
-                  <li>VSA</li>
-                  <li>CSA dragon warrior</li>
-                </ul>
+                  <p className='mt-4'>Some fun stuff I do:</p>
+                  <ul className='list-disc'>
+                    <li>LNYF MM</li>
+                    <li>VSA</li>
+                    <li>CSA dragon warrior</li>
+                  </ul>
+                </details>
+                
               
               </div>
 
@@ -314,25 +316,34 @@ const Index = (props:props) => {
                 <h1 className={'text-xl text-[#3885f2]'}><i>Swarm Team | Software Lead </i></h1>
                 <h1 className={'text-xl text-[#04007a]'}><i>January - Present</i></h1>
                 <br></br> 
-                <p><span className='underline font-bold'>Spring Semester:</span> Robot Control and Plan Execution</p>
+                <p><span className='underline font-bold'>Spring Semester:</span> Architected a modular ROS 2/C++ control system—including a custom PID action server and path‐execution logic—to enable coordinated, precise motion across interlocking swarm robots</p>
              
-                <ul className='mt-2 list-disc'>
+              
+
+              <details className="mt-2">
+                <summary className="cursor-pointer text-blue-600">Show more:</summary>
+                <ul className="mt-2 list-disc ml-5">
+                <li>
+                  Created a custom PID action server in <b>ROS 2</b> and <b>C++</b> to enable
+                  smooth and accurate low-level control of robot actuators for precise
+                  movement.
+                </li>
+                <li>
+                  Implemented path execution logic to unfold and dispatch high-level paths
+                  into low-level motion commands using a control algorithm layered over the
+                  PID server.
+                </li>
                   <li>
-                    Architected modular control system for interlocking self-assembling swarm robots using <b>ROS 2</b> and <b>C++</b>, enabling coordinated docking and undocking behavior.
+                    Developed testing action clients in <b>Python</b> to simulate and validate
+                    behavior across control and planning layers, enabling full-system debugging
+                    and reliability.
                   </li>
                   <li>
-                    Created a custom PID action server in <b>ROS 2</b> and <b>C++</b> to enable smooth and accurate low-level control of robot actuators for precise movement.
-                  </li>
-                  <li>
-                    Implemented path execution logic to unfold and dispatch high-level paths into low-level motion commands using a control algorithm layered over the PID server.
-                  </li>
-                  <li>
-                    Developed testing action clients in <b>Python</b> to simulate and validate behavior across control and planning layers, enabling full-system debugging and reliability.
-                  </li>
-                  <li>
-                    Led a cross-functional robotics team, coordinating simulation, perception, and control efforts while managing sprint planning and system integration.
+                    Led a cross-functional robotics team, coordinating simulation, perception,
+                    and control efforts while managing sprint planning and system integration.
                   </li>
                 </ul>
+              </details>
               </div>
               <div className={`${styles.journeyImage} h-[30vw] w-[60%] lg:h-[10vw] lg:w-[80%]`}  >
                 <Image alt='front picture' src="/palantir.png" fill style={{"borderRadius":"0.5rem"}}/>
@@ -342,13 +353,16 @@ const Index = (props:props) => {
                 <h1 className={'text-3xl'}><strong>Palantir Launch</strong></h1>
                 <h1 className={'text-xl text-[#04007a]'}><i>March</i></h1>
                 <p className='mt-2'>Selected as a Palantir Launcher to visit their DC office and learn more about the company</p>
-                <p className='mt-2 underline'>Some stuff i did:</p>
+                <details className="mt-2">
+                <summary className="cursor-pointer text-blue-600">Some stuff i did:</summary>
                 <ul className='list-disc mt-2'>
                   <li>Created a Fullstack using Palantir's Foundry, <strong>React</strong>, and <strong>TypeScript</strong> to convert conversations with client into a Client Landscape</li>
                   <li>The Client landscape would allow users to see who reports to who, their roles, contact, and iterates off previous states, meaning its use scales exponentially. </li>
                   <li>Devloped using Palantir's Ontology, and no convos are stored, given increased privacy.</li>
                 </ul>
                 <br></br>
+              </details>
+               
                
           
               </div>
@@ -376,7 +390,7 @@ const Index = (props:props) => {
                 
               </div>
             </div>
-            <div className={`grid lg:grid-cols-4 gap-4 mt-16 w-[90%] py-4 ${styles.centerRelX}`}>
+            <div className={`grid lg:grid-cols-4 gap-4 gap-y-16 mt-16 w-[90%] py-4 ${styles.centerRelX}`}>
             
               <div>
                 <div className={`${styles.journeyImage} w-[40%] h-[20vw] lg:h-[11vw] lg:w-[90%]`}  >
@@ -391,16 +405,19 @@ const Index = (props:props) => {
                 <h1 className={'text-3xl'}><strong>WashU GDG: XR Healthcare</strong></h1>
                 <h1 className={'text-xl text-[#3885f2]'}><i>Software Project Lead</i></h1>
                 <h1 className={'text-xl text-[#04007a]'}><i>September - December</i></h1>
-
-                <p className='underline mt-2'>Some Stuff I Did:</p>
-              <ul className='list-disc'>
-                <li>Led a team of 5 student developers to create an XR Healthcare assistant, winning <strong>1st place</strong> at St. Louis Tech Confluence Demo Day.</li>
-                <li>Built wrist-mounted passthrough toggle in <strong>Unity</strong> and <strong>C#</strong> for MetaQuest to blend XR with real-world view.</li>
-                <li>Added wrist button that sends image and context to ChatGPT API for real-time analysis and feedback.</li>
-                <li>Created floating XR window UI to display simplified AI-generated responses and image insights.</li>
-                <li>Collaborated directly with the client to define feature requirements, iterate on design feedback, and deliver a functional MVP under a 3-month timeline.</li>
-                <li>Integrated FastAPI backend with Unity to handle image uploads and prompt-response flow.</li>
-              </ul>
+                <p className=''>Led a team of 5 student developers to create an XR Healthcare assistant with Unity C# and data pipelining with python</p>
+                <details className="mt-2">
+                  <summary className="cursor-pointer text-blue-600">More Info</summary>
+                  <ul className='list-disc'>
+                    <li>won <strong>1st place</strong> at St. Louis Tech Confluence Demo Day.</li>
+                    <li>Built wrist-mounted passthrough toggle in <strong>Unity</strong> and <strong>C#</strong> for MetaQuest to blend XR with real-world view.</li>
+                    <li>Added wrist button that sends image and context to ChatGPT API for real-time analysis and feedback.</li>
+                    <li>Created floating XR window UI to display simplified AI-generated responses and image insights.</li>
+                    <li>Collaborated directly with the client to define feature requirements, iterate on design feedback, and deliver a functional MVP under a 3-month timeline.</li>
+                    <li>Integrated FastAPI backend with Unity to handle image uploads and prompt-response flow.</li>
+                  </ul>
+                </details>
+             
               </div>
               <div className={`${styles.journeyImage} w-[70%] h-[40vw] lg:h-[15vw] lg:w-[90%]`}  >
                 <Image alt='front picture' src="/brookings.jpg" fill style={{"borderRadius":"0.5rem"}}/>
@@ -410,25 +427,31 @@ const Index = (props:props) => {
                 <h1 className={'text-xl text-[#3885f2]'}><i>Working Towards BS CS + Math | Business </i></h1>
                 <h1 className={'text-xl text-[#04007a]'}><i>January - December</i></h1>
                 <p className='mt-2'><span className='underline font-bold'>Fall Semester:</span> Computer Science, Business, and Recruitment 💀</p>
-           
-                <p className='underline mt-2'>Notable classes:</p>
-                <ul className='list-disc'>
+                <details className="mt-2">
+                  <summary className="cursor-pointer text-blue-600">Notable classes:</summary>
+                  <ul className='list-disc'>
                   <li>Intro to CE</li>
                   <li>Intro to Data Science</li>
                   <li>Prob and Stats</li>
                   <li>High Foundations of Mathematics</li>
                   <li>Micro Econ & Acct</li>
+                  </ul>
+                </details>
+                <ul className='list-disc'>
+                  
                 </ul>
                 <br></br>
                 <p><span className='underline font-bold'>Spring Semester:</span> Breadth of Classes, DS & Algo TA</p>
-
-                <p className='underline mt-2'>Notable classes:</p>
-                <ul className='list-disc'>
+                <details className="mt-2">
+                  <summary className="cursor-pointer text-blue-600">Notable classes</summary>
+                  <ul className='list-disc'>
                   <li>Rapid Prototype Development and Creative Programming </li>
                   <li>Physics 2</li>
                   <li>MGT 100 (case comp finalist :O)</li>
                   <li>High Foundations of Mathematics</li>
-                </ul>
+                  </ul>
+                </details>
+               
               </div>
               
               <div className={`${styles.journeyImage} h-[30vw] w-[35%] lg:h-[10vw] lg:w-[50%]`}  >
@@ -440,18 +463,26 @@ const Index = (props:props) => {
                 <h1 className={'text-xl text-[#3885f2]'}><i>Swarm Team | Software Lead </i></h1>
                 <h1 className={'text-xl text-[#04007a]'}><i>January - December</i></h1>
                 <p className='mt-2'><span className='underline font-bold'>Fall Semester:</span> Pivoted robotic project to be an interlocking modular self-assembly swarm robots</p>
+                <details className="mt-2">
+                <summary className="cursor-pointer text-blue-600">Show more:</summary>
                 <ul className='list-disc mt-2'>
                   <li className=''>Designed and implemented a ROS 2 data pipeline for real-time robot position tracking and mapping using overhead camera input, leveraging <strong>Python</strong> and <strong>C++</strong>.</li>
                   <li className=''>Created robot tracking using <strong>HSV filtering</strong> from overhead camera to create publishers of robot orientation.</li>
                 </ul>
+              </details>
+                
                 <br></br>
                 <p><span className='underline font-bold'>Spring Semester:</span> Simulated Path planning and Exploration</p>
-             
-                <ul className='list-disc mt-2'>
+                
+                <details className="mt-2">
+                  <summary className="cursor-pointer text-blue-600">Show more:</summary>
+                  <ul className='list-disc mt-2'>
                   <li>Implemented SLAM and Nav2 path finding with simulated robot</li>
-                  <li>Developed Active SLAM exploration algorithm with <strong>Python</strong></li>
+                    <li>Developed Active SLAM exploration algorithm with <strong>Python</strong></li>
 
-                </ul>
+                  </ul>
+                </details>
+               
           
               </div>
 
@@ -464,8 +495,10 @@ const Index = (props:props) => {
                 <h1 className={'text-xl text-[#3885f2]'}><i>Software Engineering Intern</i></h1>
                 <h1 className={'text-xl text-[#04007a]'}><i>September - December</i></h1>
                 <p className='mt-2'>A WashU startup focused on bringing the next gen of education using AI</p>
-                <p className='underline mt-2'>Some Stuff I Did:</p>
-                <ul className='list-disc mt-2'>
+                                
+                <details className="mt-2">
+                  <summary className="cursor-pointer text-blue-600">Some Stuff I Did:</summary>
+                  <ul className='list-disc mt-2'>
                   <li>
                     Developed a community-sharing feature for flashcards using <b>Next.js</b> and <b>PostgreSQL</b>, enabling users to share decks via unique links and access public study materials.
                   </li>
@@ -478,7 +511,9 @@ const Index = (props:props) => {
                   <li>
                     Presented the project at the WashU Venture Competition, winning <b>Semi-Finalist</b> and <b>People’s Choice Awards</b>.
                   </li>
-                </ul>
+                  </ul>
+                </details>
+                
                 
           
               </div>
@@ -514,13 +549,18 @@ const Index = (props:props) => {
                 <h1 className={'text-3xl'}><strong>Eagle Scout</strong></h1>
                 <h1 className={'text-xl text-[#3885f2]'}><i>Troop 181 | Boy Scouts</i></h1>
                 <h1 className={'text-xl text-[#04007a]'}><i>March</i></h1>
-               
-                <ul className='mt-2 list-disc'>
+                <p><span className='underline font-bold'>My Experience:</span> My time in Boy Scouts was enjoyable and taught me leadership, camaraderie, and kindness.</p>
+                <details className="mt-2">
+                  <summary className="cursor-pointer text-blue-600">Some more stuff:</summary>
+                  <ul className='list-disc mt-2'>
                   <li>My time in Boy Scouts was enjoyable and taught me leadership, camaraderie, and kindness.</li>
                   <li>To achieve the rank of Eagle Scout, I organized a service project to construct six benches for my high school.</li>
                   <li>The project involved around four months of planning and two days of construction, painting, and installation.</li>
                   <li>This experience gave me hands-on leadership practice and an opportunity to give back to my community.</li>
-                </ul>
+               
+                  </ul>
+                </details>
+               
               </div>
               
               <div className={`${styles.journeyImage} w-[70%] h-[40vw] lg:h-[15vw] lg:w-[90%]`}  >
@@ -567,15 +607,17 @@ const Index = (props:props) => {
                 <h1 className={'text-3xl'}><strong>Freelance Browser Game Developer</strong></h1>
                 <h1 className={'text-xl text-[#3885f2]'}><i>Freelancer | Developer</i></h1>
                 <h1 className={'text-xl text-[#04007a]'}><i>March - September</i></h1>
-            
-                <ul className='mt-2 list-disc'>
+                <p>Earned over $1000 through my gig of creating full stack web browser games with node.js and socket.io</p>
+                <details className="mt-2">
+                  <summary className="cursor-pointer text-blue-600">Some more stuff:</summary>
+                  <ul className='list-disc mt-2'>
                   <li>Explored freelancing by offering my skills on Fiverr, creating full-stack browser games.</li>
                   <li>As a freelancer, I was responsible for selling my services and communicating with clients.</li>
                   <li>Worked on a variety of projects, including real-time multiplayer experiences and platformer games.</li>
                   <li>Used tools like p5.js, Node.js, and Socket.io—some of my favorites.</li>
-                  <li>Transitioned away from freelancing to focus on college once it began.</li>
-                  <li>Earned over $1000 through my gig, which I used to help pay for school.</li>
-                </ul>
+                  </ul>
+                </details>
+                
               </div>
 
             </div>
