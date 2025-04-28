@@ -144,6 +144,7 @@ const Index = (props:props) => {
               },
         })
         const data = await res.json()
+        data.pastProjFav.reverse();
         setFrontData(data)
       }
       catch  (e)
