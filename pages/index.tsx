@@ -190,7 +190,7 @@ const Index = (props:props) => {
             
               <div className='w-full md:w-4/5 px-4 md:px-0 '>
                 <br></br>
-                <h2 className={`${styles.fontNormal}  font-meduim text-xl mt-5 md:text-left text-center` }><span>I'm Jaxon,</span> I am born and raised from Hawaii! I am a self-taught programmer and now studying CS + Math at WashU. I am very passionate about building software projects that will empower the future  </h2>
+                <h2 className={`${styles.fontNormal}  font-meduim text-xl mt-5 md:text-left text-center` }><span>I'm Jaxon,</span> I am born and raised from Hawaii! I am a self-taught programmer and now studying CS + Math at WashU. I like building cool projects with a focus on impact ⚒️  </h2>
                 <br></br>
                 <p className=' text-center md:text-left'>If my webpage is too long, checkout my resume:</p>
                 <div className='w-full text-center md:text-left'>
