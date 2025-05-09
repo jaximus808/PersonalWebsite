@@ -275,6 +275,35 @@ const Index = (props:props) => {
                
               </div>
 
+                 
+            <div className={`${styles.journeyImage} h-[30vw] w-[35%] lg:h-[11vw] lg:w-[50%]`}  >
+                <Image alt='front picture' src="/devstac.jpg" fill style={{"borderRadius":"0.5rem"}}/>
+              </div>
+
+              <div className='col-span-1'>
+                <h1 className={'text-3xl'}><strong>Devstac</strong></h1>
+                <h1 className={'text-xl text-[#3885f2]'}><i>Project Lead & SWE</i></h1>
+                <h1 className={'text-xl text-[#04007a]'}><i>April - Present</i></h1>
+                <br></br> 
+                <p>Building full-stack software for real clients </p>
+               
+                <details className="mt-2">
+                  <summary className="cursor-pointer text-blue-600">Notable Work & Skills</summary>
+                  <ul className='list-disc'>
+                    <li>Invetory Management Software</li>
+                    <li>Node.js</li>
+                    <li>React.js</li>
+                    <li>RPC SQL calls</li>
+                    <li>Next.js</li>
+                    <li>Database</li>
+                    <li>Depolying with Docker and Vultr</li>
+                  </ul>
+
+                </details>
+             
+               
+              </div>
+
             <div className={`${styles.journeyImage} w-[70%] h-[40vw] lg:h-[15vw] lg:w-[90%]`}  >
                 <Image alt='front picture' src="/brookings.jpg" fill style={{"borderRadius":"0.5rem"}}/>
               </div>
