@@ -268,7 +268,7 @@ const Index = (props:props) => {
                 <h1 className={'text-xl text-[#3885f2]'}><i>SWE intern</i></h1>
                 <h1 className={'text-xl text-[#04007a]'}><i>May - August</i></h1>
                 <br></br> 
-                <p> Incoming SWE intern in Spectrum's St. Louis office :)</p>
+                <p> SWE intern in Spectrum's St. Louis office :)</p>
                 <br></br>
                 <p> Working on the Service Delivery Team</p>
              
