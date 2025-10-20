@@ -19,6 +19,7 @@ import {PrismaClient, Prisma, Projects} from "@prisma/client"
 
 
 import Youtube from "react-youtube"
+import UnderConstruction from '../components/UnderConstruction'
 
 const prisma = new PrismaClient();
 // type ProjectProp =
@@ -183,7 +184,7 @@ function ScrollDown(props:any)
             window.removeEventListener("scroll", handleScroll)
         }
         
-    },[])
+    })
     return (
       <>
 
@@ -336,177 +337,8 @@ const Index: React.FC<props> = props => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
         
-        <Header/>
-        {/* <div className={styles.mainTitleName}>
-          <div className={styles.centerRel}>
-            <div className='font-tourner' style={{"fontSize":"10vw","textAlign":"center"}}>My Projects</div> 
-            <ScrollDown/>
-          </div>
-        </div> */}
-        {/* <Background/> */}
-        
-        <div className={`${styles.homeMaincotainerBlog}  w-full  bg-[#121212] text-white`}>
-            <p></p>
-            {(props.auth) ?
-            <>
-              <h1 style={{fontSize:"300%"}}>～Add Projects～</h1>
-              <form onSubmit={AddProject}>
-                <label>
-                    {"Project Name: "} 
-                </label>
-                <input type={"text" }value={projectN} onChange={handleProjectChange}/>
-                <p></p>
-                <label>
-                    {"Project Description: "} 
-                </label>
-                <p></p>
-                <textarea rows={4} cols={50} value={projectDesc} onChange={handleProjectDesc}></textarea>
-                
-                <p></p>
-                <label>
-                    {"Short Project Description: "} 
-                </label>
-                <p></p>
-                <textarea rows={4} cols={50} value={shortProjectDesc} onChange={handleShortProjectDesc}></textarea>
-                
-                <p></p>
-                <label>
-                    {"Uses Youtube?: "} 
-                </label>
-                <input type={"checkbox"} checked={ytLink} onChange={handleYtLink}/>
-                <p></p>
-                <label>
-                    {"Favorite?: "} 
-                </label>
-                <input type={"checkbox"} checked={favorite} onChange={handleFavorite}/>
-                <p></p>
-                <label>
-                    {"Media Link: "} 
-                </label>
-                <input  type={"text" }value={mediaLink} onChange={handleMediaLink}/>
-                <p></p>
-                <label>
-                    {"Github Link: "} 
-                </label>
-                <input  type={"text" }value={githubLink} onChange={handleGithubLink}/>
-                <p></p>
-                <label>
-                    {"Project Link: "} 
-                </label>
-                <input  type={"text"}value={projectLink} onChange={handleProjectLink}/>
-                <p></p>
-                <label>
-                  {"Date Created: "}
-                </label>
-                <input  type={"date"}value={date} onChange={handleDate}/>
-                <p></p>
-                <label>
-                    {responseText}
-                </label>
-                <p></p>
-                <p> </p>
-                <input type={"submit"} value={"Add Project"}/>
-            </form>
-            <button onClick={logOut}>Log Out</button>
-            </>:
-              
-            <></>}
-
-            <div className={styles.textContainer}>
-              <div className='w-full bg-[#1c1c1c] p-8 mt-8'>
-                  <div className='grid md:grid-cols-3 w-full'>
-                    <h1 className='text-4xl' ><strong>My Projects 🦾</strong></h1>
-                    <h3 className='mt-2 md:text-center'><strong>Total Projects: {props.projects.length}</strong></h3>
-                    <h1 className='mt-2 md:text-center'><strong>Page: {projectsPage+1}</strong></h1>
-                  </div>
-                  {(showForwardButton || showBackButton) ?<div className='ml-2 mt-4'>
-                    <h1 > <strong>Move pages: </strong></h1>
-                    <button className='cursor-pointer hover:bg-[rgb(31,0,33)] text-xl duration-500 hover:text-3xl rounded-3xl text-white' onClick={MovePageBackward}>{showBackButton ? "⬅️" :""} </button>
-                    <button className='cursor-pointer hover:bg-[rgb(31,0,33)] text-xl duration-500 hover:text-3xl rounded-3xl text-white'  onClick={MovePageForawrd}>{showForwardButton ? "➡️" :""}</button>
-                  </div> :<></>}
-                  
-                </div>
-                <br></br>
-                
-             
-                {(props.projects.length === 0 ) ? 
-                <h3  style={{ "textAlign":"center",fontSize:"2vw"}}>Sorry projects could not be loaded, try again!</h3>
-                :
-                <div className='grid grid-cols-1 lg:grid-cols-2 gap-16 p-4 '>
-                  {
-                props.projects.slice(projectsPage*6, (props.projects.length > (projectsPage+1)*6 )?((projectsPage+1)*6):props.projects.length).map((data:any) =>
-                {
-                  return (
-                   
-                    <div key={data.id} className=''>
-                    <div   >
-                    
-                      <div onClick={()=>
-                      {
-                        window.location.href= `/projects/${data.name}`
-                      }}   className={`${styles.projectContainerText} ${styles.gradent}  rounded-xl bg-[#171717] cursor-pointer`}style={{"textAlign":"center"}}>
-                        <h2>
-                            
-                            <div className='text-2xl font-bold font-italic' style={{overflowWrap: "break-word","cursor":"pointer",textDecoration: "",}}>{data.name.replace(/_/g," ")}</div>
-                          
-                        </h2>
-                        <h2>
-                            
-                            <div className='text-1xl  font-italic' style={{overflowWrap: "break-word","cursor":"pointer",textDecoration: "",}}>{data.projectDate}</div>
-                          
-                        </h2>
-                        <div className='mt-4'>
-                            { (data.youtube) ?
-                            <div className={` ${styles.journeyImage} w-[22rem] h-72`}>
-                              
-                              <Suspense fallback={<h3>loading</h3>}>
-
-                                <YoutubeVideo   vId={data.mediaLink}/>
-                              </Suspense>
-                              </div>
-                            :
-                            <div className={`${styles.journeyImage} w-full sm:w-96 h-64`}  >
-                              <Image alt='front picture'src={data.mediaLink} fill style={{"borderRadius":"0.5rem"}}/>
-                            </div>
-                            // <Image alt='media picture' src={data.mediaLink} className='relative left-1/2 translate-x-[-50%]' width={0} height={0} style={{ width: '100%', height: 'auto' }}/>
-                            }
-                            <h3 className='text-md mt-4'>
-                              {data.shortDescription}
-                              
-                              <p></p>
-                              
-                              <Link  href={`/projects/${data.name}`}><div style={{textDecoration: "underline","cursor":"pointer"}}>{"Click to Learn More 📖"}</div></Link>
-                        
-                            </h3>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  )})}
-
-                </div>
-
-                }
-                
-
-            </div>
-                
-
-                {/* <li>
-                    <div>
-                        <h2><a style={{textDecoration: "underline"}} href={"/projects/emailbriefer"}>
-                            Email Morning Briefer</a>
-                        </h2>
-                        <div style={{paddingLeft:"20px"}}>
-                            <img src='tsant.png' width="370" height="315" />
-                            <h3>
-                            This service allows a user to plan out one's day.
-                            <p></p>
-                            </h3>
-                        </div>
-                    </div>
-                </li> */}
-        </div>
+      <Header/>
+      <UnderConstruction title='Projects Page'/>
     </div>
   )
 }

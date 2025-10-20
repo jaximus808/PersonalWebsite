@@ -105,11 +105,11 @@ function ScrollDown(props: any) {
       window.removeEventListener("scroll", handleScroll)
     }
 
-  }, [])
+  })
   return (
     <>
 
-      <h2 className={`${styles.scrollDownTitle} transition-duration-5 lg:text-[2vw] text-2xl text-center font-thin`} ref={scrollTitle} >- scroll down -</h2>
+      {/* <h2 className={`${styles.scrollDownTitle} transition-duration-5 lg:text-[2vw] text-2xl text-center font-thin`} ref={scrollTitle} >- scroll down -</h2> */}
       <div ref={scrollbar} className={`mt-4 ${styles.scrollBarTitle} flex flex-row justify-center items-center gap-8 w-[25rem] md:w-1/2 text-center p-4  lg:text-[2vw] text-2xl underline font-thin ${styles.centerRelX}`}>
 
         <a href='#whoIam' className='hover:text-blue-300 duration-300'>Me</a>
@@ -168,20 +168,21 @@ const Index = (props: props) => {
         </div>
       </div>
       <div id='whoIam' className={`${styles.homeMaincotainer} `}>
-        <div className={` ${styles.textContainer}  text-white `}>
+        <div className={` ${styles.textContainer}   text-white `}>
           <h1 style={{ "textAlign": "center" }} className='text-5xl'></h1>
           <br></br>
-          <div className='grid md:grid-cols-2 w-full h-full py-4 relative left-1/2 translate-x-[-50%] gap-x-24'>
-            <div className={`${styles.frontImage} md:ml-10 md:w-[17vw] md:min-h-[28rem] md:min-w-[20rem] md:h-[35vw] min-w-[250px] min-h-[300px] w-[10vw] h-[40vw]`}  >
+          <div className={`grid md:grid-cols-2 w-full h-full py-4 relative left-1/2 translate-x-[-50%] gap-x-12 `}>
+            <div className={`${styles.frontImage} mt-2 md:ml-10 md:w-[18vw] md:min-h-[30rem] md:min-w-[21rem] md:h-[35vw] min-w-[250px] min-h-[25rem] w-[20rem] h-[40vw]`}  >
               <Image alt='front picture' src="/aura_pic.jpg" fill style={{ "borderRadius": "0.5rem" }} />
             </div>
 
 
-            <div className='w-full md:w-4/5 px-4 md:px-0 '>
-              <h2 className={`${styles.fontNormal}  text-2xl md:text-left text-center`}>Aloha, I’m Jaxon 🤙</h2>
-              <h2 className={`${styles.fontNormal}  text-xl mt-5 md:text-left text-center`}>I'm currently studying CS + Math at Washington University in St. Louis, with a focus on backend development and robotic systems. </h2>
+            <div className={`w-full flex px-4 md:p-0 mt-4 md:mt-0 `}>
+              <div className={`${styles.fadedBg} p-6 rounded-xl md:w-4/5 `}>
+                  <h2 className={`${styles.fontNormal}  text-2xl md:text-left text-center`}>Hey, I’m Jaxon 🤙</h2>
+              <h2 className={`${styles.fontNormal} font-thin  text-lg mt-5 md:text-left text-center`}>Born and Raised Hawaii, island of O'ahu, I'm currently studying CS + Math at Washington University in St. Louis, with a focus on backend development and robotic systems. </h2>
               <br></br>
-              <p className={`${styles.fontNormal} text-center md:text-left`}>If my webpage is too long, checkout my resume:</p>
+              <p className={`${styles.fontNormal} font-thin text-center md:text-left`}>If my webpage is too long, checkout my resume:</p>
               <div className='w-full text-center md:text-left'>
                 <Link className='underline text-blue-300 ' href={'./resume'}>📘 Resume</Link>
               </div>
@@ -191,49 +192,56 @@ const Index = (props: props) => {
                 Connect With Me 👋
               </h1>
 
-              <div className="mt-8 pb-8 mx-auto ">
-                <ul className="space-y-4 text-left left underline">
-                  <li className="flex items-left gap-3 hover">
+                <div className="mt-8 pb-8 mx-auto w-full md:w-auto">
+                <ul className="space-y-4 md:text-left text-center underline">
+                  <li className="flex items-center gap-3 justify-center md:justify-start">
+                  <div className="flex items-center gap-3">
                     <Image
-                      src="/linkdinLogo.png"
-                      alt="LinkedIn"
-                      width={24}
-                      height={24}
-                      className="object-contain"
+                    src="/LinkedIn_icon.png"
+                    alt="LinkedIn"
+                    width={24}
+                    height={24}
+                    className="object-contain"
                     />
-                     <Link className='underline ' href={'https://www.linkedin.com/in/jaxon-poentis'}>LinkedIn</Link>
+                    <Link className="underline" href={'https://www.linkedin.com/in/jaxon-poentis'}>LinkedIn</Link>
+                  </div>
                   </li>
 
-                  <li className="flex items-center gap-3">
+                  <li className="flex items-center gap-3 justify-center md:justify-start">
+                  <div className="flex items-center gap-3">
                     <Image
-                      src="/youlogo.png"
-                      alt="YouTube"
-                      width={24}
-                      height={24}
-                      className="object-contain"
+                    src="/youlogo.png"
+                    alt="YouTube"
+                    width={24}
+                    height={24}
+                    className="object-contain"
                     />
-                    <Link className='underline ' href={'https://www.linkedin.com/in/jaxon-poentis'}>Youtube</Link>
+                    <Link className="underline" href={'https://www.linkedin.com/in/jaxon-poentis'}>Youtube</Link>
+                  </div>
                   </li>
 
-                  <li className="flex items-center gap-3">
+                  <li className="flex items-center gap-3 justify-center md:justify-start">
+                  <div className="flex items-center gap-3">
                     <Image
-                      src="/githublogo.png"
-                      alt="GitHub"
-                      width={24}
-                      height={24}
-                      className="rounded-full object-contain"
+                    src="/githublogo.png"
+                    alt="GitHub"
+                    width={24}
+                    height={24}
+                    className="rounded-full object-contain"
                     />
-                      <Link className='underline ' href={'https://www.linkedin.com/in/jaxon-poentis'}>Github</Link>
+                    <Link className="underline" href={'https://www.linkedin.com/in/jaxon-poentis'}>Github</Link>
+                  </div>
                   </li>
                 </ul>
+                </div>
               </div>
             </div>
 
             <div id='path'></div>
 
           </div>
-          <div className={`lg:text-left text-center pt-4 mt-16  ${styles.textContainer} ${styles.fadedBg}   `}>
-            <h1 style={{ "fontSize": "300%", "textAlign": "center" }}><strong>My Path </strong>
+          <div className={`md:text-left text-center pt-4 mt-16  ${styles.textContainer} s   `}>
+            <h1 className={`${styles.fontNormal } font-thin`} style={{ "fontSize": "300%", "textAlign": "center" }}>My Path
               {/* <span className={`${styles.fontNormal} font-light`}>{`  |  `}</span> */}
 
               <br></br>
@@ -244,464 +252,304 @@ const Index = (props: props) => {
               </div>
 
 
-              <span className={`${styles.fontNormal} text-2xl font-extralight`}><i>{`   ${new Date().toLocaleDateString()}`}</i></span>
             </h1>
+            <div className={`grid sm:grid-cols-1 gap-x-14 gap-y-12 mt-16 w-[70%]  ${styles.centerRelX}`}>
+           <div className={`${styles.fadedBg} grid grid-cols-1 md:grid-cols-3 p-4 rounded-xl`}>
 
-            <div className={`grid lg:grid-cols-4 gap-4 gap-y-16 mt-16 w-[90%] ${styles.centerRelX}`}>
-
-
-              <div className={`${styles.journeyImage} h-[30vw] w-[35%] lg:h-[15vw] lg:w-[70%]`}  >
-                <Image alt='front picture' src="/spectrum.png" fill style={{ "borderRadius": "0.5rem" }} />
-              </div>
-
-              <div className='col-span-1'>
-                <h1 className={'text-3xl'}><strong>Spectrum (Charter Comm.)</strong></h1>
-                <h1 className={'text-xl text-[#3885f2]'}><i>SWE intern</i></h1>
-                <h1 className={'text-xl text-[#04007a]'}><i>May - August</i></h1>
-                <br></br>
-                <p> SWE intern in Spectrum's St. Louis office :)</p>
-                <br></br>
-                <p> Working on the Service Delivery Team</p>
-
-
-              </div>
-
-
-              <div className={`${styles.journeyImage} h-[30vw] w-[35%] lg:h-[11vw] lg:w-[50%]`}  >
-                <Image alt='front picture' src="/devstac.jpg" fill style={{ "borderRadius": "0.5rem" }} />
-              </div>
-
-              <div className='col-span-1'>
-                <h1 className={'text-3xl'}><strong>Devstac</strong></h1>
-                <h1 className={'text-xl text-[#3885f2]'}><i>Project Lead & SWE</i></h1>
-                <h1 className={'text-xl text-[#04007a]'}><i>April - Present</i></h1>
-                <br></br>
-                <p>Building full-stack software for real clients </p>
-
-                <details className="mt-2">
-                  <summary className="cursor-pointer text-blue-600">Notable Work & Skills</summary>
-                  <ul className='list-disc'>
-                    <li>Invetory Management Software</li>
-                    <li>Node.js</li>
-                    <li>React.js</li>
-                    <li>RPC SQL calls</li>
-                    <li>Next.js</li>
-                    <li>Database</li>
-                    <li>Depolying with Docker and Vultr</li>
-                  </ul>
-
-                </details>
-
-
-              </div>
-
-              <div className={`${styles.journeyImage} w-[70%] h-[40vw] lg:h-[15vw] lg:w-[90%]`}  >
-                <Image alt='front picture' src="/brookings.jpg" fill style={{ "borderRadius": "0.5rem" }} />
-              </div>
-              <div className='col-span-1'>
-                <h1 className={'text-3xl'}><strong>Washington University in St. Louis</strong></h1>
-                <h1 className={'text-xl text-[#3885f2]'}><i>Working Towards BS CS + Math | Business </i></h1>
-                <h1 className={'text-xl text-[#04007a]'}><i>January - Present</i></h1>
-
-                <p className='mt-2'><span className='underline font-bold'>Spring Semester:</span> CS class gameplay 🤓 </p>
-                <details className="mt-2">
-                  <summary className="cursor-pointer text-blue-600">Notable classes + more info</summary>
-                  <ul className='list-disc'>
-                    <li>System Software</li>
-                    <li>OOP Lab (C++)</li>
-                    <li>Parallel and Concurrent Programming</li>
-                    <li>Digital Logic and Computer Design</li>
-                    <li>Graph Theory</li>
-                  </ul>
-
-                  <p className='mt-4'>Some fun stuff I do:</p>
-                  <ul className='list-disc'>
-                    <li>LNYF MM</li>
-                    <li>VSA</li>
-                    <li>CSA dragon warrior</li>
-                  </ul>
-                </details>
-
-
-              </div>
-
-
-
-              <div className={`${styles.journeyImage} h-[30vw] w-[35%] lg:h-[10vw] lg:w-[50%]`}  >
-                <Image alt='front picture' src="/robotics.png" fill style={{ "borderRadius": "0.5rem" }} />
-              </div>
-
-              <div className='col-span-1'>
-                <h1 className={'text-3xl'}><strong>WU Robotics</strong></h1>
-                <h1 className={'text-xl text-[#3885f2]'}><i>Swarm Team | Software Lead </i></h1>
-                <h1 className={'text-xl text-[#04007a]'}><i>January - Present</i></h1>
-                <br></br>
-                <p><span className='underline font-bold'>Spring Semester:</span> Architected a modular ROS 2/C++ control system—including a custom PID action server and path‐execution logic—to enable coordinated, precise motion across interlocking swarm robots</p>
-
-
-
-                <details className="mt-2">
-                  <summary className="cursor-pointer text-blue-600">Show more:</summary>
-                  <ul className="mt-2 list-disc ml-5">
-                    <li>
-                      Created a custom PID action server in <b>ROS 2</b> and <b>C++</b> to enable
-                      smooth and accurate low-level control of robot actuators for precise
-                      movement.
-                    </li>
-                    <li>
-                      Implemented path execution logic to unfold and dispatch high-level paths
-                      into low-level motion commands using a control algorithm layered over the
-                      PID server.
-                    </li>
-                    <li>
-                      Developed testing action clients in <b>Python</b> to simulate and validate
-                      behavior across control and planning layers, enabling full-system debugging
-                      and reliability.
-                    </li>
-                    <li>
-                      Led a cross-functional robotics team, coordinating simulation, perception,
-                      and control efforts while managing sprint planning and system integration.
-                    </li>
-                  </ul>
-                </details>
-              </div>
-              <div className={`${styles.journeyImage} h-[30vw] w-[60%] lg:h-[10vw] lg:w-[80%]`}  >
-                <Image alt='front picture' src="/palantir.png" fill style={{ "borderRadius": "0.5rem" }} />
-              </div>
-
-              <div className='col-span-1'>
-                <h1 className={'text-3xl'}><strong>Palantir Launch</strong></h1>
-                <h1 className={'text-xl text-[#04007a]'}><i>March</i></h1>
-                <p className='mt-2'>Selected as a Palantir Launcher to visit their DC office and learn more about the company</p>
-                <details className="mt-2">
-                  <summary className="cursor-pointer text-blue-600">Some stuff i did:</summary>
-                  <ul className='list-disc mt-2'>
-                    <li>Created a Fullstack using Palantir's Foundry, <strong>React</strong>, and <strong>TypeScript</strong> to convert conversations with client into a Client Landscape</li>
-                    <li>The Client landscape would allow users to see who reports to who, their roles, contact, and iterates off previous states, meaning its use scales exponentially. </li>
-                    <li>Devloped using Palantir's Ontology, and no convos are stored, given increased privacy.</li>
-                  </ul>
+                <div className='flex items-center'>
+                  <div className={`${styles.journeyImage} h-[9rem] w-[9rem] md:h-[9rem] md:w-[7rem] `}  >
+                    <Image alt='front picture' src="/teslalogo.png" fill style={{ "borderRadius": "0.5rem" }} />
+                  </div>
+                </div>
+                <div className='col-span-2 mt-2 '>
+                  <h1 className={'text-3xl'}><strong>Tesla</strong></h1>
+                  <h1 className={`text-xl ${styles.titleTex}`}><i>Incoming Software Engineering Intern</i></h1>
+                  <h1 className={`text-md ${styles.dateRangeTex}`}><i>Fremont, CA</i></h1>
+                  <h1 className={`text-md ${styles.dateRangeTex}`}><i>01/2026-05/2026</i></h1>
+                  
                   <br></br>
-                </details>
+                  <p> Joining Tesla's Digital Experience Org as a backend Software Engineering Intern.</p>
 
 
-
-              </div>
-
-            </div>
-
-            <div className=''>
-              <div className='mt-4 relative left-1/2 w-1/2 translate-x-[-50%] border-b-4 border-black h-8 border-x-4 rounded-b-xl'>
-
+                </div>
+                
               </div>
             </div>
             <div className=''>
-              <div className='w-1/2 border-r-4 border-black h-16'>
+              <div className='mt-4 relative left-1/2 w-1/2 translate-x-[-50%] border-b-2 border-white h-8 border-x-2 rounded-b-xl'>
+
+              </div>
+            </div>
+            <div className=''>
+              <div className='w-1/2 border-r-2 border-white h-8'>
+
+              </div>
+            </div>
+            <div className='text-center text-xl p-4'><i>2026</i></div>
+            <div className=''>
+              <div className='w-1/2 border-r-2 border-white h-8'>
+
+              </div>
+            </div>
+            <div className=''>
+              <div className=' relative left-1/2 w-1/2 translate-x-[-50%] border-t-2 border-white h-8 border-x-2 rounded-t-xl'>
+
+              </div>
+            </div>
+            <div className={`grid sm:grid-cols-1 gap-x-14 gap-y-12 mt-4 w-[70%]  ${styles.centerRelX}`}>
+           <div className={`${styles.fadedBg} grid grid-cols-1 md:grid-cols-3 p-4 rounded-xl`}>
+
+                <div className='flex items-center'>
+                  <div className={`${styles.journeyImage} h-[9rem] w-[9rem] md:h-[9rem] md:w-[9rem] `}  >
+                    <Image alt='front picture' src="/washulogo.png" fill style={{ "borderRadius": "0.5rem" }} />
+                  </div>
+                </div>
+                <div className='col-span-2 mt-2 '>
+                  <h1 className={'text-3xl'}><strong>Mckelvey Engineering</strong></h1>
+                  <h1 className={`text-xl ${styles.titleTex}`}><i>System Software Teaching Assistant</i></h1>
+                  <h1 className={`text-md ${styles.dateRangeTex}`}><i>St. Louis, MO</i></h1>
+                  <h1 className={`text-md ${styles.dateRangeTex}`}><i>08/2025-Present</i></h1>
+                  <br></br>
+                  <p> Assist Students in x86 Assembly reading, C code, and memory concepts.  </p>
+
+
+                </div>
+                
+              </div>
+              <div className={`${styles.fadedBg} grid grid-cols-1 md:grid-cols-3 p-4 rounded-xl`}>
+
+                <div className='flex items-center'>
+                  <div className={`${styles.journeyImage} h-[12rem] w-[12rem] md:h-[10rem] md:w-[10rem] `}  >
+                    <Image alt='front picture' src="/spectrum.png" fill style={{ "borderRadius": "0.5rem" }} />
+                  </div>
+                </div>
+                <div className='col-span-2 mt-2 '>
+                  <h1 className={'text-3xl'}><strong>Spectrum</strong></h1>
+                  <h1 className={`text-xl ${styles.titleTex}`}><i>Software Engineering Intern</i></h1>
+                  <h1 className={`text-md ${styles.dateRangeTex}`}><i>St. Louis, MO</i></h1>
+                  <h1 className={`text-md ${styles.dateRangeTex}`}><i>05/2025 - 08/2025</i></h1>
+                  <br></br>
+                  <p>Software Engineering Intern in Service Delivery Team. Worked on Cloud Backend Controllers in Salesforce Java</p>
+
+
+                </div>
+              </div>
+
+              <div className={`${styles.fadedBg} grid grid-cols-1 md:grid-cols-3 p-4 rounded-xl`}>
+
+                <div className='flex items-center'>
+                  <div className={`${styles.journeyImage} h-[10rem] w-[10rem] md:h-[8rem] md:w-[8rem] `}  >
+                    <Image alt='front picture' src="/devstac.jpg" fill style={{ "borderRadius": "0.5rem" }} />
+                  </div>
+                </div>
+                <div className='col-span-2 mt-2 '>
+                  <h1 className={'text-3xl'}><strong>WashU IT - Devstac</strong></h1>
+                  <h1 className={`text-xl ${styles.titleTex}`}><i>Software Engineer</i></h1>
+                  <h1 className={`text-md ${styles.dateRangeTex}`}><i>St. Louis, MO</i></h1>
+                  <h1 className={`text-md ${styles.dateRangeTex}`}><i>04/2025 - Present</i></h1>
+                  <br></br>
+                  <p>Building full-stack software for internal and external clients ranging from web-apps to mobile-apps</p>
+
+
+                </div>
+              </div>
+              <div className={`${styles.fadedBg} grid grid-cols-1 md:grid-cols-3 p-4 rounded-xl`}>
+
+                <div className='flex items-center'>
+                  <div className={`${styles.journeyImage} h-[9rem] w-[14rem] md:h-[7rem] md:w-[12rem] `}  >
+                    <Image alt='front picture' src="/palantir.png" fill style={{ "borderRadius": "0.5rem" }} />
+                  </div>
+                </div>
+                <div className='col-span-2 mt-2 '>
+                  <h1 className={'text-3xl'}><strong>Palantir</strong></h1>
+                  <h1 className={`text-xl ${styles.titleTex}`}><i>Palantir Launch</i></h1>
+                  <h1 className={`text-md ${styles.dateRangeTex}`}><i>Washington, DC</i></h1>
+                  <h1 className={`text-md ${styles.dateRangeTex}`}><i>03/2025</i></h1>
+                  <br></br>
+                  <p>Selected as a Palantir Launcher to visit their DC office and learn more about the company. </p>
+
+
+                </div>
+                
+              </div>
+              
+              
+            </div>
+            
+            <div className=''>
+              <div className='mt-4 relative left-1/2 w-1/2 translate-x-[-50%] border-b-2 border-white h-8 border-x-2 rounded-b-xl'>
+
+              </div>
+            </div>
+            <div className=''>
+              <div className='w-1/2 border-r-2 border-white h-8'>
 
               </div>
             </div>
             <div className='text-center text-xl p-4'><i>2025</i></div>
             <div className=''>
-              <div className='w-1/2 border-r-4 border-black h-16'>
+              <div className='w-1/2 border-r-2 border-white h-8'>
 
               </div>
             </div>
             <div className=''>
-              <div className=' relative left-1/2 w-1/2 translate-x-[-50%] border-t-4 border-black h-8 border-x-4 rounded-t-xl'>
+              <div className=' relative left-1/2 w-1/2 translate-x-[-50%] border-t-2 border-white h-8 border-x-2 rounded-t-xl'>
 
               </div>
             </div>
-            <div className={`grid lg:grid-cols-4 gap-4 gap-y-16 mt-16 w-[90%] py-4 ${styles.centerRelX}`}>
+            <div className={`grid sm:grid-cols-1 gap-x-14 gap-y-12 mt-4 w-[70%]  ${styles.centerRelX}`}>
+           
+              <div className={`${styles.fadedBg} grid grid-cols-1 md:grid-cols-3 p-4 rounded-xl`}>
+                <div className='flex items-center'>
+                   <div className={`${styles.journeyImage} h-[10rem] w-[12rem] md:h-[8rem] md:w-[10rem]  `}  >
+                    <Image alt='front picture' src="/healthxr.png" fill style={{ "borderRadius": "0.5rem" }} />
+                  </div>
+                </div>
+               
 
-              <div>
-                <div className={`${styles.journeyImage} w-[40%] h-[20vw] lg:h-[11vw] lg:w-[90%]`}  >
-                  <Image alt='front picture' src="/metaquest.png" fill style={{ "borderRadius": "0.5rem" }} />
+                <div className='col-span-2 mt-2 '>
+                  <h1 className={'text-3xl'}><strong>Health XR</strong></h1>
+                  <h1 className={`text-xl ${styles.titleTex}`}><i>Founding Software Engineer</i></h1>
+                  <h1 className={`text-md ${styles.dateRangeTex}`}><i>St. Louis, MO</i></h1>
+                  <h1 className={`text-md ${styles.dateRangeTex}`}><i>09/2024 - 01/2025</i></h1>
+                  <br></br>
+                  <p>Developed the first prototype of Meta Quest XR Healthcare assistant within Unity + C#, winning #1 at St. Louis startup tech week.</p>
+
+
+                </div>
+              </div>
+
+              <div className={`${styles.fadedBg} grid grid-cols-1 md:grid-cols-3 p-4 rounded-xl`}>
+
+                <div className='flex items-center'>
+                  <div className={`${styles.journeyImage} h-[10rem] w-[14rem] md:h-[8rem] md:w-[11rem] `}  >
+                    <Image alt='front picture' src="/flashcardify.png" fill style={{ "borderRadius": "0.5rem" }} />
+                  </div>
                 </div>
 
-                <div className={`${styles.journeyImage} w-[35%] h-[30vw] lg:h-[18vw] lg:w-[90%] mt-4`}  >
-                  <Image alt='front picture' src="/GDG.png" fill style={{ "borderRadius": "0.5rem" }} />
+                <div className='col-span-2 mt-2 '>
+                  <h1 className={'text-3xl'}><strong>Flashcardify.ai</strong></h1>
+                  <h1 className={`text-xl ${styles.titleTex}`}><i>Software Engineering Intern</i></h1>
+                  <h1 className={`text-md ${styles.dateRangeTex}`}><i>St. Louis, MO</i></h1>
+                  <h1 className={`text-md ${styles.dateRangeTex}`}><i>09/2024 - 01/2025</i></h1>
+                  <br></br>
+                  <p>Built-out backend infrastructure for flashcard decks in Node.js and Supabase </p>
+
+
                 </div>
               </div>
-              <div className='col-span-1'>
-                <h1 className={'text-3xl'}><strong>WashU GDG: XR Healthcare</strong></h1>
-                <h1 className={'text-xl text-[#3885f2]'}><i>Software Project Lead</i></h1>
-                <h1 className={'text-xl text-[#04007a]'}><i>September - December</i></h1>
-                <p className=''>Led a team of 5 student developers to create an XR Healthcare assistant with Unity C# and data pipelining with python</p>
-                <details className="mt-2">
-                  <summary className="cursor-pointer text-blue-600">More Info</summary>
-                  <ul className='list-disc'>
-                    <li>won <strong>1st place</strong> at St. Louis Tech Confluence Demo Day.</li>
-                    <li>Built wrist-mounted passthrough toggle in <strong>Unity</strong> and <strong>C#</strong> for MetaQuest to blend XR with real-world view.</li>
-                    <li>Added wrist button that sends image and context to ChatGPT API for real-time analysis and feedback.</li>
-                    <li>Created floating XR window UI to display simplified AI-generated responses and image insights.</li>
-                    <li>Collaborated directly with the client to define feature requirements, iterate on design feedback, and deliver a functional MVP under a 3-month timeline.</li>
-                    <li>Integrated FastAPI backend with Unity to handle image uploads and prompt-response flow.</li>
-                  </ul>
-                </details>
+              <div className={`${styles.fadedBg} grid grid-cols-1 md:grid-cols-3 p-4 rounded-xl`}>
 
-              </div>
-              <div className={`${styles.journeyImage} w-[70%] h-[40vw] lg:h-[15vw] lg:w-[90%]`}  >
-                <Image alt='front picture' src="/brookings.jpg" fill style={{ "borderRadius": "0.5rem" }} />
-              </div>
-              <div className='col-span-1 pb-4'>
-                <h1 className={'text-3xl'}><strong>Washington University in St. Louis</strong></h1>
-                <h1 className={'text-xl text-[#3885f2]'}><i>Working Towards BS CS + Math | Business </i></h1>
-                <h1 className={'text-xl text-[#04007a]'}><i>January - December</i></h1>
-                <p className='mt-2'><span className='underline font-bold'>Fall Semester:</span> Computer Science, Business, and Recruitment 💀</p>
-                <details className="mt-2">
-                  <summary className="cursor-pointer text-blue-600">Notable classes:</summary>
-                  <ul className='list-disc'>
-                    <li>Intro to CE</li>
-                    <li>Intro to Data Science</li>
-                    <li>Prob and Stats</li>
-                    <li>High Foundations of Mathematics</li>
-                    <li>Micro Econ & Acct</li>
-                  </ul>
-                </details>
-                <ul className='list-disc'>
-
-                </ul>
-                <br></br>
-                <p><span className='underline font-bold'>Spring Semester:</span> Breadth of Classes, DS & Algo TA</p>
-                <details className="mt-2">
-                  <summary className="cursor-pointer text-blue-600">Notable classes</summary>
-                  <ul className='list-disc'>
-                    <li>Rapid Prototype Development and Creative Programming </li>
-                    <li>Physics 2</li>
-                    <li>MGT 100 (case comp finalist :O)</li>
-                    <li>High Foundations of Mathematics</li>
-                  </ul>
-                </details>
-
-              </div>
-
-              <div className={`${styles.journeyImage} h-[30vw] w-[35%] lg:h-[10vw] lg:w-[50%]`}  >
-                <Image alt='front picture' src="/robotics.png" fill style={{ "borderRadius": "0.5rem" }} />
-              </div>
-
-              <div className='col-span-1'>
-                <h1 className={'text-3xl'}><strong>WU Robotics</strong></h1>
-                <h1 className={'text-xl text-[#3885f2]'}><i>Swarm Team | Software Lead </i></h1>
-                <h1 className={'text-xl text-[#04007a]'}><i>January - December</i></h1>
-                <p className='mt-2'><span className='underline font-bold'>Fall Semester:</span> Pivoted robotic project to be an interlocking modular self-assembly swarm robots</p>
-                <details className="mt-2">
-                  <summary className="cursor-pointer text-blue-600">Show more:</summary>
-                  <ul className='list-disc mt-2'>
-                    <li className=''>Designed and implemented a ROS 2 data pipeline for real-time robot position tracking and mapping using overhead camera input, leveraging <strong>Python</strong> and <strong>C++</strong>.</li>
-                    <li className=''>Created robot tracking using <strong>HSV filtering</strong> from overhead camera to create publishers of robot orientation.</li>
-                  </ul>
-                </details>
-
-                <br></br>
-                <p><span className='underline font-bold'>Spring Semester:</span> Simulated Path planning and Exploration</p>
-
-                <details className="mt-2">
-                  <summary className="cursor-pointer text-blue-600">Show more:</summary>
-                  <ul className='list-disc mt-2'>
-                    <li>Implemented SLAM and Nav2 path finding with simulated robot</li>
-                    <li>Developed Active SLAM exploration algorithm with <strong>Python</strong></li>
-
-                  </ul>
-                </details>
+                <div className='flex items-center'>
+                  <div className={`${styles.journeyImage} h-[9rem] w-[9rem] md:h-[9rem] md:w-[9rem] `}  >
+                    <Image alt='front picture' src="/washulogo.png" fill style={{ "borderRadius": "0.5rem" }} />
+                  </div>
+                </div>
+                <div className='col-span-2 mt-2 '>
+                  <h1 className={'text-3xl'}><strong>Mckelvey Engineering</strong></h1>
+                  <h1 className={`text-xl ${styles.titleTex}`}><i>Data Structures and Algorithms Teaching Assistant</i></h1>
+                  <h1 className={`text-md ${styles.dateRangeTex}`}><i>St. Louis, MO</i></h1>
+                  <h1 className={`text-md ${styles.dateRangeTex}`}><i>01/2025-12/2025</i></h1>
+                  <br></br>
+                  <p> Assisted students in developing Data Structures, Implementation of Algorithms, and Runtime Analysis.  </p>
 
 
-              </div>
-
-              <div className={`${styles.journeyImage} h-[30vw] w-[35%] lg:h-[13vw] lg:w-[90%]`}  >
-                <Image alt='front picture' src="/flashcardify.png" fill style={{ "borderRadius": "0.5rem" }} />
-              </div>
-
-              <div className='col-span-1'>
-                <h1 className={'text-3xl'}><strong>Flashcardify.ai</strong></h1>
-                <h1 className={'text-xl text-[#3885f2]'}><i>Software Engineering Intern</i></h1>
-                <h1 className={'text-xl text-[#04007a]'}><i>September - December</i></h1>
-                <p className='mt-2'>A WashU startup focused on bringing the next gen of education using AI</p>
-
-                <details className="mt-2">
-                  <summary className="cursor-pointer text-blue-600">Some Stuff I Did:</summary>
-                  <ul className='list-disc mt-2'>
-                    <li>
-                      Developed a community-sharing feature for flashcards using <b>Next.js</b> and <b>PostgreSQL</b>, enabling users to share decks via unique links and access public study materials.
-                    </li>
-                    <li>
-                      Integrated keyword-based search with <b>PostgreSQL</b> full-text search and <b>TypeScript</b> to efficiently query public decks.
-                    </li>
-                    <li>
-                      Designed and implemented UX improvements for deck customization, including settings updates, visibility toggles, and deck metadata editing using <b>Supabase</b> as the backend.
-                    </li>
-                    <li>
-                      Presented the project at the WashU Venture Competition, winning <b>Semi-Finalist</b> and <b>People’s Choice Awards</b>.
-                    </li>
-                  </ul>
-                </details>
-
-
-
+                </div>
+                
               </div>
             </div>
 
             <div className=''>
-              <div className='mt-4 relative left-1/2 w-1/2 translate-x-[-50%] border-b-4 border-black h-8 border-x-4 rounded-b-xl'>
+              <div className='mt-4 relative left-1/2 w-1/2 translate-x-[-50%] border-b-2 border-white h-8 border-x-2 rounded-b-xl'>
 
               </div>
             </div>
+            
             <div className=''>
-              <div className='w-1/2 border-r-4 border-black h-16'>
+              <div className='w-1/2 border-r-2 border-white h-8'>
 
               </div>
             </div>
             <div className='text-center text-xl p-4'><i>2024</i></div>
             <div className=''>
-              <div className='w-1/2 border-r-4 border-black h-16'>
+              <div className='w-1/2 border-r-2 border-white h-8'>
 
               </div>
             </div>
             <div className=''>
-              <div className=' relative left-1/2 w-1/2 translate-x-[-50%] border-t-4 border-black h-8 border-x-4 rounded-t-xl'>
+              <div className=' relative left-1/2 w-1/2 translate-x-[-50%] border-t-2 border-white h-8 border-x-2 rounded-t-xl'>
 
               </div>
             </div>
-            <div className={`grid lg:grid-cols-4 gap-4 mt-16 w-[90%] ${styles.centerRelX}  py-4`}>
+            <div className={`grid sm:grid-cols-1 gap-x-14 gap-y-12 mt-4 w-[70%]  ${styles.centerRelX}`}>
 
-              <div className={`${styles.journeyImage} h-[45vw] lg:h-[15vw] w-[70%] lg:w-[90%]`}  >
-                <Image alt='front picture' src="/EagleScoutPic.jpg" fill style={{ "borderRadius": "0.5rem" }} />
+              <div className={`${styles.fadedBg} grid grid-cols-1 md:grid-cols-3 p-4 rounded-xl`}>
+
+                <div className='flex items-center'>
+                  <div className={`${styles.journeyImage} h-[10rem] w-[10rem] md:h-[8rem] md:w-[8rem] `}  >
+                    <Image alt='front picture' src="/fiverrlogo.jpg" fill style={{ "borderRadius": "0.5rem" }} />
+                  </div>
+                </div>
+
+                <div className='col-span-2 mt-2 '>
+                  <h1 className={'text-3xl'}><strong>Fiverr</strong></h1>
+                  <h1 className={`text-xl ${styles.titleTex}`}><i>Freelance Software Developer</i></h1>
+                  <h1 className={`text-lg ${styles.dateRangeTex}`}><i>03/2023 - 09/2023</i></h1>
+                  <br></br>
+                  Earned over $1000 through my gig of creating full stack web browser games with Node.js, Socket.io, React, + more.
+
+
+                </div>
               </div>
-              <div className='lg:col-span-1'>
-                <h1 className={'text-3xl'}><strong>Eagle Scout</strong></h1>
-                <h1 className={'text-xl text-[#3885f2]'}><i>Troop 181 | Boy Scouts</i></h1>
-                <h1 className={'text-xl text-[#04007a]'}><i>March</i></h1>
-                <p><span className='underline font-bold'>My Experience:</span> My time in Boy Scouts was enjoyable and taught me leadership, camaraderie, and kindness.</p>
-                <details className="mt-2">
-                  <summary className="cursor-pointer text-blue-600">Some more stuff:</summary>
-                  <ul className='list-disc mt-2'>
-                    <li>My time in Boy Scouts was enjoyable and taught me leadership, camaraderie, and kindness.</li>
-                    <li>To achieve the rank of Eagle Scout, I organized a service project to construct six benches for my high school.</li>
-                    <li>The project involved around four months of planning and two days of construction, painting, and installation.</li>
-                    <li>This experience gave me hands-on leadership practice and an opportunity to give back to my community.</li>
-
-                  </ul>
-                </details>
-
-              </div>
-
-              <div className={`${styles.journeyImage} w-[70%] h-[40vw] lg:h-[15vw] lg:w-[90%]`}  >
-                <Image alt='front picture' src="/brookings.jpg" fill style={{ "borderRadius": "0.5rem" }} />
-              </div>
-              <div className='col-span-1'>
-                <h1 className={'text-3xl'}><strong>Washington University in St. Louis</strong></h1>
-                <h1 className={'text-xl text-[#3885f2]'}><i>Working Towards BS CS + Math | Business </i></h1>
-                <h1 className={'text-xl text-[#04007a]'}><i>August - December</i></h1>
-
-                <p className='mt-2'><span className='underline font-bold'>Fall Semester:</span> First Semester in College 🤓 </p>
-
-                <p className='underline mt-2'>Notable classes:</p>
-                <ul className='list-disc'>
-                  <li>Data Structure and Algorithm</li>
-                  <li>Discrete Math</li>
-                  <li>Calc III</li>
-                </ul>
-              </div>
-
-              <div className={`${styles.journeyImage} h-[30vw] w-[35%] lg:h-[10vw] lg:w-[50%]`}  >
-                <Image alt='front picture' src="/robotics.png" fill style={{ "borderRadius": "0.5rem" }} />
-              </div>
-
-              <div className='col-span-1'>
-                <h1 className={'text-3xl'}><strong>WU Robotics</strong></h1>
-                <h1 className={'text-xl text-[#3885f2]'}><i>Swarm Team | Software Team | AI and SLAM</i></h1>
-                <h1 className={'text-xl text-[#04007a]'}><i>September - December</i></h1>
-
-                <p className='mt-2'><span className='underline font-bold'>Fall Semester:</span>Worked on ball detection for resource targets symbolized by rubber balls</p>
-
-
-                <ul className='list-disc mt-2'>
-                  <li>Built an object recognition AI model using <strong>YOLOv5</strong> and a <strong>custom dataset</strong>.</li>
-                  <li>Model detects rubber balls in video feeds.</li>
-                </ul>
-              </div>
-
-              <div className={`${styles.journeyImage} h-[30vw] w-[35%] lg:h-[12vw] lg:w-[55%]`}  >
-                <Image alt='front picture' src="/fiverrlogo.jpg" fill style={{ "borderRadius": "0.5rem" }} />
-              </div>
-
-              <div className='col-span-1'>
-                <h1 className={'text-3xl'}><strong>Freelance Browser Game Developer</strong></h1>
-                <h1 className={'text-xl text-[#3885f2]'}><i>Freelancer | Developer</i></h1>
-                <h1 className={'text-xl text-[#04007a]'}><i>March - September</i></h1>
-                <p>Earned over $1000 through my gig of creating full stack web browser games with node.js and socket.io</p>
-                <details className="mt-2">
-                  <summary className="cursor-pointer text-blue-600">Some more stuff:</summary>
-                  <ul className='list-disc mt-2'>
-                    <li>Explored freelancing by offering my skills on Fiverr, creating full-stack browser games.</li>
-                    <li>As a freelancer, I was responsible for selling my services and communicating with clients.</li>
-                    <li>Worked on a variety of projects, including real-time multiplayer experiences and platformer games.</li>
-                    <li>Used tools like p5.js, Node.js, and Socket.io—some of my favorites.</li>
-                  </ul>
-                </details>
-
-              </div>
-
             </div>
+            
 
             <div className=''>
-              <div className='mt-4 relative left-1/2 w-1/2 translate-x-[-50%] border-b-4 border-black h-8 border-x-4 rounded-b-xl'>
+              <div className='mt-4 relative left-1/2 w-1/2 translate-x-[-50%] border-b-2 border-white h-8 border-x-2 rounded-b-xl'>
 
               </div>
             </div>
 
             <div className=''>
-              <div className='w-1/2 border-r-4 border-black h-16'>
+              <div className='w-1/2 border-r-2 border-white h-16'>
 
               </div>
             </div>
             <div className='text-center text-xl p-4'><i>2023</i></div>
             <div className=''>
-              <div className='w-1/2 border-r-4 border-black h-16'>
+              <div className='w-1/2 border-r-2 border-white h-16'>
 
               </div>
             </div>
 
-            <div className='mt-4 w-1/2 text-center relative left-1/2 translate-x-[-50%]'>
-              <h1 className={'text-3xl'}><strong>Learning to Code and Build</strong></h1>
-
-              <h1 className={'text-xl text-[#04007a]'}><i>2019 - Present</i></h1>
+            <div className={`${styles.fadedBg} rounded-xl p-8 mt-4 w-2/3 text-center relative left-1/2 translate-x-[-50%]`}>
+              <h1 className={'text-3xl'}><strong>A Lifelong Journey of Learning</strong></h1>
+              <h1 className={`text-xl ${styles.titleTex}`}><i>Aspiring Software Engineer</i></h1>
+              <h1 className={`text-lg ${styles.dateRangeTex}`}><i>2019 - Present</i></h1>
               <br></br>
-              <p>
-                My journey in coding started during the year the covid-19 pandemic put the world into lockdown. Instead of just playing video games all day, I decided why not try and create my own. I then installed the game engine Unity, followed a couple of tutorials, and from there I followed a couple of tutorials and fell in love with coding. I began following online lectures, building side projects, and more. It was fascinating figuring out and learning new coding tools from Networking, Web Development, Training AI models, and more!
-              </p>
-              <br>
-              </br>
-              <p>
-                Learning new exciting tools and focusing on growing as a person has became, and still is, a fundemental core of my character, and my mindset to this day.
+              <p className='w-4/5 mx-auto'>
+                What began as a simple curiosity for making a video game during the Covid-19 pandemic has ignited my passion for all things software, and a lifelong drive to keep learning and building.
               </p>
 
             </div>
 
             <div className=''>
-              <div className='mt-4 w-1/2 border-r-4 border-black h-16'>
+              <div className='mt-2 w-1/2 border-r-2 border-white h-16'>
 
               </div>
             </div>
             <div className=''>
-              <div className='relative left-1/2 w-16 translate-x-[-50%] h-16 border-4 border-black rounded-full'>
+              <div className='relative left-1/2 w-16 translate-x-[-50%] h-16 border-2 border-white rounded-full'>
                 <div className='relative left-1/2 top-1/2 w-16 translate-x-[-50%] translate-y-[-50%] text-center'>
                   🌺
                 </div>
               </div>
             </div>
           </div>
-          <div className={`${styles.textContainer} py-4  text-center bg-[#020202] text-white `}>
-
-            <br></br>
-            <h1 className='text-2xl'>
-              <strong><i>Life is movement. Once you stop moving, you're dead. Choose life.</i></strong>
-            </h1>
-            <h1 id='projects'>
-              <i>Eugen Sandow</i>
-            </h1>
-          </div>
+          <br></br>
 
 
-          <div className={`${styles.textContainer} ${styles.projectGradientBackground} py-4  text-white `}>
+          {/* <div className={`${styles.textContainer} ${styles.projectGradientBackground} py-4  text-white `}>
 
             <Link href={'/projects'}><h1 style={{ "fontSize": "250%", "textAlign": "center", "cursor": "pointer" }}><strong className='hover:text-[#a3cbff] duration-200'>My Favorite Projects 🧑‍💻</strong></h1></Link>
 
@@ -804,7 +652,7 @@ const Index = (props: props) => {
                     </div>
                   </div>
                 )
-              }) : <h3 className='text-center text-3xl'>Loading...</h3>}
+              }) : <h3 className='text-center text-3xl'>Loading...</h3>} */}
 
         </div>
 

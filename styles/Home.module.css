@@ -250,9 +250,23 @@
   
 }
 
+.titleTex {
+  color: #93C5FD;
+}
+.dateRangeTex {
+  color: #60A5FA;
+}
+
 .fadedBg{
 
-  background-color:rgb(18, 18, 18, 0.33);
+  background-color:rgb(18, 18, 18, 0.66);
+  transition-duration: 1s;
+  
+  
+}
+.fadedBg:hover{
+
+  background-color:rgb(18, 18, 18, 0.88);
   
   
 }

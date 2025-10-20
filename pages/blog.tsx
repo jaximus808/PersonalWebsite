@@ -13,6 +13,7 @@ import Link from 'next/link'
 import jsonwebtoken from 'jsonwebtoken'
 
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
+import UnderConstruction from '../components/UnderConstruction'
 type props = 
 {
   blogs:any,
@@ -172,6 +173,7 @@ const Index:React.FC<props> = props => {
   
       setShowForwardButton(true)
     }  
+    
     return (
       <div>
   
@@ -181,134 +183,7 @@ const Index:React.FC<props> = props => {
           <link rel="icon" href="/favicon.ico" />
         </Head>
           <Header/>
-          
-
-          <div className={`bg-[#141414] ${styles.homeMaincotainerBlog}`}>
-            <p></p>
-            {(props.auth) ?
-            <div style={{position:"relative", zIndex:50}}>
-              <h1 style={{fontSize:"300%"}}>Post Blog</h1>
-              <form onSubmit={AddBlog}>
-                <label>
-                    {"Blog Title: "} 
-                </label>
-                <input type={"text" }value={blogName} onChange={(e) => setBlogName(e.currentTarget.value)}/>
-                <p></p>
-                <label>
-                    {"Blog Content: "} 
-                </label>
-                <p></p>
-                <textarea rows={4} cols={50} value={blogContent} onChange={(e) => setBlogContent(e.currentTarget.value)}></textarea>
-                
-                <p></p>
-                <label>
-                    {"Set Custom Date?"}
-                </label>
-                    <p></p>
-                <input type='checkbox' value={customDate} onChange={(e)=>setCustomDate(e.currentTarget.value)}/>
-                {(customDate === "true") ? 
-                <>
-                    <label>
-                    {"Custom Blog Date: "} 
-                        </label>
-                        <p></p>
-                    <input type='datetime-local'  value={blogDate} onChange={(e)=>setBlogDate(e.currentTarget.value)}/>
-                    </> :<></>
-                 } 
-                <p></p>
-                <label>
-                    {responseText}
-                </label>
-                <p></p>
-                <input type={"submit"} value={"Post Blog"}/>
-            </form>
-            <button onClick={logOut}>Log Out</button>
-            </div>:
-              
-            <></>}
-
-            <div className={styles.textContainer}>
-                <div className='w-full bg-[#1c1c1c] p-8 '>
-                  <div className='grid md:grid-cols-3 w-full'>
-                  <h1 className='text-4xl' ><strong>My Blogs 💡</strong></h1>
-                  <h3 className='mt-2 md:text-center'><strong>Total Blogs: {blogs.length}</strong></h3>
-                  <h1 className='mt-2 md:text-center'><strong>Page: {blogPage+1}</strong></h1>
-                  </div>
-                  {(showForwardButton || showBackButton) ?<div className='ml-2 mt-4'>
-                    <h1 > <strong>Move pages: </strong></h1>
-                    <button className='cursor-pointer hover:bg-[rgb(31,0,33)] text-xl duration-500 hover:text-3xl rounded-3xl text-white' onClick={MovePageBackward}>{showBackButton ? "⬅️" :""} </button>
-                    <button className='cursor-pointer hover:bg-[rgb(31,0,33)] text-xl duration-500 hover:text-3xl rounded-3xl text-white'  onClick={MovePageForawrd}>{showForwardButton ? "➡️" :""}</button>
-                  </div> :<></>}
-                </div>
-                <br></br>
-              
-                {(loading) ? 
-                <div className='md:ml-14 ml-6 mr-6 font-bold text-xl'>
-                  Loading...
-                </div> 
-                :
-                <div className='grid grid-cols-1 md:grid-cols-2 px-8 gap-y-4 gap-x-8'>
-                  {
-                blogs.slice(blogPage*6, (blogs.length > (blogPage+1)*6 )?((blogPage+1)*6):blogs.length).map((data:any) =>{
-                  return (
-                <div key={data.id} className='pb-4'>
-                  <div  onClick={()=>
-                    {
-                      window.location.href = `/blogs/${data.id}`
-                    }} className=' '>
-                      <div   className={`  ${styles.projectContainerText}  ${styles.gradent2} rounded-xl cursor-pointer `  }  >
-                        <h2 >
-                            <div className={`text-2xl`} style={{'overflow':'hidden',WebkitLineClamp:1, WebkitBoxOrient:"vertical",display:"-webkit-box"}} ><strong>{data.title}</strong></div>
-                        
-                        </h2>
-                        <h3 >
-                            <div  style={{ "cursor":"pointer",overflowWrap: "break-word"}}>{new Date(data.datePosted).toLocaleDateString()}</div>
-                        
-                        </h3>
-                        <div >
-                            
-                            <h3  className={"ml-4 text-xl my-4"} style={{'overflow':'hidden',WebkitLineClamp:4, WebkitBoxOrient:"vertical",display:"-webkit-box"}}>
-                            {
-                            
-                              data.content.split("*").map((data:any, key:any) =>{
-                        
-                                  if(data.length == 0) return ""
-                                  if(data.length >= 3 && data.substring(0, 3) == "<i>")
-                                  {
-                                    return ""
-                                  }
-                                  else if(data.length >= 3 && data.substring(0, 3) == "<b>")
-                                    {
-                                      return data.substring(3)
-                                    }
-                                  else
-                                  {
-                                    return data
-                                  }
-                                })
-                            
-                            
-                            }
-                            </h3>
-                            <p></p>
-
-                            
-                            <p></p>
-                            <Link className='text-xl' style={{textDecoration: "underline"}} href={`/blogs/${data.id}`}><div style={{textDecoration: "underline", 'cursor':'pointer'}}>{"-> Read More Here"}</div></Link>
-                    
-                        </div>
-                    </div>
-                  </div>
-                </div>
-                
-                )})}</div> }
-                
-            </div>
-            
-          
-{/*   
-            <Footer authSense={false} authenticated={props.auth}/> */}
-      </div>
+          <UnderConstruction title='Blog Page'/>
 
       </div>
     )

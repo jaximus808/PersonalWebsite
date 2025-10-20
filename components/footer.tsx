@@ -106,7 +106,7 @@ const Footer: NextPage<Props> = (props) => {
 
         <h5 style={{}}>Website Made by Jaxon Poentis</h5>
 
-        <h5 style={{}}>The background is inspired by the Einstein Rosen Bridge theory where a black hole at time zero, when its embedded in mathematics, creates a geometric &quot;funnel&quot; shape with an empty center in the middle in both the positive and negative direction, aka a theoretical wormhole.</h5>
+        <h5 className='font-thin' style={{}}>Website developed with Next.js and Typescript + MongoDB database. Background is made with Three.js. This webpage is still being updated, come back soon for updates!</h5>
         <p></p>
       </div>
     </div>
