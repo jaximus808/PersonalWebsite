@@ -114,8 +114,8 @@ function ScrollDown(props: any) {
 
         <a href='#whoIam' className='hover:text-blue-300 duration-300'>Me</a>
         <a href='#path' className='hover:text-blue-300 duration-300'>Path</a>
-        <a href='#projects' className='hover:text-blue-300 duration-300'>Projects</a>
-        <a href='#blogs' className='hover:text-blue-300 duration-300'>Blog</a>
+        {/* <a href='#projects' className='hover:text-blue-300 duration-300'>Projects</a>
+        <a href='#blogs' className='hover:text-blue-300 duration-300'>Blog</a> */}
 
       </div>
     </>
@@ -433,7 +433,7 @@ const Index = (props: props) => {
                   <h1 className={`text-md ${styles.dateRangeTex}`}><i>St. Louis, MO</i></h1>
                   <h1 className={`text-md ${styles.dateRangeTex}`}><i>09/2024 - 01/2025</i></h1>
                   <br></br>
-                  <p>Built-out backend infrastructure for flashcard decks in Node.js and Supabase </p>
+                  <p>Built-out backend infrastructure for flashcard decks with Node.js and Supabase </p>
 
 
                 </div>
@@ -451,7 +451,7 @@ const Index = (props: props) => {
                   <h1 className={`text-md ${styles.dateRangeTex}`}><i>St. Louis, MO</i></h1>
                   <h1 className={`text-md ${styles.dateRangeTex}`}><i>01/2025-12/2025</i></h1>
                   <br></br>
-                  <p> Assisted students in developing Data Structures, Implementation of Algorithms, and Runtime Analysis.  </p>
+                  <p> Assisted students in developing data structures, implementation of algorithms, and runtime analysis.  </p>
 
 
                 </div>
