@@ -3,7 +3,7 @@
 }
 .fontNormal
 {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif; 
+  font-family: var(--font-montserrat);
 }
 .BlogMaincotainer
 {
@@ -80,7 +80,6 @@
   min-height: calc(100vh - 5vw);
   /* gap: 20px; */
   width:100%;
-  padding-top: 3rem;
 }
 .mediaLink
 {
@@ -107,9 +106,42 @@
 }
 
 .canvas{
-  background: rgba(0,0,0,0);
+  background: transparent;
   width: 100vw; height: 100vh;
   z-index: -20;
+}
+.gradientorb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    animation: float 20s ease-in-out infinite;
+    z-index: -50;
+}
+.orb1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #6366f1 0%, transparent 70%);
+  top: -5%;
+  right: 0%;
+  animation-delay: 0s;
+}
+
+.orb2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #8b5cf6 0%, transparent 70%);
+  bottom: -10%;
+  left: 0%;
+  animation-delay: 5s;
+}
+
+.orb3 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, #3b82f6 0%, transparent 70%);
+  top: 50%;
+  right: 5%;
+  animation-delay: 10s;
 }
 
 .projectScene
@@ -118,7 +150,8 @@
   width: 10px;
 }
 .scene{
-  position:absolute;
+  background-color: transparent ;
+  position:fixed;
   width:100vw;
   height:120vh;
 }
@@ -138,7 +171,7 @@
 
   background-repeat: no-repeat;
   background-attachment: fixed;
-  background-color: #2b2f77 ;
+  background-color: #121212 ;
   transition: 1s;
   
 }
@@ -156,7 +189,6 @@
   transition: 1s;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  background-color:#2b2f77 ;
   /* background-image: linear-gradient(to top, #ce81d3,#2b2f77); */
   
 }
@@ -177,8 +209,6 @@
 
 .textContainerContact
 {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif; 
-
   font-weight: 300;
   font-weight: 400;
   transition-duration: 0.5s;
@@ -198,20 +228,38 @@
   /* border-radius: 15px; */
   /* color:black; */
   /* background-color: rgba(255, 255, 255,0.9); */
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif; 
-
-  font-weight: 300;
-  font-weight: 400;
+  
   transition-duration: 0.5s;
   width:100%;
   position: relative;
   
 }
+
+.textContainer
+{
+  
+
+  
+  /* border-radius: 15px; */
+  /* color:black; */
+  /* background-color: rgba(255, 255, 255,0.9); */
+  
+  transition-duration: 0.5s;
+  width:100%;
+  position: relative;
+  
+}
+
+.fadedBg{
+
+  background-color:rgb(18, 18, 18, 0.33);
+  
+  
+}
+
 .textContainerBlog
 {
   
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif; 
-
   border-radius: 15px;
   color:black;
   background-color: rgba(255, 255, 255,0.9);
@@ -429,7 +477,7 @@
 .links>a:hover
 {
   
-  color:rgb(239, 43, 177);
+  color:rgb(189, 219, 237);
 }
 
 
@@ -439,7 +487,7 @@
 }
 .homeLink:hover
 {
-  color:rgb(239, 43, 177);
+  color:rgb(189, 219, 237);
 }
 .links>a
 {
@@ -515,4 +563,10 @@
 
 .react-player > div {
   position: absolute; 
+}
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -30px) scale(1.2); }
+    66% { transform: translate(-20px, 20px) scale(0.8); }
 }

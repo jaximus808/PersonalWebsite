@@ -11,7 +11,7 @@ const Header: NextPage = () => {
   {
       const y = window.scrollY;
       yRef.current = y;
-      if(!scrolled.current && yRef.current > window.innerHeight*0.05 )
+      if(!scrolled.current && yRef.current > window.innerHeight*0.10 )
       {
         scrolled.current = true
         window.requestAnimationFrame(()=>
@@ -19,7 +19,7 @@ const Header: NextPage = () => {
           headerRef.current.className = styles.navBarMini;
         });
       }
-      if(scrolled.current && yRef.current <=window.innerHeight*0.05  )
+      if(scrolled.current && yRef.current <=window.innerHeight*0.10  )
       {
 
         scrolled.current = false
@@ -55,7 +55,7 @@ const Header: NextPage = () => {
     <>
       <div ref={headerRef}  className={`${styles.navBar}`}>
           
-          <div className={`${styles.links} font-caviar font-bold relative top-1/2 translate-y-[-50%]`}>
+          <div className={`${styles.links} font-thin relative top-1/2 translate-y-[-50%]`}>
             <span className={styles.homeLink} style={{ marginLeft:"2vw"}}>
               <Link href='/'>Jaxon Poentis</Link>
               
