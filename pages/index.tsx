@@ -257,7 +257,7 @@ const Index = (props: props) => {
            <div className={`${styles.fadedBg} grid grid-cols-1 md:grid-cols-3 p-4 rounded-xl`}>
 
                 <div className='flex items-center'>
-                  <div className={`${styles.journeyImage} h-[9rem] w-[9rem] md:h-[9rem] md:w-[7rem] `}  >
+                  <div className={`${styles.journeyImage} h-[9rem] w-[7rem] md:h-[9rem] md:w-[7rem] `}  >
                     <Image alt='front picture' src="/teslalogo.png" fill style={{ "borderRadius": "0.5rem" }} />
                   </div>
                 </div>
