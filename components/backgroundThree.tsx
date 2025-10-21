@@ -181,7 +181,7 @@ function System(props: any): JSX.Element {
   const pos: any = useRef([0, 25, 100]);
   const rafRef = useRef<number>()
   const angle = useRef(0)
-
+  const isMobile = useRef(false)
   const rotateCamera = () => {
     let xPos = xDist * Math.sin(angle.current)
     let zPos = Zdist * Math.cos(angle.current)
@@ -192,7 +192,8 @@ function System(props: any): JSX.Element {
   }
 
   const handleScroll = () => {
-    if (rafRef.current) return
+    if (isMobile.current || rafRef.current) return
+   
     rafRef.current = requestAnimationFrame(() => {
         const y = window.scrollY;
         angle.current = angle.current + 0.01 * (y - scrolPrev);
@@ -213,10 +214,16 @@ function System(props: any): JSX.Element {
   }
 
   useEffect(() => {
+    isMobile.current = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+      || window.innerWidth <= 768;
     camera.lookAt(0, 0, 0);
-    window.addEventListener("scroll", handleScroll, { passive: true });    
+    if (!isMobile.current) {
+      window.addEventListener("scroll", handleScroll, { passive: true });
+    }  
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      if (!isMobile.current) {
+        window.removeEventListener("scroll", handleScroll);
+      }
       if (rafRef.current) {
         cancelAnimationFrame(rafRef.current)
       }
