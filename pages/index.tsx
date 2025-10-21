@@ -172,7 +172,7 @@ const Index = (props: props) => {
           <h1 style={{ "textAlign": "center" }} className='text-5xl'></h1>
           <br></br>
           <div className={`grid md:grid-cols-2 w-full h-full py-4 relative left-1/2 translate-x-[-50%] gap-x-12 `}>
-            <div className={`${styles.frontImage} mt-2 md:ml-10 md:w-[18vw] md:min-h-[30rem] md:min-w-[21rem] md:h-[35vw] min-w-[250px] min-h-[27rem] w-[20rem] h-[40vw]`}  >
+            <div className={`${styles.frontImage} mt-2 md:ml-10 md:w-[18vw] md:min-h-[30rem] md:min-w-[21rem] md:h-[32vw] min-w-[250px] min-h-[27rem] w-[20rem] h-[40vw]`}  >
               <Image alt='front picture' src="/aura_pic.jpg" fill style={{ "borderRadius": "0.5rem" }} />
             </div>
 
