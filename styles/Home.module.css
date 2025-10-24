@@ -260,7 +260,7 @@
 .fadedBg{
 
   background-color:rgb(18, 18, 18, 0.66);
-  transition-duration: 1s;
+  transition-duration: 0.5s;
   
   
 }
@@ -416,23 +416,49 @@
   animation: bg-animation 10s infinite; 
   
 }
-
-.gradent{
+.gradentBlock {
+  
   position: relative;
   z-index: 1;
-  background: linear-gradient(#171717, #171717) padding-box,
-              linear-gradient(to right, darkblue, darkorchid,darkorchid) border-box;
-  background-size: 300%;
-  background-position: left;
-  border-radius: 10px;
-  border: 4px solid transparent;
-  transition: background-position 1s;
-  /* animation: bg-animation 1s infinite alternate; */
+  background: linear-gradient(#121212, #121212) padding-box,
+    conic-gradient(from var(--angle), #1e3a8a, #3b82f6, #6366f1, #8b5cf6, #1e3a8a) border-box;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  transition: border 0.5s;
+  animation: gradent-rotate 3s linear infinite;
+  box-shadow: 0 0 0px 0px #6b21a8;
+}
+.gradent {
   
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(#121212, #121212) padding-box,
+    conic-gradient(from var(--angle), #581c87, #6b21a8, #701a75, #86198f, #581c87) border-box;
+
+  border: 0px solid transparent;
+  transition: border 0.5s;
+  animation: gradent-rotate 3s linear infinite;
+  box-shadow: 0 0 0px 0px #6b21a8;
 }
 
-.gradent:hover{
-  background-position: right;
+.gradent:hover {
+  border: 4px solid transparent;
+  animation: gradent-rotate 1.5s linear infinite;
+}
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes gradent-rotate {
+  0% {
+    --angle: 0deg;
+  }
+  100% {
+    --angle: 360deg;
+  }
 }
 /* .gradent:hover{
   background: linear-gradient(#171717, #171717) padding-box,
@@ -441,12 +467,18 @@
   border: 4px solid transparent;
   transition-duration: 0.5s;
 } */
-@keyframes bg-animation {
+/* @keyframes bg-animation {
   0% {background-position: left;}
   100% {background-position: right;}
+} */
+
+.truncateText {
+  display: -webkit-box; /* Required for -webkit-line-clamp */
+  -webkit-line-clamp: 3; /* The desired number of lines */
+  -webkit-box-orient: vertical; /* Required for -webkit-line-clamp */
+  overflow: hidden; /* Hide overflowing content */
+  text-overflow: ellipsis; /* Add an ellipsis (...) for truncated text */
 }
-
-
 
 
 .projectContainerText
@@ -454,7 +486,6 @@
   
   /* #background-color: rgba(240, 240, 240,0.9); */
   font-weight: 400;
-  padding: 1rem;
   transition-duration: 0.5s;
   max-width: 70rem;
 
@@ -583,4 +614,18 @@
     0%, 100% { transform: translate(0, 0) scale(1); }
     33% { transform: translate(30px, -30px) scale(1.2); }
     66% { transform: translate(-20px, 20px) scale(0.8); }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animateFadeIn {
+  animation: fadeIn 1.5s ease-out forwards;
 }

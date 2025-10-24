@@ -8,21 +8,22 @@ import * as jsonwebtoken from "jsonwebtoken";
 
 const prisma = new PrismaClient(); 
 
-export default async (req: NextApiRequest, res: NextApiResponse) =>
+export default async function handler(req: NextApiRequest, res: NextApiResponse)
 {
     const prisma = new PrismaClient();
     let  pastFavoriteProjects:any;
     try
     {
-        pastFavoriteProjects = await prisma.projects.findMany({
-        where:
-        {
-            favorite:true
-        }
+        pastFavoriteProjects = await prisma.projects.findMany(
+            {
+                orderBy: {
+                    projectDate: 'desc'
+                },
+                take: 3
         })
-    
+        pastFavoriteProjects.reverse();    
     }
-    catch
+    catch (e: Error | any)
     {
         pastFavoriteProjects = [];
     }
@@ -40,7 +41,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) =>
 
     
     }
-    catch
+    catch(e: Error | any)
     {
         recentBlogs = []
     }
@@ -49,12 +50,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) =>
     {
         return res.json({fail:false, pastProjFav: JSON.parse(JSON.stringify(pastFavoriteProjects)), recentBlogs: JSON.parse(JSON.stringify(recentBlogs))})
     }
-    catch
+    catch(e: Error | any)
     {
         res.json({fail:true, pastProjFav:[], recentBlogs:[]});
-    }
-
-
-    
-    
+    }   
 }
