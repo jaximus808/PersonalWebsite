@@ -10,7 +10,9 @@ const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse)
 {
+    let failmsg = "";
     const prisma = new PrismaClient();
+    let failed = false;
     let  pastFavoriteProjects:any;
     try
     {
@@ -26,6 +28,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     catch (e: Error | any)
     {
         pastFavoriteProjects = [];
+        failed = true;
+        failmsg += e.message;
     }
     let  recentBlogs:any;
     try
@@ -37,17 +41,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 take: 1
         })
 
-
     
     }
     catch(e: Error | any)
     {
         recentBlogs = []
+
+        failed = true
+        failmsg += e.message;
     }
 
     try
     {
-        return res.json({fail:false, pastProjFav: JSON.parse(JSON.stringify(pastFavoriteProjects)), recentBlogs: JSON.parse(JSON.stringify(recentBlogs))})
+        return res.json({fail:failed, msg: failmsg,  pastProjFav: JSON.parse(JSON.stringify(pastFavoriteProjects)), recentBlogs: JSON.parse(JSON.stringify(recentBlogs))})
     }
     catch(e: Error | any)
     {
