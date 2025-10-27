@@ -243,7 +243,7 @@ function Planet(props:any)
 
 
 
-function System(props:any):React.JSX.Element
+function System(props:any):JSX.Element
 {
 
     //MAKE THIS FADE IN ON LOAD
@@ -289,7 +289,7 @@ function System(props:any):React.JSX.Element
             window.removeEventListener("resize", handleResize)
         }
     }, [])
-    const rows:React.JSX.Element[] = [];
+    const rows:JSX.Element[] = [];
     let id = 0;
     for(let y = 0; y < 4; y++)
     {
