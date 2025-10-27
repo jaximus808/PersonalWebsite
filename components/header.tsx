@@ -62,7 +62,7 @@ const Header: NextPage = () => {
               </span>
             <Link  replace href='/projects'>Project Catalog</Link>
             <Link replace  href='/blog'>Blog</Link> 
-            <Link replace href='/contact'>About Me</Link>
+            <Link replace href='/'>Home</Link>
     
     
           </div>

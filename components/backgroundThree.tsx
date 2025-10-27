@@ -1,4 +1,3 @@
-
 import dynamic from 'next/dynamic';
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import css from "../styles/Home.module.css"
@@ -6,6 +5,7 @@ import Router from 'next/router'
 import * as THREE from "three"
 import React, { useState, useEffect, useRef, useMemo, Suspense } from 'react'
 import shapePositions from './shapePositions.json'
+
 function Radians(degrees: number) {
   return degrees * Math.PI / 180
 }
@@ -87,7 +87,7 @@ function OptimizedStars({ allShapesPositions, angle, rotateCamera }: {  allShape
   const meshRef = useRef<THREE.InstancedMesh>(null!)
   const tempObject = useMemo(() => new THREE.Object3D(), [])
   
-  const currentShapeRef = useRef(0)
+  const currentShapeRef = useRef(-1) // Start at -1 to indicate initial empty state
   const startPositionsRef = useRef<number[][]>([])
   const targetPositionsRef = useRef<number[][]>([])
   const lerpProgressRef = useRef(0)
@@ -95,19 +95,25 @@ function OptimizedStars({ allShapesPositions, angle, rotateCamera }: {  allShape
   
   const shapeNames = Object.keys(allShapesPositions)
   const totalPositions = allShapesPositions[shapeNames[0]].length
+  
   useEffect(() => {
-    // Initialize with first shape
-    startPositionsRef.current = allShapesPositions[shapeNames[0]]
-    targetPositionsRef.current = allShapesPositions[shapeNames[1]]
+    // Create empty positions (all particles at origin [0, 0, 0])
+    const emptyPositions = Array(totalPositions).fill([0, 0, 0])
+    
+    // Initialize with empty shape transitioning to first shape
+    startPositionsRef.current = emptyPositions
+    targetPositionsRef.current = allShapesPositions[shapeNames[0]]
   }, [])
+  
   useFrame((state) => {
     if (!meshRef.current && targetPositionsRef.current.length === 0) return
     
     const elapsed = state.clock.elapsedTime
     angle.current += 0.01
     rotateCamera()
-    // Check if 4 seconds have passed
-    if (elapsed - lastTransitionRef.current >= 4) {
+    
+    // Check if 4 seconds have passed (but wait for initial transition to complete first)
+    if (currentShapeRef.current >= 0 && elapsed - lastTransitionRef.current >= 4) {
       // Start new transition
       lastTransitionRef.current = elapsed
       lerpProgressRef.current = 0
@@ -118,6 +124,16 @@ function OptimizedStars({ allShapesPositions, angle, rotateCamera }: {  allShape
       
       startPositionsRef.current = targetPositionsRef.current
       targetPositionsRef.current = allShapesPositions[shapeNames[nextShapeIndex]]
+    } else if (currentShapeRef.current === -1 && elapsed >= 0.5) {
+      // After 0.5 seconds, mark initial transition as complete and start normal cycle
+      if (lerpProgressRef.current >= 1) {
+        currentShapeRef.current = 0
+        lastTransitionRef.current = elapsed
+        lerpProgressRef.current = 0
+        
+        startPositionsRef.current = targetPositionsRef.current
+        targetPositionsRef.current = allShapesPositions[shapeNames[1]]
+      }
     }
     
     // Update lerp progress (complete transition in 2 seconds)
@@ -155,6 +171,7 @@ function OptimizedStars({ allShapesPositions, angle, rotateCamera }: {  allShape
     </instancedMesh>
   )
 }
+
 export default function Background() {
 
   return (

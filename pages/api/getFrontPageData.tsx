@@ -30,14 +30,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let  recentBlogs:any;
     try
     {
-        recentBlogs = await prisma.blog.findMany()
+        recentBlogs = await prisma.blog.findMany({
+            orderBy: {
+                    datePosted: 'desc'
+                },
+                take: 1
+        })
 
-        if(recentBlogs.length > 4)
-        {
-
-        recentBlogs.splice(0, recentBlogs.length - 4)
-        }
-        recentBlogs.reverse();
 
     
     }

@@ -2,16 +2,17 @@ import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import { useEffect, useRef, useState, createContext, useContext, ReactNode } from "react";
 
-const ScrollContext = createContext<{ 
-  observer: IntersectionObserver | null; 
-  visibleElements: Set<Element> 
+const ScrollContext = createContext<{
+  observer: IntersectionObserver | null;
+  visibleElements: Set<Element>
 }>({ observer: null, visibleElements: new Set() });
 
 export function ScrollObserverProvider({ children }: { children: ReactNode }) {
   const [visibleElements, setVisibleElements] = useState(new Set<Element>());
   const observerRef = useRef<IntersectionObserver | null>(null);
-
-  useEffect(() => {
+  
+  // Create observer synchronously on first render (client-side only)
+  if (typeof window !== 'undefined' && !observerRef.current) {
     observerRef.current = new IntersectionObserver(
       (entries) => {
         setVisibleElements((prev) => {
@@ -26,12 +27,16 @@ export function ScrollObserverProvider({ children }: { children: ReactNode }) {
           return next;
         });
       },
-      { threshold: 0 }
+      { threshold: 0.1 } // Lower threshold triggers earlier
     );
+  }
 
+  useEffect(() => {
+    // Cleanup only
     return () => {
       if (observerRef.current) {
         observerRef.current.disconnect();
+        observerRef.current = null;
       }
     };
   }, []);

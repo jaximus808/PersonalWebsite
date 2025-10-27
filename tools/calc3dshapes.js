@@ -1,6 +1,7 @@
 const fs = require('fs');
 
 const FUNCTIONS_3D = {
+  
   sphere: (x, y, time = 0) => {
     const r = 5;
     const inside = r * r - x * x - y * y;

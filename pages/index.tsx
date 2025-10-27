@@ -179,137 +179,145 @@ const Index = (props: props) => {
           </div>
         </div>
         <div id="whoIam" className={`${styles.homeMaincotainer} `}>
-          <div className={` ${styles.textContainer}   text-white `}>
+          <div className={` ${styles.textContainer}   text-white`}>
             <h1 style={{ textAlign: "center" }} className="text-5xl"></h1>
             <br></br>
             <div
-              className={`grid md:grid-cols-2 w-full h-full py-4 relative left-1/2 translate-x-[-50%] gap-x-8 `}
+              className={`grid md:grid-cols-2 w-full h-full py-4 relative left-1/2 translate-x-[-50%] gap-x-8  bg-[#121212] `}
             >
-              <div
-                className={`${styles.frontImage} mt-2 md:ml-10 md:w-[18vw] md:min-h-[30rem] md:min-w-[21rem] md:h-[32vw] min-w-[250px] min-h-[27rem] w-[20rem] h-[40vw]`}
-              >
-                <Image
-                  alt="front picture"
-                  src="/aura_pic.jpg"
-                  fill
-                  style={{ borderRadius: "0.5rem" }}
-                />
-              </div>
-
-              <div className={`w-full flex px-4 md:p-0 mt-4 md:mt-0 `}>
-                <div className={`${styles.fadedBg} p-6 rounded-xl md:w-[87%] `}>
-                  <h2
-                    className={`${styles.fontNormal}  text-2xl md:text-left text-center`}
+              <PopInBlock>
+                <div
+                  className={`${styles.frontImage}  mt-2 md:ml-10 md:w-[18vw] md:min-h-[30rem] md:min-w-[21rem] md:h-[32vw] min-w-[250px] min-h-[27rem] w-[20rem] h-[40vw]`}
+                >
+                  <Image
+                    alt="front picture"
+                    src="/aura_pic.jpg"
+                    fill
+                    className="rounded-md"
+                  />
+                </div>
+              </PopInBlock>
+              <PopInBlock>
+                <div className={`w-full flex px-4 md:p-0 mt-4 md:mt-0 `}>
+                  <div
+                    className={`${styles.fadedBg} p-6 rounded-xl md:w-[87%] `}
                   >
-                    Hey, I’m Jaxon 🤙
-                  </h2>
-                  <h2
-                    className={`${styles.fontNormal} font-thin  text-lg mt-5 md:text-left text-center`}
-                  >
-                    Born and Raised Hawaii, island of O'ahu, I'm currently
-                    studying CS + Math at Washington University in St. Louis,
-                    with a focus on backend development and robotic systems.{" "}
-                  </h2>
-                  <h2
-                    className={`${styles.fontNormal} font-thin  text-lg mt-5 md:text-left text-center`}
-                  >
-                    <span className="underline">Hobbies</span>: Coding, Hiking,
-                    Fishing, Gaming
-                  </h2>
-                  <br></br>
-                  <p
-                    className={`${styles.fontNormal} font-thin text-center md:text-left`}
-                  >
-                    If my webpage is too long, checkout my resume:
-                  </p>
-                  <div className="w-full text-center md:text-left">
-                    <Link
-                      className="underline text-blue-300 "
-                      href={"./resume"}
+                    <h2
+                      className={`${styles.fontNormal}  text-2xl md:text-left text-center`}
                     >
-                      📘 Resume
-                    </Link>
-                  </div>
+                      Hey, I’m Jaxon 🤙
+                    </h2>
+                    <h2
+                      className={`${styles.fontNormal} font-semithin  text-md mt-5 md:text-left text-center`}
+                    >
+                      Born and Raised Hawaii, island of O'ahu, I'm currently
+                      studying CS + Math at Washington University in St. Louis,
+                      with a focus on backend development and robotic systems.{" "}
+                    </h2>
+                    <h2
+                      className={`${styles.fontNormal} font-thin  text-lg mt-5 md:text-left text-center`}
+                    >
+                      <span className="underline">Hobbies</span>: Coding,
+                      Hiking, Fishing, Gaming
+                    </h2>
+                    <h2
+                      className={`${styles.fontNormal} font-thin  text-lg mt-2 md:text-left text-center`}
+                    >
+                      <span className="underline">Fav Languages</span>: Go, C++,
+                      Python
+                    </h2>
+                    <br></br>
+                    <p
+                      className={`${styles.fontNormal} font-thin text-center md:text-left`}
+                    >
+                      If my webpage is too long, checkout my resume:
+                    </p>
+                    <div className="w-full text-center md:text-left">
+                      <Link
+                        className="underline text-blue-300 "
+                        href={"./resume"}
+                      >
+                        📘 Resume
+                      </Link>
+                    </div>
 
-                  <br></br>
-                  <h1
-                    className={`${styles.fontNormal} text-2xl md:text-left text-center`}
-                  >
-                    Connect With Me 👋
-                  </h1>
+                    <br></br>
+                    <h1
+                      className={`${styles.fontNormal} text-2xl md:text-left text-center`}
+                    >
+                      Connect With Me 👋
+                    </h1>
 
-                  <div className="mt-8 pb-8 mx-auto w-full md:w-auto">
-                    <ul className="space-y-4 md:text-left text-center underline">
-                      <li className="flex items-center gap-3 justify-center md:justify-start">
-                        <div className="flex items-center gap-3">
-                          <Image
-                            src="/LinkedIn_icon.png"
-                            alt="LinkedIn"
-                            width={24}
-                            height={24}
-                            className="object-contain"
-                          />
-                          <Link
-                            className="underline"
-                            href={"https://www.linkedin.com/in/jaxon-poentis"}
-                          >
-                            LinkedIn
-                          </Link>
-                        </div>
-                      </li>
+                    <div className="mt-8 pb-8 mx-auto w-full md:w-auto">
+                      <ul className="space-y-4 md:text-left text-center underline">
+                        <li className="flex items-center gap-3 justify-center md:justify-start">
+                          <div className="flex items-center gap-3">
+                            <Image
+                              src="/LinkedIn_icon.png"
+                              alt="LinkedIn"
+                              width={24}
+                              height={24}
+                              className="object-contain"
+                            />
+                            <Link
+                              className="underline"
+                              href={"https://www.linkedin.com/in/jaxon-poentis"}
+                            >
+                              LinkedIn
+                            </Link>
+                          </div>
+                        </li>
 
-                      <li className="flex items-center gap-3 justify-center md:justify-start">
-                        <div className="flex items-center gap-3">
-                          <Image
-                            src="/youlogo.png"
-                            alt="YouTube"
-                            width={24}
-                            height={24}
-                            className="object-contain"
-                          />
-                          <Link
-                            className="underline"
-                            href={"https://www.linkedin.com/in/jaxon-poentis"}
-                          >
-                            Youtube
-                          </Link>
-                        </div>
-                      </li>
+                        <li className="flex items-center gap-3 justify-center md:justify-start">
+                          <div className="flex items-center gap-3">
+                            <Image
+                              src="/youlogo.png"
+                              alt="YouTube"
+                              width={24}
+                              height={24}
+                              className="object-contain"
+                            />
+                            <Link
+                              className="underline"
+                              href={"https://www.linkedin.com/in/jaxon-poentis"}
+                            >
+                              Youtube
+                            </Link>
+                          </div>
+                        </li>
 
-                      <li className="flex items-center gap-3 justify-center md:justify-start">
-                        <div className="flex items-center gap-3">
-                          <Image
-                            src="/githublogo.png"
-                            alt="GitHub"
-                            width={24}
-                            height={24}
-                            className="rounded-full object-contain"
-                          />
-                          <Link
-                            className="underline"
-                            href={"https://www.linkedin.com/in/jaxon-poentis"}
-                          >
-                            Github
-                          </Link>
-                        </div>
-                      </li>
-                    </ul>
+                        <li className="flex items-center gap-3 justify-center md:justify-start">
+                          <div className="flex items-center gap-3">
+                            <Image
+                              src="/githublogo.png"
+                              alt="GitHub"
+                              width={24}
+                              height={24}
+                              className="rounded-full object-contain"
+                            />
+                            <Link
+                              className="underline"
+                              href={"https://www.linkedin.com/in/jaxon-poentis"}
+                            >
+                              Github
+                            </Link>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
-              </div>
-
+              </PopInBlock>
               <div id="path"></div>
             </div>
 
             <MyPath />
 
             <br></br>
+
             <TechStack />
-            <div 
-              id="projects"></div>
-            <div
-              className={`${styles.textContainer}  py-4  text-white mt-16`}
-            >
+            <div id="projects"></div>
+            <div className={`${styles.textContainer}  py-4  text-white mt-16`}>
               <Link href={"/projects"}>
                 <h1
                   className="font-thin"
@@ -325,20 +333,23 @@ const Index = (props: props) => {
               <div className="">
                 <div className="mt-4 relative left-1/2 w-1/2 translate-x-[-50%] border-b-2 border-white h-2 "></div>
               </div>
-              <div className="flex items-center justify-center mt-4">
+              <div className="mt-4 flex items-center justify-center">
                 {frontData.pastProjFav ? (
                   frontData.pastProjFav.length > 0 ? (
-                    <div className="grid grid-cols-1 md:w-[90%] flex mt-4 gap-12 p-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 flex mt-4 gap-8 md:gap-4 lg:gap-4 p-4 px-8 max-w-[90rem]">
                       {frontData.pastProjFav.map((data: any) => {
                         return (
                           <PopInBlock key={data.id}>
-                            <div key={data.id} className="h-full ">
-                              <div>
+                            <div
+                              key={data.id}
+                              className="h-full w-full flex justify-center"
+                            >
+                              <div className=" max-w-[80rem]">
                                 <div
                                   onClick={() => {
                                     window.location.href = `/projects/${data.name}`;
                                   }}
-                                  className={`${styles.projectContainerText} ${styles.gradent} rounded-lg py-12 px-4  bg-[#171717] cursor-pointer`}
+                                  className={`${styles.projectContainerText} ${styles.gradent}  rounded-lg py-12 px-4  bg-[#343434] cursor-pointer`}
                                   style={{ textAlign: "left" }}
                                 >
                                   <div className="">
@@ -349,7 +360,7 @@ const Index = (props: props) => {
                                         >
                                           <Suspense fallback={<h3>loading</h3>}>
                                             <YoutubeVideo
-                                              className={"h-[40vw]"}
+                                              className={"h-[40vw] md:h-[18vw]"}
                                               vId={data.mediaLink}
                                             />
                                           </Suspense>
@@ -422,30 +433,23 @@ const Index = (props: props) => {
                     <h3 className="text-center text-3xl">Loading...</h3>
                   </PopInBlock>
                 )}
-
-                <div id="blogs"></div>
               </div>
             </div>
           </div>
 
+          <div id="blogs"></div>
           <div
-            className={`${styles.textContainer} py-4  bg-[#0a0a0a] text-white`}
+            className={`${styles.textContainer} ${styles.gradentBlock2} py-4 mt-12 pb-12 text-white `}
             style={{ textAlign: "center" }}
           >
             <Link href={"/blog"}>
-              <h1
-                style={{
-                  fontWeight: "400",
-                  fontSize: "250%",
-                  textAlign: "center",
-                  cursor: "pointer",
-                }}
-              >
-                <strong className="hover:text-[#a3cbff] duration-200 ">
-                  💡 Recent Blogs 💡
-                </strong>
-              </h1>
+              <span className="hover:text-[#a3cbff] duration-200 text-[350%] cursor-pointer font-thin">
+                Recent Blog 💡
+              </span>
             </Link>
+            <div className="">
+              <div className="mt-2 relative left-1/2 w-1/2 translate-x-[-50%] border-t-2 border-white h-2 "></div>
+            </div>
 
             {frontData.recentBlogs ? (
               frontData.recentBlogs.length == 0 ? (
@@ -462,12 +466,32 @@ const Index = (props: props) => {
                         onClick={() => {
                           window.location.href = `/blogs/${data.id}`;
                         }}
-                        className={` ${styles.gradent2} bg-[#242424] hover:bg-[#292929] pt-4 pb-8 px-8 mt-4  w-4/5 relative left-1/2 translate-x-[-50%] rounded-md cursor-pointer duration-200`}
+                        className={`${styles.gradentBlog} bg-[#2C2C2E] hover:bg-[#2C2C2E] pt-4 pb-8 px-8 mt-4  w-3/5 relative left-1/2 translate-x-[-50%] rounded-md cursor-pointer duration-200`}
                         style={{ textAlign: "left" }}
                       >
+                        <div>
+                          <div className={`flex w-full  `}>
+                            <div className="w-[15rem] h-[15rem]">
+                              
+                              {/* // eslint-disable-next-line @next/next/no-img-element */
+                               <img
+                                alt="front picture"
+                                src={data.mediaPic}
+                                style={{
+                                  borderRadius: "0.5rem",
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "cover",
+                                }}
+                              />}
+                             
+                            </div>
+                          </div>
+                        </div>
+                        <div className="mt-4"></div>
                         <h2>
                           <div
-                            className={`text-2xl font-semibold font-caviar`}
+                            className={`text-2xl font-semibold hover:underline `}
                             style={{
                               cursor: "pointer",
                               overflowWrap: "break-word",
@@ -478,10 +502,10 @@ const Index = (props: props) => {
                         </h2>
                         <div>
                           <h3
-                            className="text-xl font-light"
+                            className="text-lg font-thin"
                             style={{
                               overflow: "hidden",
-                              WebkitLineClamp: 6,
+                              WebkitLineClamp: 3,
                               WebkitBoxOrient: "vertical",
                               display: "-webkit-box",
                             }}
@@ -492,10 +516,10 @@ const Index = (props: props) => {
                           </h3>
                           <br></br>
                           <h3
-                            className="font-light text-lg"
+                            className="font-light text-sm"
                             style={{
                               overflow: "hidden",
-                              WebkitLineClamp: 6,
+                              WebkitLineClamp: 3,
                               WebkitBoxOrient: "vertical",
                               display: "-webkit-box",
                             }}
@@ -519,22 +543,6 @@ const Index = (props: props) => {
                                 }
                               })}
                           </h3>
-
-                          <br></br>
-                          <Link
-                            className="text-lg"
-                            style={{ textDecoration: "underline" }}
-                            href={`/blogs/${data.id}`}
-                          >
-                            <div
-                              style={{
-                                textDecoration: "underline",
-                                cursor: "pointer",
-                              }}
-                            >
-                              {"Click to Read More 📖"}
-                            </div>
-                          </Link>
                         </div>
                       </div>
                     </PopInBlock>

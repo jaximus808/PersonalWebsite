@@ -36,5 +36,6 @@ model Blog {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   title String @unique
   content String @unique
+  mediaPic String @unique
   datePosted DateTime @default(now())
 }
