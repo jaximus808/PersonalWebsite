@@ -27,7 +27,6 @@
     "react-confetti-explosion": "^3.0.3",
     "react-dom": "^19.2.0",
     "react-pdf": "^10.2.0",
-    "react-three-fiber": "^6.0.13",
     "react-youtube": "^10.1.0",
     "resend": "^6.3.0",
     "three": "^0.180.0"
