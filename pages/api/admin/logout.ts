@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import {PrismaClient, Prisma} from "@prisma/client"
-import { getCookies, getCookie, setCookies, removeCookies, deleteCookie } from 'cookies-next';
+import { getCookies, getCookie, setCookie, deleteCookie } from 'cookies-next';
 
 const prisma = new PrismaClient(); 
 
@@ -9,7 +9,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) =>
 {
     try
     {
-        setCookies("token","meow",{ req, res, maxAge: -1 });res.json({
+        setCookie("token","meow",{ req, res, maxAge: -1 });res.json({
             msg: "GOOD!"
         })
     }

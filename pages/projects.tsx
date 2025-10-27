@@ -10,7 +10,7 @@ import { Suspense } from 'react'
 import Link from 'next/link'
 import cookies from "cookie"
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
-import { getCookies, getCookie, setCookies, removeCookies } from 'cookies-next';
+import { getCookies, getCookie} from 'cookies-next';
 
 import Image from 'next/image'
 import { useState,useEffect, useRef  } from 'react'

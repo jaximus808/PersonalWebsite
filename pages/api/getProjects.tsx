@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import {PrismaClient, Prisma} from "@prisma/client"
-import { getCookies, getCookie, setCookies, removeCookies } from 'cookies-next';
+import { getCookies, getCookie } from 'cookies-next';
 
 import * as bcrypt from "bcrypt";
 import * as jsonwebtoken from "jsonwebtoken";

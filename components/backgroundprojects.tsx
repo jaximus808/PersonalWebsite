@@ -93,7 +93,7 @@ function Stars(props:any)
     Router.events.on('routeChangeStart', (url, options) => {linkedClicked.current=true})
     Router.events.on('routeChangeComplete', (url, options) => {linkedClicked.current=false})
 
-    const ref:any = useRef(); 
+    const ref:any = useRef(undefined); 
 
     let angle = useRef(Radians(props.angle))
     let radius = props.radius
@@ -174,7 +174,7 @@ function Stars(props:any)
 
 function Planet(props:any)
 {
-    const ref:any = useRef(); 
+    const ref:any = useRef(undefined); 
 
     let angle = useRef(Radians(props.angle))
     let radius = props.radius
@@ -243,7 +243,7 @@ function Planet(props:any)
 
 
 
-function System(props:any):JSX.Element
+function System(props:any):React.JSX.Element
 {
 
     //MAKE THIS FADE IN ON LOAD
@@ -289,7 +289,7 @@ function System(props:any):JSX.Element
             window.removeEventListener("resize", handleResize)
         }
     }, [])
-    const rows:JSX.Element[] = [];
+    const rows:React.JSX.Element[] = [];
     let id = 0;
     for(let y = 0; y < 4; y++)
     {

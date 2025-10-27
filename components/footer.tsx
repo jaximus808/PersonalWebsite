@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 import styles from '../styles/Home.module.css'
 
-import { getCookies, getCookie, setCookies, removeCookies } from 'cookies-next';
+import { getCookies, getCookie, deleteCookie } from 'cookies-next';
 
 
 interface Props {
@@ -26,7 +26,7 @@ const Footer: NextPage<Props> = (props) => {
 
 
   const LogOut = () => {
-    removeCookies("token");
+    deleteCookie("token");
     location.reload();
   }
 

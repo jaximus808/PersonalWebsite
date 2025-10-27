@@ -15,7 +15,7 @@ const sphere = new THREE.SphereGeometry(0.1, 25, 28)
 const white = new THREE.MeshLambertMaterial({ color: "white" })
 
 
-function System(props: any): JSX.Element {
+function System(props: any): React.JSX.Element {
 
   //MAKE THIS FADE IN ON LOAD
 
@@ -27,7 +27,7 @@ function System(props: any): JSX.Element {
   let Zdist = 100
   let xDist = 100
   const pos: any = useRef([0, 25, 100]);
-  const rafRef = useRef<number>()
+  const rafRef = useRef<number>(undefined)
   const angle = useRef(0)
   const isMobile = useRef(false)
   const rotateCamera = () => {

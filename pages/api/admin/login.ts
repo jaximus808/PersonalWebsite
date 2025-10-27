@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import {PrismaClient, Prisma} from "@prisma/client"
-import { getCookies, getCookie, setCookies, removeCookies } from 'cookies-next';
+import { getCookie, setCookie } from 'cookies-next';
 
 import * as bcrypt from "bcrypt";
 import * as jsonwebtoken from "jsonwebtoken";
@@ -54,7 +54,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) =>
 
         console.log("L");
         const token = jsonwebtoken.sign({_id:users?.id!},process.env.ADMIN_PASS!);
-        setCookies("token",token,{ req, res, maxAge: 1000 });
+        setCookie("token", token, { req, res, maxAge: 1000 });
         res.json({
             authenticated: true,
             msg: "GOOD!"
