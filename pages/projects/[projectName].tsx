@@ -7,7 +7,7 @@ import Footer from '../../components/footer'
 import Background from '../../components/backgroundThree'
 import cookies from "cookie"
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
-import { getCookies, getCookie, setCookie } from 'cookies-next';
+import { getCookies, getCookie, setCookie, deleteCookie } from 'cookies-next';
 
 import Link from 'next/link'
 import * as jsonwebtoken from "jsonwebtoken";

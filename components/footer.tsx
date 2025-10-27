@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 import styles from '../styles/Home.module.css'
 
-import { getCookies, getCookie, deleteCookie } from 'cookies-next';
+import { getCookies, getCookie, setCookie, deleteCookie } from 'cookies-next';
 
 
 interface Props {
