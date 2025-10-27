@@ -8,7 +8,7 @@ import Background from '../components/backgroundprojects'
 import Footer from '../components/footer'
 import { Suspense } from 'react'
 import Link from 'next/link'
-import cookies from "cookie"
+import * as cookies from "cookie"
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
 import { getCookies, getCookie, setCookie, deleteCookie } from 'cookies-next';
 

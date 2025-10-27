@@ -9,7 +9,6 @@ import Background from "../components/backgroundThree";
 import { PrismaClient, Prisma } from "@prisma/client";
 import { useState, useEffect, useRef, Suspense } from "react";
 import prisma from "../lib/prisma";
-import cookies from "cookie";
 
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
 

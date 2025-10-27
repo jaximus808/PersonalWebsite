@@ -7,7 +7,7 @@ import Footer from '../components/footer'
 import Background from '../components/backgroundThree'
 import { PrismaClient , Prisma} from '@prisma/client'
 import { useState,useEffect, useRef  } from 'react'
-import cookies from "cookie"
+import * as cookies from "cookie"
 import Link from 'next/link'
 
 import jsonwebtoken from 'jsonwebtoken'
