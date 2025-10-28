@@ -57,7 +57,7 @@ const Header: NextPage = () => {
           
           <div className={`${styles.links} font-thin relative top-1/2 translate-y-[-50%]`}>
             <span className={styles.homeLink} style={{ marginLeft:"2vw"}}>
-              <Link href='/'>Jaxon Poentis</Link>
+              <Link href='/' className='text-3xl'>Jaxon Poentis</Link>
               
               </span>
             <Link  replace href='/projects'>Projects</Link>

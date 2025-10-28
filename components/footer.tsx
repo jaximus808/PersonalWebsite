@@ -62,7 +62,6 @@ const Footer: NextPage<Props> = (props) => {
       location.reload();
     }
     else {
-      console.log("fail", data.msg);
       setResponse(data.msg);
     }
   }
@@ -107,7 +106,7 @@ const Footer: NextPage<Props> = (props) => {
 
         <h5 style={{}}>Website Made by Jaxon Poentis</h5>
 
-        <h5 className='font-thin' style={{}}>Website developed with Next.js and Typescript + MongoDB database. Background is made with Three.js. This webpage is still being updated, come back soon for updates!</h5>
+        <h5 className='font-thin' style={{}}>Website developed with Next.js and Typescript + MongoDB database. Background is made with Three.js.</h5>
         <p></p>
       </div>
     </div>
