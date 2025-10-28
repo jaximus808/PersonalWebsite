@@ -113,8 +113,7 @@ function ScrollDown(props: any) {
         <a href="#projects" className="hover:text-blue-300 duration-300">
           Projects
         </a>
-        {/* 
-        <a href='#blogs' className='hover:text-blue-300 duration-300'>Blog</a> */}
+        <a href='#blogs' className='hover:text-blue-300 duration-300'>Blog</a>
       </div>
     </>
   );

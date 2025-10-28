@@ -10,24 +10,30 @@ import * as jsonwebtoken from "jsonwebtoken";
 export default async function handler(req: NextApiRequest, res: NextApiResponse)
 {
     const prisma = new PrismaClient();
-    let blogs:any;
+    let projects:any;
     try  
     {
-        blogs = await prisma.blog.findMany()
+        projects = await prisma.projects.findMany(
+            {
+                orderBy: {
+                    projectDate: 'desc'
+                }
+            }
+        )
     }
     catch
     {
-        blogs = []; 
+        projects = []; 
     }
 
     try
     {
         return res.json({fail:false, 
-            blogs: JSON.parse(JSON.stringify(blogs))})
+            projects: JSON.parse(JSON.stringify(projects))})
     }
     catch
     {
-        res.json({fail:true, blogs:[]});
+        res.json({fail:true, projects:[]});
     }
 
 

@@ -13,10 +13,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let blogs:any;
     try  
     {
-        blogs = await prisma.blog.findMany()
+        blogs = await prisma.blog.findMany({
+            orderBy: {
+                    datePosted: 'desc'
+                }
+        });
+        // console.log(blogs)
     }
-    catch
+    catch(e: Error | any)
     {
+        console.log(e.message)
+        
         blogs = []; 
     }
 

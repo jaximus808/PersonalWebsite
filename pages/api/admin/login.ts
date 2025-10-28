@@ -60,9 +60,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) =>
             msg: "GOOD!"
         })
     }
-    catch
+    catch(e: Error | any)
     {
-        res.json({authenticated: false, msg: "Somewthing went wrong"});
+        res.json({authenticated: false, msg: e.message});
     }
 
 

@@ -62,6 +62,7 @@ const Footer: NextPage<Props> = (props) => {
       location.reload();
     }
     else {
+      console.log("fail", data.msg);
       setResponse(data.msg);
     }
   }

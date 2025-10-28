@@ -1,21 +1,17 @@
-
 import Head from 'next/head'
 import styles from '../../styles/Home.module.css'
 import Header from '../../components/header'
-
 import Footer from '../../components/footer'
 import Background from '../../components/backgroundThree'
 import * as cookies from "cookie"
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
 import { getCookies, getCookie, setCookie, deleteCookie } from 'cookies-next';
-
 import Link from 'next/link'
 import * as jsonwebtoken from "jsonwebtoken";
 import { useState } from 'react'
-
 import {PrismaClient, Prisma, Projects} from "@prisma/client"
-
 import Youtube from "react-youtube"
+
 function YoutubeVideo(props:any)
 {
   function _onReady(event:any) {
@@ -35,8 +31,8 @@ function YoutubeVideo(props:any)
           opts={opts} onReady={_onReady} />
     </div>
   );
-  
 }
+
 const prisma = new PrismaClient();
 
 type props = 
@@ -48,8 +44,6 @@ type props =
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  // ...
-
     const parsedCookies = cookies.parse(context.req.headers.cookie?context.req.headers.cookie:"");
     
     const token = parsedCookies.token;
@@ -71,7 +65,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       {
         authenticated = false;
       }
-      
     }
     console.log(authenticated)
     const { blogId }  = context.query
@@ -80,7 +73,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         return{
             props:
             {
-
                 blog:"",
                 exist: false
             }
@@ -98,7 +90,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             }
         )
 
-        
         return{
             props:
             {
@@ -121,15 +112,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             }
           }
     }
-  
 }
 
 const Index: React.FC<props> = props => {
-
-
   const deleteBlog = async () =>
   {
-    
       const response = await fetch("/api/admin/deleteblog", {
         method:"POST",
         headers:
@@ -143,79 +130,110 @@ const Index: React.FC<props> = props => {
       {
         location.replace("/blog");
       })
-    
   }
   
   return ( 
-  <div>
-
+  <div className="min-h-screen bg-[#0a0a0a]">
       <Head>
-        <title>Jaxon Poentis</title>
+        <title>{props.exist ? props.blog.title + ' | Jaxon Poentis' : 'Blog | Jaxon Poentis'}</title>
         <meta name="description" content="Personal Page For Jaxon Poentis" />
-
         <meta property="og:image" content="/metadata.jpg" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       
-        <Header/>
-        <div className={styles.MainContainerBlog}>
-            <div className={`bg-[#121212] ${styles.fontNormal} p-4 mt-8`}>
-                {(props.exist) ?
-                <div>
-                  <h1 className='text-center text-5xl border-b-2 pb-4 '>
-                     <strong>{props.blog.title}</strong>
-                  </h1>
+      <Header/>
+      
+      <main className="max-w-4xl mx-auto px-6 py-12 md:py-16">
+        {props.exist ? (
+          <article className="bg-[#121212] rounded-2xl shadow-2xl overflow-hidden">
+            {/* Blog Header */}
+            <header className="px-8 md:px-12 pt-12 pb-8 border-b border-gray-800">
+              <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight mb-6">
+                {props.blog.title}
+              </h1>
+              {props.blog.mediaPic && (
+                    <div className="mb-4 rounded-xl overflow-hidden">
+                      <img
+                        src={props.blog.mediaPic}
+                        alt={props.blog.title}
+                        className="w-full max-h-96 object-cover group-hover:scale-110 transition-transform duration-300"
+                      />
+                    </div>
+                  )}
+              <time className="text-gray-400 text-lg" dateTime={props.blog.datePosted}>
+                {new Date(props.blog.datePosted).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </time>
+            </header>
 
-                  <h2 className='mt-4 text-center'>
-                      Posted on: {new Date(props.blog.datePosted).toLocaleDateString()}
-                  </h2>
-                  <div className='mt-4 text-[1.25rem] w-4/5 min-w-[20rem] sm:w-3/5 sm:min-w-[30rem] relative left-1/2 translate-x-[-50%] font-[350] bg-[#222222] p-4 rounded-lg' >
-                      
-                      {props.blog.content.split("*").map((data:any, key:any) =>{
-                        
-                        if(data.length == 0) return <div key={key}></div>
-                        if(data.length >= 3 && data.substring(0, 3) == "<i>")
-                        {
-                          return <img key={key} src={data.substring(3)}/>
-                        }
-                        else if (data.length >= 3 && data.substring(0, 3) == "<b>")
-                        {
-                          return <h3 key={key} className='font-bold' style={{whiteSpace:'pre-wrap'}}>
-                          {data.substring(3)}
-                        </h3>
-                        }
-                        else
-                        {
-                          return <h3 key={key} style={{whiteSpace:'pre-wrap'}}>
-                            {data}
-                          </h3>
-                        }
-                        
-
-
-                      })}
-                      
-                     
-                  </div>
-                  {(props.authenticated)?
+            {/* Blog Content */}
+            <div className="px-8 md:px-12 py-10">
+              <div className="prose prose-invert prose-lg max-w-none">
+                {props.blog.content.split("*").map((data:any, key:any) => {
+                  if(data.length == 0) return <div key={key} className="h-6"></div>
                   
-                  <div>
-                    <button onClick={deleteBlog}>delete</button>
-                  </div>
-                  
-                  :
-                  <div></div>}
+                  if(data.length >= 3 && data.substring(0, 3) == "<i>")
+                  {
+                    return (
+                      <figure key={key} className="my-8">
+                        <img 
+                          src={data.substring(3)} 
+                          alt="Blog image"
+                          className="w-full rounded-lg shadow-lg"
+                        />
+                      </figure>
+                    )
+                  }
+                  else if (data.length >= 3 && data.substring(0, 3) == "<b>")
+                  {
+                    return (
+                      <h2 key={key} className="text-2xl md:text-3xl font-bold text-white mt-10 mb-4 leading-snug">
+                        {data.substring(3)}
+                      </h2>
+                    )
+                  }
+                  else
+                  {
+                    return (
+                      <p key={key} className="text-gray-300 text-lg leading-relaxed mb-6 whitespace-pre-wrap">
+                        {data}
+                      </p>
+                    )
+                  }
+                })}
               </div>
-              :
-                
-              <>
-                  <div>Blog does not exist</div>
-              </>}
             </div>
-            
 
-              
-        </div>
+            {/* Admin Controls */}
+            {props.authenticated && (
+              <div className="px-8 md:px-12 pb-8 border-t border-gray-800 pt-6">
+                <button 
+                  onClick={deleteBlog}
+                  className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors duration-200"
+                >
+                  Delete Blog Post
+                </button>
+              </div>
+            )}
+          </article>
+        ) : (
+          <div className="bg-[#121212] rounded-2xl shadow-2xl p-12 text-center">
+            <h1 className="text-3xl font-bold text-white mb-4">Blog Post Not Found</h1>
+            <p className="text-gray-400 text-lg mb-8">
+              The blog post you're looking for doesn't exist or has been removed.
+            </p>
+            
+          </div>
+        )}
+        <Link href="/blog">
+              <div className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200">
+                Back to Blog
+          </div>
+        </Link>
+      </main>
     </div>
   )
 }
