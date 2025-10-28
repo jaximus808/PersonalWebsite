@@ -60,9 +60,9 @@ const Header: NextPage = () => {
               <Link href='/' className='text-3xl'>Jaxon Poentis</Link>
               
               </span>
-            <Link  replace href='/projects'>Projects</Link>
-            <Link replace  href='/blog'>Blog</Link> 
-            <Link replace href='/'>Home</Link>
+            <Link className='text-xl mt-1' replace href='/projects'>Projects</Link>
+            <Link className='text-xl mt-1' replace  href='/blog'>Blog</Link> 
+            <Link className='text-xl mt-1' replace href='/'>Home</Link>
     
     
           </div>
