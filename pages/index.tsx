@@ -113,7 +113,9 @@ function ScrollDown(props: any) {
         <a href="#projects" className="hover:text-blue-300 duration-300">
           Projects
         </a>
-        <a href='#blogs' className='hover:text-blue-300 duration-300'>Blog</a>
+        <a href="#blogs" className="hover:text-blue-300 duration-300">
+          Blog
+        </a>
       </div>
     </>
   );
@@ -185,13 +187,13 @@ const Index = (props: props) => {
             >
               <PopInBlock>
                 <div
-                  className={`${styles.frontImage}  mt-2 md:ml-10 md:w-[18vw] md:min-h-[30rem] md:min-w-[21rem] md:h-[32vw] min-w-[250px] min-h-[27rem] w-[20rem] h-[40vw]`}
+                  className={`${styles.frontImage} mt-2 md:ml-10 w-[280px] h-[392px] md:w-[320px] md:h-[448px] lg:w-[380px] lg:h-[532px] xl:w-[480px] xl:h-[672px] 2xl:w-[580px] 2xl:h-[812px]`}
                 >
                   <Image
                     alt="front picture"
                     src="/aura_pic.jpg"
                     fill
-                    className="rounded-md"
+                    className="rounded-md object-cover"
                   />
                 </div>
               </PopInBlock>
@@ -201,38 +203,38 @@ const Index = (props: props) => {
                     className={`${styles.fadedBg} p-6 rounded-xl md:w-[87%] `}
                   >
                     <h2
-                      className={`${styles.fontNormal}  text-2xl md:text-left text-center`}
+                      className={`${styles.fontNormal} text-2xl xl:text-3xl 2xl:text-4xl md:text-left text-center`}
                     >
-                      Hey, I’m Jaxon 🤙
+                      Hey, I'm Jaxon 🤙
                     </h2>
                     <h2
-                      className={`${styles.fontNormal} font-semithin  text-md mt-5 md:text-left text-center`}
+                      className={`${styles.fontNormal} font-semithin text-md xl:text-lg 2xl:text-xl mt-5 md:text-left text-center`}
                     >
                       Born and Raised Hawaii, island of O'ahu, I'm currently
                       studying CS + Math at Washington University in St. Louis,
                       with a focus on backend development and robotic systems.{" "}
                     </h2>
                     <h2
-                      className={`${styles.fontNormal} font-thin  text-lg mt-5 md:text-left text-center`}
+                      className={`${styles.fontNormal} font-thin text-lg xl:text-xl 2xl:text-2xl mt-5 md:text-left text-center`}
                     >
                       <span className="underline">Hobbies</span>: Coding,
                       Hiking, Fishing, Gaming
                     </h2>
                     <h2
-                      className={`${styles.fontNormal} font-thin  text-lg mt-2 md:text-left text-center`}
+                      className={`${styles.fontNormal} font-thin text-lg xl:text-xl 2xl:text-2xl mt-2 md:text-left text-center`}
                     >
                       <span className="underline">Fav Languages</span>: Go, C++,
                       Python
                     </h2>
                     <br></br>
                     <p
-                      className={`${styles.fontNormal} font-thin text-center md:text-left`}
+                      className={`${styles.fontNormal} font-thin xl:text-lg 2xl:text-xl text-center md:text-left`}
                     >
                       If my webpage is too long, checkout my resume:
                     </p>
                     <div className="w-full text-center md:text-left">
                       <Link
-                        className="underline text-blue-300 "
+                        className="underline text-blue-300 xl:text-lg 2xl:text-xl"
                         href={"./resume"}
                       >
                         📘 Resume
@@ -241,13 +243,13 @@ const Index = (props: props) => {
 
                     <br></br>
                     <h1
-                      className={`${styles.fontNormal} text-2xl md:text-left text-center`}
+                      className={`${styles.fontNormal} text-2xl xl:text-3xl 2xl:text-4xl md:text-left text-center`}
                     >
                       Connect With Me 👋
                     </h1>
 
                     <div className="mt-8 pb-8 mx-auto w-full md:w-auto">
-                      <ul className="space-y-4 md:text-left text-center underline">
+                      <ul className="space-y-4 md:text-left text-center underline xl:text-lg 2xl:text-xl">
                         <li className="flex items-center gap-3 justify-center md:justify-start">
                           <div className="flex items-center gap-3">
                             <Image
@@ -255,7 +257,7 @@ const Index = (props: props) => {
                               alt="LinkedIn"
                               width={24}
                               height={24}
-                              className="object-contain"
+                              className="object-contain xl:w-7 xl:h-7 2xl:w-8 2xl:h-8"
                             />
                             <Link
                               className="underline"
@@ -273,7 +275,7 @@ const Index = (props: props) => {
                               alt="YouTube"
                               width={24}
                               height={24}
-                              className="object-contain"
+                              className="object-contain xl:w-7 xl:h-7 2xl:w-8 2xl:h-8"
                             />
                             <Link
                               className="underline"
@@ -291,7 +293,7 @@ const Index = (props: props) => {
                               alt="GitHub"
                               width={24}
                               height={24}
-                              className="rounded-full object-contain"
+                              className="rounded-full object-contain xl:w-7 xl:h-7 2xl:w-8 2xl:h-8"
                             />
                             <Link
                               className="underline"
@@ -470,19 +472,19 @@ const Index = (props: props) => {
                         <div>
                           <div className={`flex w-full  `}>
                             <div className="w-[15rem] h-[15rem]">
-                              
-                              {/* // eslint-disable-next-line @next/next/no-img-element */
-                               <img
-                                alt="front picture"
-                                src={data.mediaPic}
-                                style={{
-                                  borderRadius: "0.5rem",
-                                  width: "100%",
-                                  height: "100%",
-                                  objectFit: "cover",
-                                }}
-                              />}
-                             
+                              {
+                                /* // eslint-disable-next-line @next/next/no-img-element */
+                                <img
+                                  alt="front picture"
+                                  src={data.mediaPic}
+                                  style={{
+                                    borderRadius: "0.5rem",
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover",
+                                  }}
+                                />
+                              }
                             </div>
                           </div>
                         </div>
