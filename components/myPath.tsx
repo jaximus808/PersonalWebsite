@@ -42,13 +42,13 @@ export default function MyPath() {
                 <strong>Tesla</strong>
               </h1>
               <h1 className={`text-lg ${styles.titleTex}`}>
-                <i>Incoming Software Engineering Intern</i>
+                <i>Software Engineering Intern</i>
               </h1>
               <h1 className={`text-sm ${styles.dateRangeTex}`}>
                 <i>Fremont, CA</i>
               </h1>
               <h1 className={`text-sm ${styles.dateRangeTex}`}>
-                <i>01/2026-05/2026</i>
+                <i>01/2026</i>
               </h1>
 
               <p className="mt-2">
