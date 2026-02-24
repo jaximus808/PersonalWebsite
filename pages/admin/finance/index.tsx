@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import Head from "next/head";
+import dynamic from "next/dynamic";
 import type { GetServerSideProps } from "next";
 import * as cookies from "cookie";
 import * as jsonwebtoken from "jsonwebtoken";
@@ -29,7 +30,24 @@ import {
   totalDebtsTheyOwe,
   checkingBalance,
   netWorth,
+  buildNetWorthTimeline,
+  buildStockTimeline,
+  buildPerStockTimeline,
 } from "../../../types/finance";
+
+// Dynamic imports for chart-heavy components (SSR off for recharts)
+const SingleLineChart = dynamic(
+  () => import("../../../components/finance/FinanceChart").then((m) => m.SingleLineChart),
+  { ssr: false }
+);
+const MultiLineChart = dynamic(
+  () => import("../../../components/finance/FinanceChart").then((m) => m.MultiLineChart),
+  { ssr: false }
+);
+const ProjectionSection = dynamic(
+  () => import("../../../components/finance/ProjectionSection"),
+  { ssr: false }
+);
 
 // ────────────────────────────────────────────────────────────
 // Auth gate – redirect to login if not authenticated
@@ -240,6 +258,8 @@ export default function FinancePage() {
   const [showCC, setShowCC] = useState(true);
   const [showDebts, setShowDebts] = useState(true);
   const [showNetWorth, setShowNetWorth] = useState(true);
+  const [showGraphs, setShowGraphs] = useState(true);
+  const [showProjection, setShowProjection] = useState(true);
 
   // ── Deposit list toggle ─────────────────────────────────
   const [showDepositList, setShowDepositList] = useState(false);
@@ -312,6 +332,10 @@ export default function FinancePage() {
   const ccPoints = useMemo(() => pointsByCard(state), [state]);
   const debtsIOwe = useMemo(() => totalDebtsIOwe(state), [state]);
   const debtsTheyOwe = useMemo(() => totalDebtsTheyOwe(state), [state]);
+
+  // ── Graph timeline data ─────────────────────────────────
+  const nwTimeline = useMemo(() => buildNetWorthTimeline(state), [state]);
+  const stockTimeline = useMemo(() => buildStockTimeline(state), [state]);
 
   // ── Computed stock data per portfolio stock ──────────────
   const stockSummaries = useMemo(() => {
@@ -1821,6 +1845,96 @@ export default function FinancePage() {
                   </tfoot>
                 </table>
               </div>
+            )}
+          </section>
+
+          {/* ════════════════════════════════════════════════
+              GRAPHS & CHARTS
+             ════════════════════════════════════════════════ */}
+          <section>
+            <CollapsibleHeading open={showGraphs} onToggle={() => setShowGraphs((v) => !v)} summary={<>
+              <span className="text-gray-500">{nwTimeline.length} data points</span>
+            </>}>
+              📊 Graphs &amp; Charts
+            </CollapsibleHeading>
+
+            {showGraphs && (
+              <div className="flex flex-col gap-8">
+                {/* ── Net Worth Over Time ── */}
+                <div className="bg-gray-800/50 rounded-xl p-4">
+                  <h3 className="text-md font-semibold text-gray-300 mb-4">
+                    📈 Net Worth Over Time
+                  </h3>
+                  <SingleLineChart
+                    data={nwTimeline}
+                    color="#818cf8"
+                    gradientId="nwGrad"
+                    name="Net Worth"
+                    height={350}
+                    refLines={[{ y: 0, label: "$0", color: "#6b7280" }]}
+                  />
+                </div>
+
+                {/* ── Total Stock Portfolio Value ── */}
+                {stockTimeline.length >= 2 && (
+                  <div className="bg-gray-800/50 rounded-xl p-4">
+                    <h3 className="text-md font-semibold text-gray-300 mb-4">
+                      📊 Stock Portfolio Value Over Time
+                    </h3>
+                    <SingleLineChart
+                      data={stockTimeline}
+                      color="#f472b6"
+                      gradientId="stkGrad"
+                      name="Portfolio Value"
+                      height={300}
+                    />
+                  </div>
+                )}
+
+                {/* ── Per-Stock Cost Basis vs Market Value ── */}
+                {stockSummaries.filter(s => s.transactions.length >= 2).map((summary) => {
+                  const timeline = buildPerStockTimeline(state, summary.stock.id);
+                  if (timeline.costBasis.length < 2) return null;
+
+                  // Merge cost basis and market value into a single dataset
+                  const merged = timeline.costBasis.map((cb, i) => ({
+                    date: cb.date,
+                    costBasis: cb.value,
+                    marketValue: timeline.marketValue[i]?.value ?? 0,
+                  }));
+
+                  return (
+                    <div key={summary.stock.id} className="bg-gray-800/50 rounded-xl p-4">
+                      <h3 className="text-md font-semibold text-gray-300 mb-4">
+                        {summary.stock.ticker}: Cost Basis vs Market Value
+                      </h3>
+                      <MultiLineChart
+                        data={merged}
+                        lines={[
+                          { dataKey: "costBasis", name: "Cost Basis", color: "#9ca3af" },
+                          { dataKey: "marketValue", name: "Market Value", color: "#34d399" },
+                        ]}
+                        height={250}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </section>
+
+          {/* ════════════════════════════════════════════════
+              PROJECTION
+             ════════════════════════════════════════════════ */}
+          <section>
+            <CollapsibleHeading open={showProjection} onToggle={() => setShowProjection((v) => !v)} summary={<>
+              <span className="text-gray-500">Salary, compounding, goal purchases</span>
+            </>}>
+              🔮 Financial Projection
+            </CollapsibleHeading>
+
+            {showProjection && (
+              <ProjectionSection state={state} />
             )}
           </section>
 

@@ -33,6 +33,7 @@
     "react-pdf": "^9.1.1",
     "react-three-fiber": "^6.0.13",
     "react-youtube": "^10.0.0",
+    "recharts": "^3.7.0",
     "resend": "^6.9.2",
     "three": "^0.143.0"
   },
