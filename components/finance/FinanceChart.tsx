@@ -17,6 +17,7 @@ import {
 // Cast through `any` so the wrapper itself is a valid JSX element.
 // ────────────────────────────────────────────────────────────
 const SafeResponsiveContainer = ResponsiveContainer as any;
+const SafeAreaChart = AreaChart as any;
 
 function ChartContainer({
   children,
@@ -120,7 +121,7 @@ export function SingleLineChart({
 
   return (
     <ChartContainer height={height}>
-      <AreaChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+      <SafeAreaChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
         <defs>
           <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
             <stop offset="5%" stopColor={color} stopOpacity={0.3} />
@@ -161,7 +162,7 @@ export function SingleLineChart({
             label={{ value: rl.label, fill: rl.color, fontSize: 10, position: "insideTopLeft" }}
           />
         ))}
-      </AreaChart>
+      </SafeAreaChart>
     </ChartContainer>
   );
 }
@@ -196,7 +197,7 @@ export function MultiLineChart({
 
   return (
     <ChartContainer height={height}>
-      <AreaChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+      <SafeAreaChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
         <defs>
           {lines.map((line) => (
             <linearGradient
@@ -252,7 +253,7 @@ export function MultiLineChart({
             label={{ value: rl.label, fill: rl.color, fontSize: 10, position: "insideTopLeft" }}
           />
         ))}
-      </AreaChart>
+      </SafeAreaChart>
     </ChartContainer>
   );
 }
