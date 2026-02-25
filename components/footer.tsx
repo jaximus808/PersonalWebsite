@@ -59,7 +59,14 @@ const Footer: NextPage<Props> = (props) => {
     if (data.authenticated) {
       setAuthEn(true);
 
-      location.reload();
+      // If there's a redirect query param, go there; otherwise just reload
+      const params = new URLSearchParams(window.location.search);
+      const redirectTo = params.get("redirect");
+      if (redirectTo) {
+        window.location.href = redirectTo;
+      } else {
+        location.reload();
+      }
     }
     else {
       setResponse(data.msg);

@@ -67,7 +67,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
   }
   if (!authenticated) {
-    return { redirect: { destination: "/auth/login/swaggang", permanent: false } };
+    return { redirect: { destination: "/auth/login/swaggang?redirect=/admin/finance", permanent: false } };
   }
   return { props: {} };
 };
@@ -76,7 +76,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 // API helper – typed POST to /api/admin/finance/*
 // ────────────────────────────────────────────────────────────
 async function api<T = any>(
-  endpoint: "deposits" | "expenses" | "hysa" | "stocks" | "creditcards" | "balances" | "debts",
+  endpoint: "deposits" | "expenses" | "hysa" | "stocks" | "creditcards" | "balances" | "debts" | "projection",
   body: Record<string, any>
 ): Promise<T> {
   const res = await fetch(`/api/admin/finance/${endpoint}`, {
@@ -250,16 +250,16 @@ export default function FinancePage() {
   const [debtDate, setDebtDate] = useState(today());
 
   // ── Section visibility toggles ──────────────────────────
-  const [showStartingBal, setShowStartingBal] = useState(true);
-  const [showDeposits, setShowDeposits] = useState(true);
-  const [showExpenses, setShowExpenses] = useState(true);
-  const [showHYSA, setShowHYSA] = useState(true);
-  const [showStocks, setShowStocks] = useState(true);
-  const [showCC, setShowCC] = useState(true);
-  const [showDebts, setShowDebts] = useState(true);
-  const [showNetWorth, setShowNetWorth] = useState(true);
-  const [showGraphs, setShowGraphs] = useState(true);
-  const [showProjection, setShowProjection] = useState(true);
+const [showStartingBal, setShowStartingBal] = useState(false);
+const [showDeposits, setShowDeposits] = useState(true);
+const [showExpenses, setShowExpenses] = useState(true);
+const [showHYSA, setShowHYSA] = useState(true);
+const [showStocks, setShowStocks] = useState(true);
+const [showCC, setShowCC] = useState(true);
+const [showDebts, setShowDebts] = useState(true);
+const [showNetWorth, setShowNetWorth] = useState(true);
+const [showGraphs, setShowGraphs] = useState(true);
+const [showProjection, setShowProjection] = useState(true);
 
   // ── Deposit list toggle ─────────────────────────────────
   const [showDepositList, setShowDepositList] = useState(false);
@@ -599,6 +599,36 @@ export default function FinancePage() {
     },
     [editStockPrice]
   );
+
+  // ── Refresh all stock prices via live Yahoo data ────────
+  const [refreshingPrices, setRefreshingPrices] = useState(false);
+  const refreshAllPrices = useCallback(async () => {
+    setRefreshingPrices(true);
+    try {
+      const res = await api("stocks", { action: "refreshAllPrices" });
+      if (res.updated && res.updated.length > 0) {
+        setState((prev) => {
+          const priceMap = new Map<string, number>();
+          for (const u of res.updated) {
+            priceMap.set(u.ticker, u.newPrice);
+          }
+          return {
+            ...prev,
+            portfolioStocks: prev.portfolioStocks.map((s) =>
+              priceMap.has(s.ticker) ? { ...s, currentPricePerShare: priceMap.get(s.ticker)! } : s
+            ),
+          };
+        });
+      }
+      if (res.failed && res.failed.length > 0) {
+        setError(`Could not fetch prices for: ${res.failed.join(", ")}`);
+      }
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setRefreshingPrices(false);
+    }
+  }, []);
 
   const addStockTransaction = useCallback(async () => {
     const shares = parseFloat(stkTxShares);
@@ -942,6 +972,36 @@ export default function FinancePage() {
               </span>
             </div>
           </div>
+          {/* ────── Fixed section nav ────── */}
+          <nav className="border-t border-gray-800/60 bg-gray-950/60">
+            <div className="max-w-7xl mx-auto px-6 py-1.5 flex flex-wrap items-center gap-1">
+              {[
+                { id: "section-summary", label: "Summary", emoji: "📋" },
+                { id: "section-starting", label: "Balances", emoji: "🏁" },
+                { id: "section-deposits", label: "Deposits", emoji: "📥" },
+                { id: "section-expenses", label: "Expenses", emoji: "📤" },
+                { id: "section-hysa", label: "HYSA", emoji: "🏦" },
+                { id: "section-stocks", label: "Stocks", emoji: "📈" },
+                { id: "section-cc", label: "Cards", emoji: "💳" },
+                { id: "section-debts", label: "Debts", emoji: "🤝" },
+                { id: "section-networth", label: "Net Worth", emoji: "🧮" },
+                { id: "section-graphs", label: "Graphs", emoji: "📊" },
+                { id: "section-projection", label: "Projection", emoji: "🔮" },
+              ].map((item) => (
+                <a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById(item.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }}
+                  className="px-2.5 py-1 rounded-md text-xs font-medium text-gray-400 hover:text-white hover:bg-gray-800 transition-colors whitespace-nowrap"
+                >
+                  {item.emoji} {item.label}
+                </a>
+              ))}
+            </div>
+          </nav>
         </header>
 
         {/* ────── Error banner ────── */}
@@ -959,11 +1019,11 @@ export default function FinancePage() {
           </div>
         )}
 
-        <main className="max-w-7xl mx-auto px-6 py-8 flex flex-col gap-10">
+        <main className="max-w-7xl mx-auto px-6 py-8 flex flex-col gap-10 scroll-mt-28">
           {/* ════════════════════════════════════════════════
               Summary cards
              ════════════════════════════════════════════════ */}
-          <section className="flex flex-wrap gap-4">
+          <section id="section-summary" className="scroll-mt-28 flex flex-wrap gap-4">
             <StatCard label="Net Worth" value={nw} positive={nw >= 0} />
             <StatCard
               label="Checking"
@@ -1002,7 +1062,7 @@ export default function FinancePage() {
           {/* ════════════════════════════════════════════════
               0 · STARTING BALANCES
              ════════════════════════════════════════════════ */}
-          <section>
+          <section id="section-starting" className="scroll-mt-28">
             <CollapsibleHeading open={showStartingBal} onToggle={() => setShowStartingBal((v) => !v)} summary={<>
               <span>Checking: <span className="text-white">{fmt(state.startingBalances.checking)}</span></span>
               <span>HYSA: <span className="text-white">{fmt(state.startingBalances.hysa)}</span></span>
@@ -1054,7 +1114,7 @@ export default function FinancePage() {
           {/* ════════════════════════════════════════════════
               1 · DEPOSITS (into checking)
              ════════════════════════════════════════════════ */}
-          <section>
+          <section id="section-deposits" className="scroll-mt-28">
             <CollapsibleHeading open={showDeposits} onToggle={() => setShowDeposits((v) => !v)} summary={<>
               <span>Total: <span className="text-emerald-400">{fmt(depTotal)}</span></span>
               <span className="text-gray-500">{state.deposits.length} deposits</span>
@@ -1127,7 +1187,7 @@ export default function FinancePage() {
           {/* ════════════════════════════════════════════════
               2 · MONTHLY EXPENSES (subtract from checking)
              ════════════════════════════════════════════════ */}
-          <section>
+          <section id="section-expenses" className="scroll-mt-28">
             <CollapsibleHeading open={showExpenses} onToggle={() => setShowExpenses((v) => !v)} summary={<>
               <span>Total: <span className="text-red-400">−{fmt(expTotal)}</span></span>
               <span className="text-gray-500">{state.monthlyExpenses.length} expenses</span>
@@ -1206,7 +1266,7 @@ export default function FinancePage() {
           {/* ════════════════════════════════════════════════
               3 · HYSA BUCKET (transfer from checking)
              ════════════════════════════════════════════════ */}
-          <section>
+          <section id="section-hysa" className="scroll-mt-28">
             <CollapsibleHeading open={showHYSA} onToggle={() => setShowHYSA((v) => !v)} summary={<>
               <span>Transferred: <span className="text-sky-400">{fmt(hysaTransferTotal)}</span></span>
               <span>Est. Value: <span className="text-emerald-400">{fmt(hysaValue)}</span></span>
@@ -1285,7 +1345,7 @@ export default function FinancePage() {
           {/* ════════════════════════════════════════════════
               4 · STOCKS & ETFs (portfolio)
              ════════════════════════════════════════════════ */}
-          <section>
+          <section id="section-stocks" className="scroll-mt-28">
             <CollapsibleHeading open={showStocks} onToggle={() => setShowStocks((v) => !v)} summary={<>
               <span>Cost Basis: <span className="text-gray-300">{fmt(stockCost)}</span></span>
               <span>Market Value: <span className="text-white">{fmt(stockMarket)}</span></span>
@@ -1308,6 +1368,13 @@ export default function FinancePage() {
                     <input type="number" min="0" step="0.01" placeholder="0.00" className={inputCls + " w-32"} value={stkPrice} onChange={(e) => setStkPrice(e.target.value)} />
                   </label>
                   <button className={btnPrimary} disabled={saving} onClick={addPortfolioStock}>+ Add Stock</button>
+                  <button
+                    className={"bg-emerald-700 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg px-4 py-2 transition-colors"}
+                    disabled={saving || refreshingPrices || state.portfolioStocks.length === 0}
+                    onClick={refreshAllPrices}
+                  >
+                    {refreshingPrices ? "Refreshing…" : "🔄 Refresh All Prices"}
+                  </button>
                 </div>
 
                 {/* ── Add stock transaction ── */}
@@ -1473,7 +1540,7 @@ export default function FinancePage() {
           {/* ════════════════════════════════════════════════
               5 · CREDIT CARDS
              ════════════════════════════════════════════════ */}
-          <section>
+          <section id="section-cc" className="scroll-mt-28">
             <CollapsibleHeading open={showCC} onToggle={() => setShowCC((v) => !v)} summary={<>
               <span>Spend: <span className="text-red-400">−{fmt(ccSpend)}</span></span>
               <span>Points: <span className="text-amber-400">{state.ccTransactions.reduce((s, t) => s + t.pointsEarned, 0).toLocaleString()}</span></span>
@@ -1643,7 +1710,7 @@ export default function FinancePage() {
           {/* ════════════════════════════════════════════════
               6 · DEBTS (Payable & Receivable)
              ════════════════════════════════════════════════ */}
-          <section>
+          <section id="section-debts" className="scroll-mt-28">
             <CollapsibleHeading open={showDebts} onToggle={() => setShowDebts((v) => !v)} summary={<>
               <span>I Owe: <span className="text-red-400">{fmt(debtsIOwe)}</span></span>
               <span>Owed to Me: <span className="text-emerald-400">{fmt(debtsTheyOwe)}</span></span>
@@ -1782,7 +1849,7 @@ export default function FinancePage() {
           {/* ════════════════════════════════════════════════
               NET WORTH BREAKDOWN
              ════════════════════════════════════════════════ */}
-          <section>
+          <section id="section-networth" className="scroll-mt-28">
             <CollapsibleHeading open={showNetWorth} onToggle={() => setShowNetWorth((v) => !v)} summary={<>
               <span>Net Worth: <span className={nw >= 0 ? "text-emerald-400" : "text-red-400"}>{fmt(nw)}</span></span>
             </>}>
@@ -1851,7 +1918,7 @@ export default function FinancePage() {
           {/* ════════════════════════════════════════════════
               GRAPHS & CHARTS
              ════════════════════════════════════════════════ */}
-          <section>
+          <section id="section-graphs" className="scroll-mt-28">
             <CollapsibleHeading open={showGraphs} onToggle={() => setShowGraphs((v) => !v)} summary={<>
               <span className="text-gray-500">{nwTimeline.length} data points</span>
             </>}>
@@ -1926,7 +1993,7 @@ export default function FinancePage() {
           {/* ════════════════════════════════════════════════
               PROJECTION
              ════════════════════════════════════════════════ */}
-          <section>
+          <section id="section-projection" className="scroll-mt-28">
             <CollapsibleHeading open={showProjection} onToggle={() => setShowProjection((v) => !v)} summary={<>
               <span className="text-gray-500">Salary, compounding, goal purchases</span>
             </>}>

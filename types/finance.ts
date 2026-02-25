@@ -306,6 +306,18 @@ export interface GoalPurchase {
   downPayment: number;
 }
 
+/** A recurring monthly expense active over a date range. */
+export interface RecurringExpense {
+  id: string;
+  name: string;
+  /** Monthly cost in dollars. */
+  monthlyAmount: number;
+  /** First month this expense is active (ISO date). */
+  startDate: string;
+  /** Last month this expense is active (ISO date, empty string = ongoing). */
+  endDate: string;
+}
+
 /** Full projection configuration. */
 export interface ProjectionConfig {
   /** Salary schedule (periods of biweekly pay). */
@@ -318,10 +330,12 @@ export interface ProjectionConfig {
   projectedHysaApy: number;
   /** Expected annual stock return rate for the projection. */
   projectedStockReturnPct: number;
-  /** Monthly expenses assumed during projection. */
+  /** Flat monthly expenses assumed during projection (legacy single value). */
   monthlyExpenses: number;
   /** Goal purchases to overlay on the projection. */
   goalPurchases: GoalPurchase[];
+  /** Recurring monthly expenses with date ranges. */
+  recurringExpenses: RecurringExpense[];
   /** How many years to project forward. */
   yearsToProject: number;
 }
@@ -601,12 +615,21 @@ export function runProjection(
 
     // ── Paycheck (biweekly) ──
     if (cursor.getTime() === nextPayday.getTime()) {
-      // Find applicable salary period
-      const salary = config.salaryPeriods.find(sp => {
+      // Find applicable salary period – pick the latest-starting period
+      // that contains the cursor date. This means a newer salary period
+      // (e.g. a raise) automatically supersedes an earlier "ongoing" one.
+      let salary: typeof config.salaryPeriods[number] | undefined;
+      for (let i = 0; i < config.salaryPeriods.length; i++) {
+        const sp = config.salaryPeriods[i];
         const start = new Date(sp.startDate);
         const end = sp.endDate ? new Date(sp.endDate) : endDate;
-        return cursor >= start && cursor <= end;
-      });
+        if (cursor >= start && cursor <= end) {
+          // Always prefer the later-starting period (more specific)
+          if (!salary || start >= new Date(salary.startDate)) {
+            salary = sp;
+          }
+        }
+      }
 
       if (salary) {
         const biweeklyGross = salary.annualSalary / 26;
@@ -629,7 +652,23 @@ export function runProjection(
     // ── Monthly expenses (1st of each month or every ~30 days) ──
     if (cursor.getMonth() !== lastMonthExpenseDate.getMonth() ||
         cursor.getFullYear() !== lastMonthExpenseDate.getFullYear()) {
+      // Flat "Projected Monthly Spend" setting
       checking -= config.monthlyExpenses;
+
+      // Recurring expense schedule – sum all active expenses for this month
+      let recurringTotal = 0;
+      for (let i = 0; i < (config.recurringExpenses || []).length; i++) {
+        const re = config.recurringExpenses[i];
+        const reStart = new Date(re.startDate);
+        const reEnd = re.endDate ? new Date(re.endDate) : endDate;
+        if (cursor >= reStart && cursor <= reEnd) {
+          recurringTotal += re.monthlyAmount;
+        }
+      }
+      if (recurringTotal > 0) {
+        checking -= recurringTotal;
+      }
+
       lastMonthExpenseDate = new Date(cursor);
     }
 

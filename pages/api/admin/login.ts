@@ -53,8 +53,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) =>
         }
 
         console.log("L");
-        const token = jsonwebtoken.sign({_id:users?.id!},process.env.ADMIN_PASS!);
-        setCookie("token",token,{ req, res, maxAge: 1000 });
+    const token = jsonwebtoken.sign({_id:users?.id!},process.env.ADMIN_PASS!);
+    // Make the login cookie last a long time for convenience (2 years)
+    const TWO_YEARS = 60 * 60 * 24 * 365 * 2; // seconds
+    setCookie("token", token, { req, res, maxAge: TWO_YEARS });
         res.json({
             authenticated: true,
             msg: "GOOD!"

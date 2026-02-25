@@ -1,13 +1,30 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import type {
   FinanceState,
   ProjectionConfig,
   SalaryPeriod,
   GoalPurchase,
+  RecurringExpense,
   ProjectionPoint,
 } from "../../types/finance";
-import { runProjection, generateId } from "../../types/finance";
+import { runProjection } from "../../types/finance";
 import { MultiLineChart } from "./FinanceChart";
+
+// ────────────────────────────────────────────────────────────
+// API helper (calls /api/admin/finance/projection)
+// ────────────────────────────────────────────────────────────
+async function projectionApi<T = any>(body: Record<string, any>): Promise<T> {
+  const res = await fetch("/api/admin/finance/projection", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`projection ${res.status}: ${text}`);
+  }
+  return res.json();
+}
 
 // ────────────────────────────────────────────────────────────
 // Formatting helpers
@@ -41,6 +58,33 @@ const btnDanger =
   "bg-red-700 hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-semibold rounded-lg px-3 py-1.5 transition-colors";
 
 // ────────────────────────────────────────────────────────────
+// Debounce hook for auto-saving settings
+// ────────────────────────────────────────────────────────────
+function useDebouncedSave(
+  fn: () => void,
+  deps: any[],
+  delay: number,
+  ready: boolean
+) {
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isFirst = useRef(true);
+  useEffect(() => {
+    if (!ready) return;
+    // skip the first render (initial load from API)
+    if (isFirst.current) {
+      isFirst.current = false;
+      return;
+    }
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(fn, delay);
+    return () => {
+      if (timer.current) clearTimeout(timer.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
+}
+
+// ────────────────────────────────────────────────────────────
 // ProjectionSection
 // ────────────────────────────────────────────────────────────
 interface ProjectionSectionProps {
@@ -48,16 +92,11 @@ interface ProjectionSectionProps {
 }
 
 export default function ProjectionSection({ state }: ProjectionSectionProps) {
+  // ── Loading state ──
+  const [loaded, setLoaded] = useState(false);
+
   // ── Salary periods ──
-  const [salaryPeriods, setSalaryPeriods] = useState<SalaryPeriod[]>([
-    {
-      id: generateId(),
-      annualSalary: 80000,
-      startDate: today(),
-      endDate: "",
-      label: "Starting salary",
-    },
-  ]);
+  const [salaryPeriods, setSalaryPeriods] = useState<SalaryPeriod[]>([]);
   const [spSalary, setSpSalary] = useState("");
   const [spStart, setSpStart] = useState(today());
   const [spEnd, setSpEnd] = useState("");
@@ -68,7 +107,7 @@ export default function ProjectionSection({ state }: ProjectionSectionProps) {
   const [stockAllocPct, setStockAllocPct] = useState(20);
   const [projectedHysaApy, setProjectedHysaApy] = useState(state.hysa.apy);
   const [projectedStockReturn, setProjectedStockReturn] = useState(10);
-  const [monthlyExpenses, setMonthlyExpenses] = useState(3000);
+  const [monthlyExpenses, setMonthlyExpenses] = useState(0);
   const [yearsToProject, setYearsToProject] = useState(5);
 
   // ── Goal purchases ──
@@ -80,63 +119,178 @@ export default function ProjectionSection({ state }: ProjectionSectionProps) {
   const [gpInterest, setGpInterest] = useState("");
   const [gpDown, setGpDown] = useState("");
 
+  // ── Recurring expenses ──
+  const [recurringExpenses, setRecurringExpenses] = useState<RecurringExpense[]>([]);
+  const [reName, setReName] = useState("");
+  const [reAmount, setReAmount] = useState("");
+  const [reStart, setReStart] = useState(today());
+  const [reEnd, setReEnd] = useState("");
+
   // ── Show/hide sections ──
   const [showSalaryForm, setShowSalaryForm] = useState(true);
   const [showGoalForm, setShowGoalForm] = useState(true);
+  const [showRecurringForm, setShowRecurringForm] = useState(true);
+
+  // ── Saving indicator ──
+  const [saving, setSaving] = useState(false);
+
+  // ────────────────────────────────────────────────────────
+  // Load data from API on mount
+  // ────────────────────────────────────────────────────────
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      try {
+        const [settingsRes, salaryRes, goalsRes, recurringRes] = await Promise.all([
+          projectionApi<{ ok: boolean; data: any }>({ action: "getSettings" }),
+          projectionApi<{ ok: boolean; data: any[] }>({ action: "listSalary" }),
+          projectionApi<{ ok: boolean; data: any[] }>({ action: "listGoals" }),
+          projectionApi<{ ok: boolean; data: any[] }>({ action: "listRecurring" }),
+        ]);
+        if (cancelled) return;
+
+        const s = settingsRes.data;
+        setHysaAllocPct(s.hysaAllocationPct);
+        setStockAllocPct(s.stockAllocationPct);
+        setProjectedHysaApy(s.projectedHysaApy);
+        setProjectedStockReturn(s.projectedStockReturnPct);
+        setMonthlyExpenses(s.monthlyExpenses);
+        setYearsToProject(s.yearsToProject);
+
+        setSalaryPeriods(salaryRes.data);
+        setGoals(goalsRes.data);
+        setRecurringExpenses(recurringRes.data);
+        setLoaded(true);
+      } catch (err) {
+        console.error("[ProjectionSection] load error:", err);
+        setLoaded(true); // still show UI with defaults
+      }
+    }
+    load();
+    return () => { cancelled = true; };
+  }, []);
+
+  // ────────────────────────────────────────────────────────
+  // Auto-save settings when they change (debounced 800ms)
+  // ────────────────────────────────────────────────────────
+  useDebouncedSave(
+    () => {
+      setSaving(true);
+      projectionApi({
+        action: "saveSettings",
+        hysaAllocationPct: hysaAllocPct,
+        stockAllocationPct: stockAllocPct,
+        projectedHysaApy,
+        projectedStockReturnPct: projectedStockReturn,
+        monthlyExpenses,
+        yearsToProject,
+      })
+        .catch((err) => console.error("[ProjectionSection] save settings error:", err))
+        .finally(() => setSaving(false));
+    },
+    [hysaAllocPct, stockAllocPct, projectedHysaApy, projectedStockReturn, monthlyExpenses, yearsToProject],
+    800,
+    loaded
+  );
 
   // ── Add salary period ──
-  const addSalaryPeriod = useCallback(() => {
-    const salary = parseFloat(spSalary);
+  const addSalaryPeriod = useCallback(async () => {
+    const salary = parseFloat(spSalary.replaceAll(',', ''));
     if (isNaN(salary) || salary <= 0 || !spLabel.trim()) return;
-    setSalaryPeriods((prev) => [
-      ...prev,
-      {
-        id: generateId(),
+    try {
+      const { data } = await projectionApi<{ ok: boolean; data: SalaryPeriod }>({
+        action: "addSalary",
         annualSalary: salary,
         startDate: spStart,
-        endDate: spEnd,
+        endDate: spEnd || "",
         label: spLabel.trim(),
-      },
-    ]);
-    setSpSalary("");
-    setSpLabel("");
-    setSpStart(today());
-    setSpEnd("");
+      });
+      setSalaryPeriods((prev) => [...prev, data]);
+      setSpSalary("");
+      setSpLabel("");
+      setSpStart(today());
+      setSpEnd("");
+    } catch (err) {
+      console.error("[ProjectionSection] addSalary error:", err);
+    }
   }, [spSalary, spStart, spEnd, spLabel]);
 
-  const removeSalaryPeriod = useCallback((id: string) => {
-    setSalaryPeriods((prev) => prev.filter((sp) => sp.id !== id));
+  const removeSalaryPeriod = useCallback(async (id: string) => {
+    try {
+      await projectionApi({ action: "removeSalary", id });
+      setSalaryPeriods((prev) => prev.filter((sp) => sp.id !== id));
+    } catch (err) {
+      console.error("[ProjectionSection] removeSalary error:", err);
+    }
   }, []);
 
   // ── Add goal purchase ──
-  const addGoal = useCallback(() => {
+  const addGoal = useCallback(async () => {
     const cost = parseFloat(gpCost);
     if (isNaN(cost) || cost <= 0 || !gpName.trim()) return;
     const monthly = parseFloat(gpMonthly) || 0;
     const interest = parseFloat(gpInterest) || 0;
     const down = parseFloat(gpDown) || 0;
-    setGoals((prev) => [
-      ...prev,
-      {
-        id: generateId(),
+    try {
+      const { data } = await projectionApi<{ ok: boolean; data: GoalPurchase }>({
+        action: "addGoal",
         name: gpName.trim(),
         totalCost: cost,
         purchaseDate: gpDate,
         monthlyPayment: monthly,
         interestRate: interest,
         downPayment: down,
-      },
-    ]);
-    setGpName("");
-    setGpCost("");
-    setGpDate(futureDate(1));
-    setGpMonthly("");
-    setGpInterest("");
-    setGpDown("");
+      });
+      setGoals((prev) => [...prev, data]);
+      setGpName("");
+      setGpCost("");
+      setGpDate(futureDate(1));
+      setGpMonthly("");
+      setGpInterest("");
+      setGpDown("");
+    } catch (err) {
+      console.error("[ProjectionSection] addGoal error:", err);
+    }
   }, [gpName, gpCost, gpDate, gpMonthly, gpInterest, gpDown]);
 
-  const removeGoal = useCallback((id: string) => {
-    setGoals((prev) => prev.filter((g) => g.id !== id));
+  const removeGoal = useCallback(async (id: string) => {
+    try {
+      await projectionApi({ action: "removeGoal", id });
+      setGoals((prev) => prev.filter((g) => g.id !== id));
+    } catch (err) {
+      console.error("[ProjectionSection] removeGoal error:", err);
+    }
+  }, []);
+
+  // ── Add recurring expense ──
+  const addRecurringExpense = useCallback(async () => {
+    const amount = parseFloat(reAmount);
+    if (isNaN(amount) || amount <= 0 || !reName.trim()) return;
+    try {
+      const { data } = await projectionApi<{ ok: boolean; data: RecurringExpense }>({
+        action: "addRecurring",
+        name: reName.trim(),
+        monthlyAmount: amount,
+        startDate: reStart,
+        endDate: reEnd || "",
+      });
+      setRecurringExpenses((prev) => [...prev, data]);
+      setReName("");
+      setReAmount("");
+      setReStart(today());
+      setReEnd("");
+    } catch (err) {
+      console.error("[ProjectionSection] addRecurring error:", err);
+    }
+  }, [reName, reAmount, reStart, reEnd]);
+
+  const removeRecurringExpense = useCallback(async (id: string) => {
+    try {
+      await projectionApi({ action: "removeRecurring", id });
+      setRecurringExpenses((prev) => prev.filter((re) => re.id !== id));
+    } catch (err) {
+      console.error("[ProjectionSection] removeRecurring error:", err);
+    }
   }, []);
 
   // ── Build projection ──
@@ -149,9 +303,10 @@ export default function ProjectionSection({ state }: ProjectionSectionProps) {
       projectedStockReturnPct: projectedStockReturn,
       monthlyExpenses,
       goalPurchases: goals,
+      recurringExpenses,
       yearsToProject,
     }),
-    [salaryPeriods, hysaAllocPct, stockAllocPct, projectedHysaApy, projectedStockReturn, monthlyExpenses, goals, yearsToProject]
+    [salaryPeriods, hysaAllocPct, stockAllocPct, projectedHysaApy, projectedStockReturn, monthlyExpenses, goals, recurringExpenses, yearsToProject]
   );
 
   const projection: ProjectionPoint[] = useMemo(
@@ -179,8 +334,26 @@ export default function ProjectionSection({ state }: ProjectionSectionProps) {
   const startPoint = projection.length > 0 ? projection[0] : null;
   const totalGrowth = finalPoint && startPoint ? finalPoint.netWorth - startPoint.netWorth : 0;
 
+  // ── Loading spinner ──
+  if (!loaded) {
+    return (
+      <div className="flex items-center justify-center py-12 text-gray-400">
+        <svg className="animate-spin h-6 w-6 mr-3 text-indigo-500" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+        </svg>
+        Loading projection data…
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-6">
+      {/* saving indicator */}
+      {saving && (
+        <div className="text-xs text-indigo-400 animate-pulse">Saving settings…</div>
+      )}
+
       {/* ── Controls grid ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* ── Left: Salary & Settings ── */}
@@ -282,6 +455,10 @@ export default function ProjectionSection({ state }: ProjectionSectionProps) {
 
           {/* ── Allocation & Rate Settings ── */}
           <h3 className="text-md font-semibold text-gray-300 mt-2">⚙️ Allocation & Rates</h3>
+          <p className="text-[11px] text-gray-500 -mt-2">
+            &ldquo;Projected Monthly Spend&rdquo; is subtracted from checking each month in the projection.
+            Set to 0 if you don&rsquo;t want recurring expenses in the forecast.
+          </p>
           <div className="flex flex-wrap gap-4 items-end">
             <label className="flex flex-col gap-1 text-xs text-gray-400">
               HYSA Alloc (%)
@@ -336,11 +513,12 @@ export default function ProjectionSection({ state }: ProjectionSectionProps) {
               />
             </label>
             <label className="flex flex-col gap-1 text-xs text-gray-400">
-              Monthly Expenses
+              Projected Monthly Spend ($)
               <input
                 type="number"
                 min="0"
                 step="100"
+                placeholder="0 = no drain"
                 className={inputCls + " w-28"}
                 value={monthlyExpenses}
                 onChange={(e) => setMonthlyExpenses(parseFloat(e.target.value) || 0)}
@@ -514,6 +692,122 @@ export default function ProjectionSection({ state }: ProjectionSectionProps) {
         </div>
       </div>
 
+      {/* ── Recurring Expense Schedule ── */}
+      <div className="flex flex-col gap-4">
+        <h3 className="text-md font-semibold text-gray-300">
+          🔁 Recurring Expense Schedule
+          <button
+            className="ml-3 text-xs text-gray-500 hover:text-gray-300"
+            onClick={() => setShowRecurringForm((v) => !v)}
+          >
+            {showRecurringForm ? "▼ hide" : "▶ show"}
+          </button>
+          {recurringExpenses.length > 0 && !showRecurringForm && (
+            <span className="ml-2 text-xs text-gray-500">
+              ({recurringExpenses.length} expense{recurringExpenses.length !== 1 ? "s" : ""} ·{" "}
+              {fmt(recurringExpenses.reduce((s, re) => s + re.monthlyAmount, 0))}/mo)
+            </span>
+          )}
+        </h3>
+        <p className="text-[11px] text-gray-500 -mt-2">
+          Monthly costs that recur over a date range (e.g. rent, subscriptions, insurance).
+          Each active expense is subtracted from checking every month in the projection.
+        </p>
+
+        {showRecurringForm && (
+          <>
+            {/* Existing recurring expenses */}
+            {recurringExpenses.length > 0 && (
+              <div className="overflow-x-auto rounded-lg border border-gray-800">
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-900 text-gray-400 text-xs uppercase tracking-wider">
+                    <tr>
+                      <th className="px-3 py-2 text-left">Expense</th>
+                      <th className="px-3 py-2 text-right">Monthly</th>
+                      <th className="px-3 py-2 text-left">Start</th>
+                      <th className="px-3 py-2 text-left">End</th>
+                      <th className="px-3 py-2"></th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-800">
+                    {recurringExpenses.map((re) => (
+                      <tr key={re.id} className="hover:bg-gray-900/60">
+                        <td className="px-3 py-2">{re.name}</td>
+                        <td className="px-3 py-2 text-right text-red-400 font-medium">
+                          {fmt(re.monthlyAmount)}
+                        </td>
+                        <td className="px-3 py-2 text-gray-400">{re.startDate}</td>
+                        <td className="px-3 py-2 text-gray-400">{re.endDate || "Ongoing"}</td>
+                        <td className="px-3 py-2 text-right">
+                          <button className={btnDanger} onClick={() => removeRecurringExpense(re.id)}>
+                            ✕
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                    {/* Totals row */}
+                    <tr className="bg-gray-900/40 font-semibold">
+                      <td className="px-3 py-2 text-gray-300">Total</td>
+                      <td className="px-3 py-2 text-right text-red-400">
+                        {fmt(recurringExpenses.reduce((s, re) => s + re.monthlyAmount, 0))}/mo
+                      </td>
+                      <td colSpan={3}></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* Add recurring expense form */}
+            <div className="flex flex-wrap gap-2 items-end">
+              <label className="flex flex-col gap-1 text-xs text-gray-400">
+                Name
+                <input
+                  type="text"
+                  placeholder="Rent, Netflix, Insurance…"
+                  className={inputCls + " w-44"}
+                  value={reName}
+                  onChange={(e) => setReName(e.target.value)}
+                />
+              </label>
+              <label className="flex flex-col gap-1 text-xs text-gray-400">
+                Monthly Amount
+                <input
+                  type="number"
+                  min="0"
+                  step="10"
+                  placeholder="1500"
+                  className={inputCls + " w-28"}
+                  value={reAmount}
+                  onChange={(e) => setReAmount(e.target.value)}
+                />
+              </label>
+              <label className="flex flex-col gap-1 text-xs text-gray-400">
+                Start
+                <input
+                  type="date"
+                  className={inputCls + " w-36"}
+                  value={reStart}
+                  onChange={(e) => setReStart(e.target.value)}
+                />
+              </label>
+              <label className="flex flex-col gap-1 text-xs text-gray-400">
+                End (blank = ongoing)
+                <input
+                  type="date"
+                  className={inputCls + " w-36"}
+                  value={reEnd}
+                  onChange={(e) => setReEnd(e.target.value)}
+                />
+              </label>
+              <button className={btnPrimary} onClick={addRecurringExpense}>
+                + Add Expense
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+
       {/* ── Summary cards ── */}
       {finalPoint && startPoint && (
         <div className="flex flex-wrap gap-4 mt-2">
@@ -553,6 +847,14 @@ export default function ProjectionSection({ state }: ProjectionSectionProps) {
             <div className="bg-gray-800 rounded-xl p-4 flex flex-col gap-1 min-w-[160px]">
               <span className="text-gray-400 text-xs uppercase tracking-wider">Goal Spending</span>
               <span className="text-amber-400 text-xl font-bold">{fmt(finalPoint.goalSpent)}</span>
+            </div>
+          )}
+          {recurringExpenses.length > 0 && (
+            <div className="bg-gray-800 rounded-xl p-4 flex flex-col gap-1 min-w-[160px]">
+              <span className="text-gray-400 text-xs uppercase tracking-wider">Recurring (/mo)</span>
+              <span className="text-orange-400 text-xl font-bold">
+                {fmt(recurringExpenses.reduce((s, re) => s + re.monthlyAmount, 0))}
+              </span>
             </div>
           )}
         </div>

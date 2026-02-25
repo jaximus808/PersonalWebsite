@@ -8,6 +8,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import supabase from "../../../../lib/supabase";
 import * as cookies from "cookie";
 import * as jsonwebtoken from "jsonwebtoken";
+import { updateAllStockPrices } from "../../../../lib/updateStockPrices";
 
 const STOCKS_TABLE = "finance_portfolio_stocks";
 const TX_TABLE = "finance_stock_transactions";
@@ -189,6 +190,12 @@ export default async function handler(
       if (error) throw error;
 
       return res.json({ ok: true });
+    }
+
+    // ── REFRESH ALL PRICES (live fetch) ─────────────────
+    if (action === "refreshAllPrices") {
+      const result = await updateAllStockPrices();
+      return res.json({ ok: true, ...result });
     }
 
     return res.status(400).json({ error: "Unknown action" });

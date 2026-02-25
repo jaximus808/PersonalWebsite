@@ -12,6 +12,27 @@ import {
 } from "recharts";
 
 // ────────────────────────────────────────────────────────────
+// Workaround: recharts' ResponsiveContainer return type is
+// incompatible with React 18's stricter JSX element types.
+// Wrap it in a thin component that returns ReactElement.
+// ────────────────────────────────────────────────────────────
+function ChartContainer({
+  children,
+  height,
+}: {
+  children: React.ReactNode;
+  height: number;
+}) {
+  return (
+    <div style={{ width: "100%", height }}>
+      <ResponsiveContainer width="100%" height="100%">
+        {children as React.ReactElement}
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+// ────────────────────────────────────────────────────────────
 // Formatting helper
 // ────────────────────────────────────────────────────────────
 function fmtCurrency(n: number): string {
@@ -96,7 +117,7 @@ export function SingleLineChart({
   }
 
   return (
-    <ResponsiveContainer width="100%" height={height}>
+    <ChartContainer height={height}>
       <AreaChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
         <defs>
           <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
@@ -139,7 +160,7 @@ export function SingleLineChart({
           />
         ))}
       </AreaChart>
-    </ResponsiveContainer>
+    </ChartContainer>
   );
 }
 
@@ -172,7 +193,7 @@ export function MultiLineChart({
   }
 
   return (
-    <ResponsiveContainer width="100%" height={height}>
+    <ChartContainer height={height}>
       <AreaChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
         <defs>
           {lines.map((line) => (
@@ -230,6 +251,6 @@ export function MultiLineChart({
           />
         ))}
       </AreaChart>
-    </ResponsiveContainer>
+    </ChartContainer>
   );
 }
