@@ -18,6 +18,13 @@ import {
 // ────────────────────────────────────────────────────────────
 const SafeResponsiveContainer = ResponsiveContainer as any;
 const SafeAreaChart = AreaChart as any;
+const SafeXAxis = XAxis as any;
+const SafeYAxis = YAxis as any;
+const SafeCartesianGrid = CartesianGrid as any;
+const SafeTooltip = Tooltip as any;
+const SafeLegend = Legend as any;
+const SafeArea = Area as any;
+const SafeReferenceLine = ReferenceLine as any;
 
 function ChartContainer({
   children,
@@ -128,22 +135,22 @@ export function SingleLineChart({
             <stop offset="95%" stopColor={color} stopOpacity={0} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-        <XAxis
+        <SafeCartesianGrid strokeDasharray="3 3" stroke="#374151" />
+        <SafeXAxis
           dataKey="date"
           tickFormatter={fmtDate}
           tick={{ fill: "#9ca3af", fontSize: 11 }}
           axisLine={{ stroke: "#4b5563" }}
           interval="preserveStartEnd"
         />
-        <YAxis
+        <SafeYAxis
           tickFormatter={fmtCurrency}
           tick={{ fill: "#9ca3af", fontSize: 11 }}
           axisLine={{ stroke: "#4b5563" }}
           width={80}
         />
-        <Tooltip content={<CustomTooltip />} />
-        <Area
+        <SafeTooltip content={<CustomTooltip />} />
+        <SafeArea
           type="monotone"
           dataKey="value"
           name={name}
@@ -154,7 +161,7 @@ export function SingleLineChart({
           activeDot={{ r: 4, fill: color, stroke: "#111827", strokeWidth: 2 }}
         />
         {refLines?.map((rl, i) => (
-          <ReferenceLine
+          <SafeReferenceLine
             key={i}
             y={rl.y}
             stroke={rl.color}
@@ -213,26 +220,26 @@ export function MultiLineChart({
             </linearGradient>
           ))}
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-        <XAxis
+        <SafeCartesianGrid strokeDasharray="3 3" stroke="#374151" />
+        <SafeXAxis
           dataKey="date"
           tickFormatter={fmtDate}
           tick={{ fill: "#9ca3af", fontSize: 11 }}
           axisLine={{ stroke: "#4b5563" }}
           interval="preserveStartEnd"
         />
-        <YAxis
+        <SafeYAxis
           tickFormatter={fmtCurrency}
           tick={{ fill: "#9ca3af", fontSize: 11 }}
           axisLine={{ stroke: "#4b5563" }}
           width={80}
         />
-        <Tooltip content={<CustomTooltip />} />
-        <Legend
+        <SafeTooltip content={<CustomTooltip />} />
+        <SafeLegend
           wrapperStyle={{ fontSize: 12, color: "#d1d5db" }}
         />
         {lines.map((line) => (
-          <Area
+          <SafeArea
             key={line.dataKey}
             type="monotone"
             dataKey={line.dataKey}
@@ -245,7 +252,7 @@ export function MultiLineChart({
           />
         ))}
         {refLines?.map((rl, i) => (
-          <ReferenceLine
+          <SafeReferenceLine
             key={i}
             y={rl.y}
             stroke={rl.color}
