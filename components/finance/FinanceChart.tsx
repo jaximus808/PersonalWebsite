@@ -14,8 +14,10 @@ import {
 // ────────────────────────────────────────────────────────────
 // Workaround: recharts' ResponsiveContainer return type is
 // incompatible with React 18's stricter JSX element types.
-// Wrap it in a thin component that returns ReactElement.
+// Cast through `any` so the wrapper itself is a valid JSX element.
 // ────────────────────────────────────────────────────────────
+const SafeResponsiveContainer = ResponsiveContainer as any;
+
 function ChartContainer({
   children,
   height,
@@ -25,9 +27,9 @@ function ChartContainer({
 }) {
   return (
     <div style={{ width: "100%", height }}>
-      <ResponsiveContainer width="100%" height="100%">
+      <SafeResponsiveContainer width="100%" height="100%">
         {children as React.ReactElement}
-      </ResponsiveContainer>
+      </SafeResponsiveContainer>
     </div>
   );
 }
