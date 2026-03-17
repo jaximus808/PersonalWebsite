@@ -1,116 +1,120 @@
 import Link from "next/link";
 import styles from "../../styles/Home.module.css";
 import { PopInBlock } from "../popinBlockContext";
+import { ArrowRight } from "lucide-react";
 
 interface BlogsSectionProps {
   recentBlogs: any[] | undefined;
 }
 
+function getExcerpt(content: string): string {
+  for (const seg of content.split("*")) {
+    if (seg.length === 0) continue;
+    if (seg.substring(0, 3) === "<i>") continue;
+    const text = (seg.substring(0, 3) === "<b>" ? seg.substring(3) : seg).trim();
+    if (text.length > 0) return text;
+  }
+  return "";
+}
+
+function getReadTime(content: string): string {
+  const plainText = content
+    .split("*")
+    .map((s) => {
+      if (s.length >= 3 && s.substring(0, 3) === "<i>") return "";
+      if (s.length >= 3 && s.substring(0, 3) === "<b>") return s.substring(3);
+      return s;
+    })
+    .join(" ");
+  const words = plainText.trim().split(/\s+/).filter((w) => w.length > 0).length;
+  return `${Math.max(1, Math.ceil(words / 200))} min read`;
+}
+
 export default function BlogsSection({ recentBlogs }: BlogsSectionProps) {
   return (
-    <div
-      className={`${styles.textContainer} ${styles.gradentBlock2} py-4 mt-12 pb-12 text-white`}
-      style={{ textAlign: "center" }}
-    >
-      <Link href={"/blog"}>
-        <span className="hover:text-[#a3cbff] duration-200 text-[350%] cursor-pointer font-thin">
-          Recent Blog 💡
-        </span>
-      </Link>
-      <div className="">
-        <div className="mt-2 relative left-1/2 w-1/2 translate-x-[-50%] border-t-2 border-white h-2"></div>
-      </div>
+    <div className={`${styles.textContainer} py-4 mt-12 pb-12 text-white`}>
+      <PopInBlock>
+        <div className="flex items-end justify-between mb-8 pb-6 border-b border-white/15">
+          <div>
+            <Link href="/blog">
+              <span className="font-serif text-4xl font-bold text-white hover:text-gray-300 transition-colors cursor-pointer">
+                Writing
+              </span>
+            </Link>
+            <p className="text-gray-500 mt-1 text-sm">Recent posts</p>
+          </div>
+          <Link
+            href="/blog"
+            className="flex items-center gap-1.5 text-blue-400 hover:text-blue-300 transition-colors text-sm"
+          >
+            All posts
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </PopInBlock>
 
       {recentBlogs ? (
         recentBlogs.length === 0 ? (
           <PopInBlock>
-            <h3 style={{ textAlign: "center", fontSize: "2vw" }}>
-              Sorry blogs could not be loaded, try again!
-            </h3>
+            <p className="text-gray-600 text-center py-12">No posts yet.</p>
           </PopInBlock>
         ) : (
-          recentBlogs.map((data: any) => (
-            <PopInBlock key={data.id}>
-              <div
-                onClick={() => {
-                  window.location.href = `/blogs/${data.id}`;
-                }}
-                className={`${styles.gradentBlog} bg-[#2C2C2E] hover:bg-[#2C2C2E] pt-4 pb-8 px-8 mt-4 w-3/5 relative left-1/2 translate-x-[-50%] rounded-md cursor-pointer duration-200`}
-                style={{ textAlign: "left" }}
-              >
-                <div>
-                  <div className={`flex w-full`}>
-                    <div className="w-[15rem] h-[15rem]">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        alt="front picture"
-                        src={data.mediaPic}
-                        style={{
-                          borderRadius: "0.5rem",
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                        }}
-                      />
+          <div>
+            {recentBlogs.map((data: any, i: number) => (
+              <PopInBlock key={data.id}>
+                <Link
+                  href={`/blogs/${data.id}`}
+                  className={`group flex items-start gap-6 py-6 border-b border-white/10 hover:opacity-75 transition-opacity`}
+                >
+                  {/* Text */}
+                  <div className="flex-1 min-w-0">
+                    <h3
+                      className={`font-serif font-bold text-white mb-2 leading-snug line-clamp-2 transition-colors ${
+                        i === 0 ? "text-2xl md:text-3xl" : "text-lg md:text-xl"
+                      }`}
+                    >
+                      {data.title}
+                    </h3>
+                    {i === 0 && (
+                      <p className="text-gray-500 text-sm line-clamp-2 mb-3 leading-relaxed">
+                        {getExcerpt(data.content)}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-2 text-gray-600 text-xs">
+                      <span>
+                        {new Date(data.datePosted).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </span>
+                      <span>·</span>
+                      <span>{getReadTime(data.content)}</span>
                     </div>
                   </div>
-                </div>
-                <div className="mt-4"></div>
-                <h2>
-                  <div
-                    className={`text-2xl font-semibold hover:underline`}
-                    style={{ cursor: "pointer", overflowWrap: "break-word" }}
-                  >
-                    {data.title}
-                  </div>
-                </h2>
-                <div>
-                  <h3
-                    className="text-lg font-thin"
-                    style={{
-                      overflow: "hidden",
-                      WebkitLineClamp: 3,
-                      WebkitBoxOrient: "vertical",
-                      display: "-webkit-box",
-                    }}
-                  >
-                    <i>{new Date(data.datePosted).toLocaleDateString()}</i>
-                  </h3>
-                  <br></br>
-                  <h3
-                    className="font-light text-sm"
-                    style={{
-                      overflow: "hidden",
-                      WebkitLineClamp: 3,
-                      WebkitBoxOrient: "vertical",
-                      display: "-webkit-box",
-                    }}
-                  >
-                    {data.content.split("*").map((segment: any, key: any) => {
-                      if (segment.length === 0) return "";
-                      if (
-                        segment.length >= 3 &&
-                        segment.substring(0, 3) === "<i>"
-                      ) {
-                        return "";
-                      } else if (
-                        segment.length >= 3 &&
-                        segment.substring(0, 3) === "<b>"
-                      ) {
-                        return segment.substring(3);
-                      } else {
-                        return segment;
-                      }
-                    })}
-                  </h3>
-                </div>
-              </div>
-            </PopInBlock>
-          ))
+
+                  {/* Thumbnail */}
+                  {data.mediaPic && (
+                    <div
+                      className={`flex-shrink-0 overflow-hidden rounded-lg ${
+                        i === 0 ? "w-24 h-24 md:w-32 md:h-32" : "w-16 h-16 md:w-20 md:h-20"
+                      }`}
+                    >
+                      <img
+                        src={data.mediaPic}
+                        alt={data.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                </Link>
+              </PopInBlock>
+            ))}
+          </div>
         )
       ) : (
         <PopInBlock>
-          <h3 className="text-center text-3xl">Loading...</h3>
+          <p className="text-gray-600 text-center py-12">Loading...</p>
         </PopInBlock>
       )}
     </div>

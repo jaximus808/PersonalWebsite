@@ -1,34 +1,24 @@
-import type { NextPage } from "next";
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
 import Header from "../components/header";
 import Footer from "../components/footer";
-import Background from "../components/backgroundThree";
 import { Blog } from "@prisma/client";
 import { useState, useEffect } from "react";
 import * as cookies from "cookie";
 import Link from "next/link";
-import { Calendar, ArrowRight } from "lucide-react";
 import jsonwebtoken from "jsonwebtoken";
 import { GetServerSideProps } from "next";
-import GradientBG from "../components/gradientbg";
 import Pagination from "../components/Pagination";
-import ContentPreview from "../components/ContentPreview";
 import { usePagination } from "../hooks/usePagination";
 
-const BLOGS_PER_PAGE = 6;
+const BLOGS_PER_PAGE = 7;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const parsedCookies = cookies.parse(
     context.req.headers.cookie ? context.req.headers.cookie : ""
   );
-
   const token = parsedCookies.token;
-
   let authenticated = false;
-  if (!token) {
-    authenticated = false;
-  } else {
+  if (token) {
     try {
       jsonwebtoken.verify(token, process.env.ADMIN_PASS!);
       authenticated = true;
@@ -36,13 +26,44 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       authenticated = false;
     }
   }
-
-  return {
-    props: {
-      auth: authenticated,
-    },
-  };
+  return { props: { auth: authenticated } };
 };
+
+function getReadTime(content: string): string {
+  const plainText = content
+    .split("*")
+    .map((s) => {
+      if (s.length >= 3 && s.substring(0, 3) === "<i>") return "";
+      if (s.length >= 3 && s.substring(0, 3) === "<b>") return s.substring(3);
+      return s;
+    })
+    .join(" ");
+  const words = plainText.trim().split(/\s+/).filter((w) => w.length > 0).length;
+  return `${Math.max(1, Math.ceil(words / 200))} min read`;
+}
+
+function getExcerpt(content: string): string {
+  for (const seg of content.split("*")) {
+    if (seg.length === 0) continue;
+    if (seg.substring(0, 3) === "<i>") continue;
+    if (seg.substring(0, 3) === "<b>") {
+      const text = seg.substring(3).trim();
+      if (text.length > 0) return text;
+      continue;
+    }
+    const text = seg.trim();
+    if (text.length > 0) return text;
+  }
+  return "";
+}
+
+function formatDate(dateStr: any): string {
+  return new Date(dateStr).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
 
 interface BlogPageProps {
   auth: boolean;
@@ -51,7 +72,7 @@ interface BlogPageProps {
 const BlogPage: React.FC<BlogPageProps> = ({ auth }) => {
   const [loading, isLoading] = useState(true);
   const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [showAdminPanel, setShowAdminPanel] = useState<boolean>(false);
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
 
   const { page, totalPages, canGoBack, canGoForward, goForward, goBack, sliceItems } =
     usePagination(blogs.length, BLOGS_PER_PAGE);
@@ -73,7 +94,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ auth }) => {
       setBlogs(data.blogs);
       isLoading(false);
     } catch (e) {
-      return { fail: true, pastProjFav: [], recentBlogs: [] };
+      return { fail: true };
     }
   }
 
@@ -105,184 +126,201 @@ const BlogPage: React.FC<BlogPageProps> = ({ auth }) => {
     location.reload();
   };
 
+  const paginated = sliceItems(blogs);
+  const [featured, ...rest] = paginated;
+
   return (
-    <div>
+    <div className="min-h-screen bg-[#0f0f0f]">
       <Head>
-        <title>Jaxon Poentis</title>
-        <meta name="description" content="Personal Page For Jaxon Poentis" />
+        <title>Blog | Jaxon Poentis</title>
+        <meta name="description" content="Writing by Jaxon Poentis" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
       <Header />
-      <Background />
-      <GradientBG />
-      <>
-        {/* Admin Panel Toggle */}
+
+      <main className="max-w-3xl mx-auto px-6 pt-16 pb-24">
+        {/* Admin Panel */}
         {auth && (
-          <div className="flex justify-end mb-8 gap-4">
-            <button
-              onClick={() => setShowAdminPanel(!showAdminPanel)}
-              className="px-6 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-lg text-white hover:bg-white/20 transition-all shadow-lg"
-            >
-              {showAdminPanel ? "Hide Admin Panel" : "Show Admin Panel"}
-            </button>
-            <button
-              onClick={logOut}
-              className="px-6 py-2 bg-red-500/20 backdrop-blur-md border border-red-500/30 rounded-lg text-white hover:bg-red-500/30 transition-all shadow-lg"
-            >
-              Logout
-            </button>
-          </div>
-        )}
-
-        {/* Admin Form */}
-        {auth && showAdminPanel && (
-          <div className="mb-12 bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 shadow-2xl">
-            <h2 className="text-2xl font-bold text-white mb-6">Create New Blog Post</h2>
-            <div className="space-y-6">
-              <div>
-                <label className="block text-white mb-2 font-medium">Title</label>
-                <input
-                  type="text"
-                  value={blogName}
-                  onChange={(e) => setBlogName(e.target.value)}
-                  className="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
-                  placeholder="Enter blog title..."
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-white mb-2 font-medium">Image URL</label>
-                <input
-                  type="text"
-                  value={mediaInput}
-                  onChange={(e) => setMediaInput(e.target.value)}
-                  className="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
-                  placeholder="Enter image URL..."
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-white mb-2 font-medium">Content</label>
-                <textarea
-                  value={blogContent}
-                  onChange={(e) => setBlogContent(e.target.value)}
-                  rows={8}
-                  className="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50 resize-none"
-                  placeholder="Write your blog content..."
-                  required
-                />
-              </div>
-
-              <div className="flex items-center gap-4">
-                <label className="flex items-center text-white">
-                  <input
-                    type="checkbox"
-                    checked={customDate === "true"}
-                    onChange={(e) => setCustomDate(e.target.checked ? "true" : "false")}
-                    className="mr-2"
-                  />
-                  Use custom date
-                </label>
-              </div>
-
-              {customDate === "true" && (
-                <div>
-                  <label className="block text-white mb-2 font-medium">Custom Date</label>
-                  <input
-                    type="datetime-local"
-                    value={blogDate}
-                    onChange={(e) => setBlogDate(e.target.value)}
-                    className="w-full px-4 py-3 bg-white/10 border border-white/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                  />
-                </div>
-              )}
-
-              {responseText && (
-                <div className="text-red-300 bg-red-500/20 px-4 py-2 rounded-lg">
-                  {responseText}
-                </div>
-              )}
-
+          <div className="mb-10">
+            <div className="flex justify-end gap-3 mb-4">
               <button
-                type="button"
-                onClick={AddBlog}
-                className="w-full px-6 py-3 bg-white/20 backdrop-blur-md border border-white/30 rounded-lg text-white font-semibold hover:bg-white/30 transition-all shadow-lg"
+                onClick={() => setShowAdminPanel(!showAdminPanel)}
+                className="px-4 py-1.5 text-sm border border-white/20 rounded-full text-white/70 hover:text-white hover:border-white/40 transition-all"
               >
-                Publish Blog Post
+                {showAdminPanel ? "Hide Panel" : "New Post"}
+              </button>
+              <button
+                onClick={logOut}
+                className="px-4 py-1.5 text-sm border border-red-500/30 rounded-full text-red-400/70 hover:text-red-400 hover:border-red-500/60 transition-all"
+              >
+                Logout
               </button>
             </div>
+
+            {showAdminPanel && (
+              <div className="border border-white/10 rounded-2xl p-8 bg-white/5 mb-10">
+                <h2 className="font-serif text-2xl font-bold text-white mb-6">New Post</h2>
+                <div className="space-y-5">
+                  <div>
+                    <label className="block text-white/60 text-sm mb-1.5">Title</label>
+                    <input
+                      type="text"
+                      value={blogName}
+                      onChange={(e) => setBlogName(e.target.value)}
+                      className="w-full px-4 py-3 bg-transparent border border-white/15 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-white/40 transition-colors"
+                      placeholder="Your story title..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-white/60 text-sm mb-1.5">Cover Image URL</label>
+                    <input
+                      type="text"
+                      value={mediaInput}
+                      onChange={(e) => setMediaInput(e.target.value)}
+                      className="w-full px-4 py-3 bg-transparent border border-white/15 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-white/40 transition-colors"
+                      placeholder="https://..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-white/60 text-sm mb-1.5">Content</label>
+                    <textarea
+                      value={blogContent}
+                      onChange={(e) => setBlogContent(e.target.value)}
+                      rows={10}
+                      className="w-full px-4 py-3 bg-transparent border border-white/15 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-white/40 transition-colors resize-none"
+                      placeholder="Tell your story..."
+                    />
+                  </div>
+                  <label className="flex items-center gap-2 text-white/60 text-sm cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={customDate === "true"}
+                      onChange={(e) => setCustomDate(e.target.checked ? "true" : "false")}
+                      className="accent-blue-400"
+                    />
+                    Use custom date
+                  </label>
+                  {customDate === "true" && (
+                    <input
+                      type="datetime-local"
+                      value={blogDate}
+                      onChange={(e) => setBlogDate(e.target.value)}
+                      className="w-full px-4 py-3 bg-transparent border border-white/15 rounded-lg text-white focus:outline-none focus:border-white/40 transition-colors"
+                    />
+                  )}
+                  {responseText && (
+                    <p className="text-red-400 text-sm">{responseText}</p>
+                  )}
+                  <button
+                    type="button"
+                    onClick={AddBlog}
+                    className="px-6 py-2.5 bg-white text-black font-medium rounded-full hover:bg-gray-200 transition-colors text-sm"
+                  >
+                    Publish
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
-        <div>
-          <h1 className="text-5xl font-bold text-white mb-8 text-center mt-10">My Blogs</h1>
-          <div className="">
-            <div className="mt-2 relative left-1/2 w-1/2 translate-x-[-50%] border-t-2 border-white h-2"></div>
-          </div>
+        {/* Page header */}
+        <div className="mb-12 pb-8 border-b border-white/10">
+          <h1 className="font-serif text-5xl font-bold text-white mb-3">Writing</h1>
+          <p className="text-gray-500 text-lg">Thoughts on software, tech, and life.</p>
         </div>
 
+        {/* Content */}
         {loading ? (
-          <div className="min-h-screen flex items-center justify-center">
-            <div className="text-white text-2xl">Blogs Loading...</div>
-          </div>
+          <div className="py-24 text-center text-gray-600">Loading...</div>
+        ) : blogs.length === 0 ? (
+          <div className="py-24 text-center text-gray-600">No posts yet.</div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12 py-4 px-12">
-              {sliceItems(blogs).map((blog) => (
-                <Link
-                  key={blog.id}
-                  className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 cursor-pointer group"
-                  href={`/blogs/${blog.id}`}
-                >
-                  {/* Blog Image */}
-                  {blog.mediaPic && (
-                    <div className="mb-4 rounded-xl overflow-hidden">
-                      <img
-                        src={blog.mediaPic}
-                        alt={blog.title}
-                        className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
+            {/* Featured article */}
+            {featured && (
+              <Link href={`/blogs/${featured.id}`} className="group block mb-12">
+                {featured.mediaPic && (
+                  <div className="w-full aspect-video overflow-hidden rounded-2xl mb-7">
+                    <img
+                      src={featured.mediaPic}
+                      alt={featured.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                  </div>
+                )}
+                <p className="text-blue-400 text-xs font-semibold uppercase tracking-widest mb-3">
+                  {page === 0 ? "Featured" : "Latest"}
+                </p>
+                <h2 className="font-serif text-4xl md:text-5xl font-bold text-white mb-4 leading-tight group-hover:text-gray-200 transition-colors">
+                  {featured.title}
+                </h2>
+                <p className="text-gray-400 text-lg line-clamp-2 mb-5 leading-relaxed">
+                  {getExcerpt(featured.content)}
+                </p>
+                <div className="flex items-center gap-2 text-gray-600 text-sm">
+                  <span>Jaxon Poentis</span>
+                  <span>·</span>
+                  <span>{featured.datePosted ? formatDate(featured.datePosted) : ""}</span>
+                  <span>·</span>
+                  <span>{getReadTime(featured.content)}</span>
+                </div>
+              </Link>
+            )}
+
+            {/* Article list */}
+            {rest.length > 0 && (
+              <div className="border-t border-white/10">
+                {rest.map((blog) => (
+                  <Link
+                    key={blog.id}
+                    href={`/blogs/${blog.id}`}
+                    className="group flex items-start gap-6 py-7 border-b border-white/10 hover:opacity-80 transition-opacity"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-serif text-xl md:text-2xl font-bold text-white mb-2 leading-snug line-clamp-2">
+                        {blog.title}
+                      </h3>
+                      <p className="text-gray-500 text-sm line-clamp-2 mb-3 leading-relaxed">
+                        {getExcerpt(blog.content)}
+                      </p>
+                      <div className="flex items-center gap-2 text-gray-600 text-xs">
+                        <span>{blog.datePosted ? formatDate(blog.datePosted) : ""}</span>
+                        <span>·</span>
+                        <span>{getReadTime(blog.content)}</span>
+                      </div>
                     </div>
-                  )}
-
-                  {/* Blog Title */}
-                  <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-blue-200 transition-colors">
-                    {blog.title}
-                  </h3>
-
-                  {/* Blog Date */}
-                  <div className="flex items-center text-white/70 mb-4">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    <span className="text-sm">
-                      {blog.datePosted ? new Date(blog.datePosted).toDateString() : ""}
-                    </span>
-                  </div>
-
-                  {/* Blog Content Preview */}
-                  <ContentPreview content={blog.content} className="text-white/80 line-clamp-3 mb-4" />
-
-                  <div className="text-blue-300 font-medium group-hover:text-blue-200 flex items-center">
-                    Read more
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </Link>
-              ))}
-            </div>
+                    {blog.mediaPic && (
+                      <div className="flex-shrink-0 w-20 h-20 md:w-28 md:h-28 overflow-hidden rounded-lg">
+                        <img
+                          src={blog.mediaPic}
+                          alt={blog.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                  </Link>
+                ))}
+              </div>
+            )}
 
             {/* Pagination */}
             {blogs.length > BLOGS_PER_PAGE && (
-              <Pagination
-                page={page}
-                totalPages={totalPages}
-                canGoBack={canGoBack}
-                canGoForward={canGoForward}
-                onBack={goBack}
-                onForward={goForward}
-              />
+              <div className="mt-10">
+                <Pagination
+                  page={page}
+                  totalPages={totalPages}
+                  canGoBack={canGoBack}
+                  canGoForward={canGoForward}
+                  onBack={goBack}
+                  onForward={goForward}
+                />
+              </div>
             )}
           </>
         )}
-      </>
+      </main>
 
       <Footer authenticated={false} authSense={false} />
     </div>
