@@ -279,7 +279,7 @@ const Index = (props: props) => {
                             />
                             <Link
                               className="underline"
-                              href={"https://www.linkedin.com/in/jaxon-poentis"}
+                              href={"https://www.youtube.com/@jaxonpoentis"}
                             >
                               Youtube
                             </Link>
@@ -297,9 +297,26 @@ const Index = (props: props) => {
                             />
                             <Link
                               className="underline"
-                              href={"https://www.linkedin.com/in/jaxon-poentis"}
+                              href={"https://github.com/jaximus808"}
                             >
                               Github
+                            </Link>
+                          </div>
+                        </li>
+                        <li className="flex items-center gap-3 justify-center md:justify-start">
+                          <div className="flex items-center gap-3">
+                            <Image
+                              src="/X.png"
+                              alt="X"
+                              width={24}
+                              height={24}
+                              className="rounded-full object-contain xl:w-7 xl:h-7 2xl:w-8 2xl:h-8"
+                            />
+                            <Link
+                              className="underline"
+                              href={"https://x.com/soljaxonp"}
+                            >
+                              @SolJaxonp
                             </Link>
                           </div>
                         </li>
