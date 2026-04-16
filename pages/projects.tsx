@@ -39,7 +39,7 @@ function YoutubeVideo(props: any) {
   return (
     <div className={`${styles.centerRelX} ${props.className}`}>
       <YouTube
-        className="relative flex iterms-center justify-center"
+        className="relative flex items-center justify-center"
         style={{ width: "100%", height: "100%" }}
         videoId={props.vId}
         opts={opts}

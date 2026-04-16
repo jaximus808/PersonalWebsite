@@ -33,7 +33,7 @@ export default function TechStack() {
         isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
       }`}
     >
-      <div className={`${styles.gradentBlock} py-8 text-white`}>
+      <div className={`${styles.gradientBlock} py-8 text-white`}>
         <div className="w-full flex flex-col items-center">
           <h2 className={`font-bold text-4xl mb-4 transition-all duration-700 delay-100 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'

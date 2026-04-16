@@ -33,7 +33,7 @@ function YoutubeVideo(props: any) {
   return (
     <div className={`${styles.centerRelX} ${props.className}`}>
       <Youtube
-        className="relative flex iterms-center justify-center"
+        className="relative flex items-center justify-center"
         style={{ width: "100%", height: "100%" }}
         videoId={props.vId}
         opts={opts}
@@ -178,7 +178,7 @@ const Index = (props: props) => {
             <ScrollDown />
           </div>
         </div>
-        <div id="whoIam" className={`${styles.homeMaincotainer} `}>
+        <div id="whoIam" className={`${styles.homeMaincontainer} `}>
           <div className={` ${styles.textContainer}   text-white`}>
             <h1 style={{ textAlign: "center" }} className="text-5xl"></h1>
             <br></br>
@@ -366,7 +366,7 @@ const Index = (props: props) => {
                                   onClick={() => {
                                     window.location.href = `/projects/${data.name}`;
                                   }}
-                                  className={`${styles.projectContainerText} ${styles.gradent}  rounded-lg py-12 px-4  bg-[#343434] cursor-pointer`}
+                                  className={`${styles.projectContainerText} ${styles.gradient}  rounded-lg py-12 px-4  bg-[#343434] cursor-pointer`}
                                   style={{ textAlign: "left" }}
                                 >
                                   <div className="">
@@ -456,7 +456,7 @@ const Index = (props: props) => {
 
           <div id="blogs"></div>
           <div
-            className={`${styles.textContainer} ${styles.gradentBlock2} py-4 mt-12 pb-12 text-white `}
+            className={`${styles.textContainer} ${styles.gradientBlock2} py-4 mt-12 pb-12 text-white `}
             style={{ textAlign: "center" }}
           >
             <Link href={"/blog"}>
@@ -483,7 +483,7 @@ const Index = (props: props) => {
                         onClick={() => {
                           window.location.href = `/blogs/${data.id}`;
                         }}
-                        className={`${styles.gradentBlog} bg-[#2C2C2E] hover:bg-[#2C2C2E] pt-4 pb-8 px-8 mt-4  w-3/5 relative left-1/2 translate-x-[-50%] rounded-md cursor-pointer duration-200`}
+                        className={`${styles.gradientBlog} bg-[#2C2C2E] hover:bg-[#2C2C2E] pt-4 pb-8 px-8 mt-4  w-3/5 relative left-1/2 translate-x-[-50%] rounded-md cursor-pointer duration-200`}
                         style={{ textAlign: "left" }}
                       >
                         <div>

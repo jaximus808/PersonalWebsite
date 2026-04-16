@@ -5,66 +5,6 @@
 {
   font-family: var(--font-montserrat);
 }
-.BlogMaincotainer
-{
-  display: flex;
-  flex-direction: column;
-  min-height: calc(100vh - 5vw);
-  /* gap: 20px; */
-  width:100%;
-  padding-top: 3rem;
-
-  position:relative;
-  z-index: 5;
-}
-.ContactMaincotainer
-{
-  display: flex;
-  flex-direction: column;
-  min-height: calc(100vh - 5vw);
-  /* gap: 20px; */
-  width:100%;
-  padding-top: 3rem;
-
-  position:relative;
-  z-index: 5;
-}
-.maincotainer
-{
-  display: flex;
-  flex-direction: column;
-  min-height: calc(100vh - 5vw);
-  /* gap: 20px; */
-  width:100%;
-  padding-top: 3rem;
-
-  position:relative;
-  z-index: 50;
-}
-
-.maincotainer_project
-{
-  display: flex;
-  flex-direction: column;
-  min-height: calc(100vh - 5vw);
-  /* gap: 20px; */
-  width:100%;
-  padding-top: 3rem;
-
-  position:relative;
-  z-index: 0;
-}
-.maincotainerBlog
-{
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  position:relative;
-  min-height: calc(100vh - 5vw);
-  width:100%;
-  padding-top: 3rem;
-}
-
 .projectContainerArea{
   display: flex;
   flex-direction: column;
@@ -73,7 +13,7 @@
   padding-top: 3rem;
 }
 
-.homeMaincotainer
+.homeMaincontainer
 {
   display: flex;
   flex-direction: column;
@@ -312,7 +252,7 @@
   
 
 }
-.realfooterContianer
+.realfooterContainer
 {
   margin-top: auto;
   position: relative;
@@ -391,30 +331,6 @@
 
   cursor: pointer;
 }
-.gradent2{
-  position: relative;
-  z-index: 1;
-  background: linear-gradient(#202020, #202020) padding-box,
-              linear-gradient(to right, #D4145A, darkorchid,darkorchid, orange) border-box;
-  background-size: 300%;
-  background-position: left;
-  border-radius: 10px;
-  border-left: 4px solid transparent;
-  transition: background-position 1s;
-
-  transition: border 1s;
-  /* animation: bg-animation 1s infinite alternate; */
-  
-}
-
-.gradent2:hover{
-  background-position: right;
-  border-left: 10px solid transparent;
-  
-
-}
-
-
 .projectGradientBackground
 {
   background: linear-gradient(90deg, #0F2027 ,#203A43,#203A43,#0F2027 ,#203A43);
@@ -424,7 +340,7 @@
   animation: bg-animation 10s infinite; 
   
 }
-.gradentBlock {
+.gradientBlock {
   
   position: relative;
   z-index: 1;
@@ -433,10 +349,10 @@
   border-top: 6px solid transparent;
   border-bottom: 6px solid transparent;
   transition: border 0.5s;
-  animation: gradent-rotate 3s linear infinite;
+  animation: gradient-rotate 3s linear infinite;
   box-shadow: 0 0 0px 0px #6b21a8;
 }
-.gradentBlock2 {
+.gradientBlock2 {
   
   position: relative;
   z-index: 1;
@@ -445,10 +361,10 @@
   border-top: 6px solid transparent;
   border-bottom: 6px solid transparent;
   transition: border 0.5s;
-  animation: gradent-rotate 3s linear infinite;
+  animation: gradient-rotate 3s linear infinite;
   box-shadow: 0 0 0px 0px #6b21a8;
 }
-.gradent {
+.gradient{
   
   position: relative;
   z-index: 1;
@@ -457,15 +373,15 @@
 
   border: 1px solid transparent;
   transition: border 0.5s;
-  animation: gradent-rotate 3s linear infinite;
+  animation: gradient-rotate 3s linear infinite;
   box-shadow: 0 0 0px 0px #6b21a8;
 }
 
-.gradent:hover {
+.gradient:hover {
   border: 4px solid transparent;
-  animation: gradent-rotate 1.5s linear infinite;
+  animation: gradient-rotate 1.5s linear infinite;
 }
-.gradentBlog {
+.gradientBlog {
   
   position: relative;
   z-index: 1;
@@ -474,15 +390,15 @@
 
   border-left: 1px solid transparent;
   transition: border 0.5s;
-  animation: gradent-rotate 3s linear infinite;
+  animation: gradient-rotate 3s linear infinite;
   box-shadow: 0 0 0px 0px #6b21a8;
 }
 
-.gradentBlog:hover {
+.gradientBlog:hover {
   border-left: 6px solid transparent;
   background: linear-gradient(#141414, #141414) padding-box,
     conic-gradient(from var(--angle), #581c87, #6b21a8, #701a75, #86198f, #581c87) border-box;
-  animation: gradent-rotate 1.5s linear infinite;
+  animation: gradient-rotate 1.5s linear infinite;
 }
 
 @property --angle {
@@ -491,7 +407,7 @@
   inherits: false;
 }
 
-@keyframes gradent-rotate {
+@keyframes gradient-rotate {
   0% {
     --angle: 0deg;
   }
@@ -499,7 +415,7 @@
     --angle: 360deg;
   }
 }
-/* .gradent:hover{
+/* .gradient:hover{
   background: linear-gradient(#171717, #171717) padding-box,
               linear-gradient(to left, darkblue, darkorchid) border-box;
   border-radius: 10px;

@@ -273,9 +273,9 @@ export default function MyPath() {
                 <div className=" p-2 mt-2 rounded-md">
                   <p className="underline">Key Features Built:</p>
                   <ul className="list-disc ml-5">
-                    <li>Created Intergrated Reality Env. in Unity </li>
+                    <li>Created Integrated Reality Env. in Unity </li>
                     <li>Added wrist button in virtual world that integrates with FastAPI backend</li>
-                    <li>Rendered AI analysis of Medial Document onto 3D world</li>
+                    <li>Rendered AI analysis of Medical Document onto 3D world</li>
                   </ul>
                 </div>
               </details>
@@ -292,7 +292,7 @@ export default function MyPath() {
               >
                 <Image
                   alt="front picture"
-                  src="/flashcardify.png"
+                  src="/flashcardify.jpg"
                   fill
                   style={{ borderRadius: "0.5rem" }}
                 />
@@ -421,7 +421,7 @@ export default function MyPath() {
                 <strong>Washington University in St. Louis</strong>
               </h1>
               <h1 className={`text-lg ${styles.titleTex}`}>
-                <i>Bachelor in Science, CS + Math, and Entrepnuership</i>
+                <i>Bachelor of Science, CS + Math, and Entrepreneurship</i>
               </h1>
               <h1 className={`text-sm ${styles.dateRangeTex}`}>
                 <i>GPA: 3.76</i>

@@ -130,29 +130,17 @@ const FUNCTIONS_3D = {
   }
 };
 
-// Generate shape data
+const r3 = v => Math.round(v * 1000) / 1000;
+
 function generateShapeData() {
-  const step = 0.2;
+  const step = 0.5;
   const shapesData = {};
-  
+
   const shapeNames = [
     "sphere",
     "torus",
     "hyperbolicParaboloid",
-    "ripple",
-    "waveReflection",
-    "doubleCone",
-    "hyperboloidOneSheet",
-    "hyperboloidTwoSheets",
-    "paraboloid",
-    "ellipsoid",
-    "mexicanHat",
-    "standingWaves",
-    "helicoid",
-    "twistedTorus",
-    "eggCarton",
     "kleinBottle",
-    "tripleHelix",
     "flower"
   ];
   
@@ -165,7 +153,7 @@ function generateShapeData() {
         if (method === undefined) continue;
         const zPos = method(x, y, 0);
         for (const z_p of zPos) {
-          positions.push([x, z_p, y]);
+          positions.push([r3(x), r3(z_p), r3(y)]);
         }
       }
     }
@@ -196,7 +184,7 @@ console.log(`Generated ${shapeNames.length} shapes with ${totalPoints} points ea
 
 // Save to JSON file
 const outputPath = './shapePositions.json';
-fs.writeFileSync(outputPath, JSON.stringify(shapeData, null, 2));
+fs.writeFileSync(outputPath, JSON.stringify(shapeData));
 console.log(`Saved to ${outputPath}`);
 
 // Show file size

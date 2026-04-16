@@ -79,7 +79,7 @@ const Footer: NextPage<Props> = (props) => {
   return (
 
 
-    <div className={styles.realfooterContianer}>
+    <div className={styles.realfooterContainer}>
       {(authSense) ? (authen) ?
         <div style={{ marginTop: "50px" }}>
           <h5>Admin View</h5>
