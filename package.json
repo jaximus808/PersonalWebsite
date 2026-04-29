@@ -18,6 +18,7 @@
     "@vercel/speed-insights": "^1.0.12",
     "bcryptjs": "^3.0.3",
     "chatgpt": "^5.2.5",
+    "chess.js": "^1.4.0",
     "cookie": "^1.0.2",
     "cookie-cutter": "^0.2.0",
     "cookies-next": "^6.1.1",
