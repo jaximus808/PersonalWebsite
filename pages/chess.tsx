@@ -21,6 +21,7 @@ type Status =
   | { kind: "loading" }
   | { kind: "your-turn" }
   | { kind: "opponent-thinking" }
+  | { kind: "pick-opponent-move" }
   | { kind: "out-of-book"; bookMoves: ExplorerMove[] }
   | { kind: "wrong"; played: string; bookMoves: ExplorerMove[] }
   | { kind: "right"; san: string; bookMoves: ExplorerMove[] };
@@ -39,6 +40,7 @@ const ChessPracticePage: NextPage = () => {
   const [openingName, setOpeningName] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [boardSize, setBoardSize] = useState<number>(480);
+  const [autoOpponent, setAutoOpponent] = useState<boolean>(false);
 
   const fenRef = useRef(game.fen());
   fenRef.current = game.fen();
@@ -149,7 +151,13 @@ const ChessPracticePage: NextPage = () => {
         return;
       }
 
-      // Opponent's turn — fetch best reply for this new position.
+      // Opponent's turn. Either pick the most-played book reply automatically,
+      // or hand control to the user so they can pick which line to face.
+      if (!autoOpponent) {
+        setStatus({ kind: "pick-opponent-move" });
+        return;
+      }
+
       setStatus({ kind: "opponent-thinking" });
       try {
         const reply = await fetchExplorer(trial.fen(), database);
@@ -176,6 +184,23 @@ const ChessPracticePage: NextPage = () => {
 
     void useBook();
     return true;
+  }
+
+  // User explicitly picks the opponent's reply from the book candidates.
+  function playOpponentReply(san: string) {
+    if (status.kind !== "pick-opponent-move") return;
+    const after = new Chess(game.fen());
+    let m;
+    try {
+      m = after.move(san);
+    } catch {
+      return;
+    }
+    if (!m) return;
+    setGame(after);
+    setHistory(after.history());
+    setLastMove({ from: m.from as Square, to: m.to as Square });
+    setStatus({ kind: "your-turn" });
   }
 
   function undoOnce() {
@@ -275,7 +300,10 @@ const ChessPracticePage: NextPage = () => {
                   orientation={orientation}
                   onAttemptMove={handleAttemptMove}
                   lastMove={lastMove}
-                  disabled={status.kind === "opponent-thinking"}
+                  disabled={
+                    status.kind === "opponent-thinking" ||
+                    status.kind === "pick-opponent-move"
+                  }
                 />
                 <div className="mt-4 flex flex-wrap gap-2 justify-center">
                   <button
@@ -311,12 +339,21 @@ const ChessPracticePage: NextPage = () => {
                     <option value="masters">Masters DB (2200+)</option>
                     <option value="lichess">Lichess players DB</option>
                   </select>
+                  <label className="flex items-center gap-2 px-3 py-1.5 rounded bg-white/10 text-sm cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={autoOpponent}
+                      onChange={(e) => setAutoOpponent(e.target.checked)}
+                    />
+                    Auto-play opponent
+                  </label>
                 </div>
               </div>
 
               <SidePanel
                 opening={opening}
                 myTurn={myTurn}
+                onPickOpponent={playOpponentReply}
                 status={status}
                 error={error}
                 book={bookForCurrentPos}
@@ -393,6 +430,7 @@ function SidePanel({
   error,
   book,
   movePairs,
+  onPickOpponent,
 }: {
   opening: CuratedOpening;
   myTurn: boolean;
@@ -400,26 +438,55 @@ function SidePanel({
   error: string | null;
   book: ExplorerResponse | null;
   movePairs: { num: number; white?: string; black?: string }[];
+  onPickOpponent: (san: string) => void;
 }) {
+  const pickingOpponent = status.kind === "pick-opponent-move";
   return (
     <div className="flex flex-col gap-4">
-      <div className="rounded-lg border border-white/10 bg-white/5 p-4">
+      <div
+        className={`rounded-lg border p-4 ${
+          pickingOpponent
+            ? "border-amber-300/40 bg-amber-300/5"
+            : "border-white/10 bg-white/5"
+        }`}
+      >
         <h2 className="text-lg font-semibold mb-2">Status</h2>
         <StatusLine myTurn={myTurn} status={status} />
         {error && <p className="mt-2 text-sm text-red-300">{error}</p>}
       </div>
 
-      <div className="rounded-lg border border-white/10 bg-white/5 p-4">
-        <h2 className="text-lg font-semibold mb-2">Book moves here</h2>
+      <div
+        className={`rounded-lg border p-4 ${
+          pickingOpponent
+            ? "border-amber-300/40 bg-amber-300/5"
+            : "border-white/10 bg-white/5"
+        }`}
+      >
+        <h2 className="text-lg font-semibold mb-2">
+          {pickingOpponent
+            ? "Pick the opponent's reply"
+            : myTurn
+              ? "Book moves here"
+              : "Their book moves"}
+        </h2>
         {!book ? (
           <p className="text-sm text-white/60">Loading…</p>
         ) : book.moves.length === 0 ? (
           <p className="text-sm text-white/60">
-            No master games reach this position. You're past theory — play on
-            general principles.
+            No games reach this position. You're past theory — play on general
+            principles.
           </p>
         ) : (
-          <BookMovesList book={book} />
+          <BookMovesList
+            book={book}
+            onPick={pickingOpponent ? onPickOpponent : undefined}
+          />
+        )}
+        {pickingOpponent && (
+          <p className="mt-3 text-xs text-amber-200/70">
+            Click a candidate to face that line. Top rows are most popular at
+            the database's rating range.
+          </p>
         )}
       </div>
 
@@ -458,6 +525,12 @@ function StatusLine({ myTurn, status }: { myTurn: boolean; status: Status }) {
       return (
         <p className="text-sm text-amber-200">Opponent is replying with theory…</p>
       );
+    case "pick-opponent-move":
+      return (
+        <p className="text-sm text-amber-200">
+          Choose the opponent's reply from the list →
+        </p>
+      );
     case "your-turn":
       return (
         <p className="text-sm text-emerald-300">
@@ -488,11 +561,18 @@ function StatusLine({ myTurn, status }: { myTurn: boolean; status: Status }) {
   }
 }
 
-function BookMovesList({ book }: { book: ExplorerResponse }) {
+function BookMovesList({
+  book,
+  onPick,
+}: {
+  book: ExplorerResponse;
+  onPick?: (san: string) => void;
+}) {
   const total = book.white + book.draws + book.black;
   const sorted = [...book.moves].sort(
     (a, b) => b.white + b.draws + b.black - (a.white + a.draws + a.black)
   );
+  const Row = onPick ? "button" : "div";
   return (
     <div className="flex flex-col gap-1.5">
       {sorted.map((m) => {
@@ -502,9 +582,15 @@ function BookMovesList({ book }: { book: ExplorerResponse }) {
         const dPct = games > 0 ? Math.round((m.draws / games) * 100) : 0;
         const bPct = Math.max(0, 100 - wPct - dPct);
         return (
-          <div
+          <Row
             key={m.uci}
-            className="flex items-center gap-3 text-sm"
+            type={onPick ? "button" : undefined}
+            onClick={onPick ? () => onPick(m.san) : undefined}
+            className={`w-full flex items-center gap-3 text-sm text-left ${
+              onPick
+                ? "px-2 py-1 -mx-2 rounded hover:bg-amber-300/10 hover:ring-1 hover:ring-amber-300/40 cursor-pointer transition-colors"
+                : ""
+            }`}
             title={`${games.toLocaleString()} games`}
           >
             <span className="font-mono w-14 shrink-0">{m.san}</span>
@@ -525,7 +611,7 @@ function BookMovesList({ book }: { book: ExplorerResponse }) {
             <span className="w-12 text-right text-white/60 tabular-nums text-xs">
               {sharePct}%
             </span>
-          </div>
+          </Row>
         );
       })}
     </div>

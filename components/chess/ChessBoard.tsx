@@ -19,9 +19,23 @@ type Props = {
   disabled?: boolean;
 };
 
-const PIECE_GLYPH: Record<Color, Record<PieceSymbol, string>> = {
-  w: { p: "♙", r: "♖", n: "♘", b: "♗", q: "♕", k: "♔" },
-  b: { p: "♟", r: "♜", n: "♞", b: "♝", q: "♛", k: "♚" },
+const PIECE_FILE: Record<Color, Record<PieceSymbol, string>> = {
+  w: {
+    p: "/chess/pieces/wP.svg",
+    r: "/chess/pieces/wR.svg",
+    n: "/chess/pieces/wN.svg",
+    b: "/chess/pieces/wB.svg",
+    q: "/chess/pieces/wQ.svg",
+    k: "/chess/pieces/wK.svg",
+  },
+  b: {
+    p: "/chess/pieces/bP.svg",
+    r: "/chess/pieces/bR.svg",
+    n: "/chess/pieces/bN.svg",
+    b: "/chess/pieces/bB.svg",
+    q: "/chess/pieces/bQ.svg",
+    k: "/chess/pieces/bK.svg",
+  },
 };
 
 const FILES = ["a", "b", "c", "d", "e", "f", "g", "h"] as const;
@@ -200,19 +214,18 @@ function RankRow({
             aria-label={sq}
           >
             {piece && (
-              <span
-                className="leading-none"
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                alt={`${piece.color}${piece.type}`}
+                src={PIECE_FILE[piece.color][piece.type]}
+                draggable={false}
                 style={{
-                  fontSize: "calc(var(--sq) * 0.78)",
-                  textShadow:
-                    piece.color === "w"
-                      ? "0 0 1px #000, 0 0 2px rgba(0,0,0,0.6)"
-                      : "0 0 1px #fff, 0 0 1px rgba(255,255,255,0.4)",
-                  color: piece.color === "w" ? "#fff" : "#111",
+                  width: "calc(var(--sq) * 0.92)",
+                  height: "calc(var(--sq) * 0.92)",
+                  pointerEvents: "none",
+                  filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.35))",
                 }}
-              >
-                {PIECE_GLYPH[piece.color][piece.type]}
-              </span>
+              />
             )}
             {isLegal && !piece && (
               <span className="absolute h-1/4 w-1/4 rounded-full bg-black/30" />
