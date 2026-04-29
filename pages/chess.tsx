@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Chess, type Square } from "chess.js";
 
 import Header from "../components/header";
@@ -31,10 +31,13 @@ type Database_ = Database;
 const ChessPracticePage: NextPage = () => {
   const [opening, setOpening] = useState<CuratedOpening | null>(null);
   const [database, setDatabase] = useState<Database_>("masters");
-  const [game, setGame] = useState<Chess>(() => new Chess());
   const [orientation, setOrientation] = useState<"white" | "black">("white");
-  const [history, setHistory] = useState<string[]>([]);
-  const [lastMove, setLastMove] = useState<{ from: Square; to: Square } | null>(null);
+  // Single linear "mainline" of SAN moves played in this practice session.
+  // cursor = number of mainline moves applied to reach the displayed position.
+  // Playing a new move while cursor < mainline.length truncates the future
+  // moves and replaces them — chess.com style branching.
+  const [mainline, setMainline] = useState<string[]>([]);
+  const [cursor, setCursor] = useState<number>(0);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const [bookForCurrentPos, setBookForCurrentPos] = useState<ExplorerResponse | null>(null);
   const [openingName, setOpeningName] = useState<string | null>(null);
@@ -42,8 +45,26 @@ const ChessPracticePage: NextPage = () => {
   const [boardSize, setBoardSize] = useState<number>(480);
   const [autoOpponent, setAutoOpponent] = useState<boolean>(false);
 
-  const fenRef = useRef(game.fen());
-  fenRef.current = game.fen();
+  // Derive the chess.js game and last-move highlight from (mainline, cursor).
+  const { game, lastMove } = useMemo(() => {
+    const g = new Chess();
+    let last: { from: Square; to: Square } | null = null;
+    for (let i = 0; i < cursor; i++) {
+      try {
+        const m = g.move(mainline[i]);
+        if (i === cursor - 1) {
+          last = { from: m.from as Square, to: m.to as Square };
+        }
+      } catch {
+        break;
+      }
+    }
+    return { game: g, lastMove: last };
+  }, [mainline, cursor]);
+
+  const setupLen = opening?.setupMoves.length ?? 0;
+  const navLocked =
+    status.kind === "opponent-thinking" || status.kind === "loading";
 
   // Responsive board sizing.
   useEffect(() => {
@@ -79,15 +100,10 @@ const ChessPracticePage: NextPage = () => {
   }, [game, opening, database]);
 
   function startOpening(o: CuratedOpening) {
-    const g = new Chess();
-    for (const san of o.setupMoves) {
-      g.move(san);
-    }
     setOpening(o);
-    setGame(g);
-    setHistory(g.history());
     setOrientation(o.color);
-    setLastMove(null);
+    setMainline([...o.setupMoves]);
+    setCursor(o.setupMoves.length);
     setOpeningName(null);
     setStatus({ kind: "your-turn" });
   }
@@ -97,12 +113,22 @@ const ChessPracticePage: NextPage = () => {
     startOpening(opening);
   }
 
+  // Append a move at the current cursor, truncating any "future" mainline moves.
+  // Returns the new mainline + new cursor index.
+  function commitMove(san: string): { newMainline: string[]; newCursor: number } {
+    const newMainline = [...mainline.slice(0, cursor), san];
+    const newCursor = newMainline.length;
+    setMainline(newMainline);
+    setCursor(newCursor);
+    return { newMainline, newCursor };
+  }
+
   function handleAttemptMove(req: { from: Square; to: Square; promotion?: string }) {
     if (!opening) return false;
-    if (status.kind === "opponent-thinking" || status.kind === "loading") return false;
+    if (navLocked) return false;
+    if (status.kind === "pick-opponent-move") return false;
     if (game.turn() !== (orientation === "white" ? "w" : "b")) return false;
 
-    // Snapshot pre-move FEN so we can ask the explorer about the position the user faced.
     const preFen = game.fen();
     const trial = new Chess(preFen);
     let played;
@@ -117,9 +143,13 @@ const ChessPracticePage: NextPage = () => {
     }
     if (!played) return false;
 
-    // Use existing explorer data if it matches the pre-move FEN, else fetch.
-    const useBook = async () => {
+    // Commit immediately so the board updates (truncating any forward-history).
+    commitMove(played.san);
+
+    void (async () => {
       let book = bookForCurrentPos;
+      // bookForCurrentPos refers to the pre-move position only if the cursor
+      // was at the end of mainline before this move. Always refetch if unsure.
       if (!book) {
         try {
           book = await fetchExplorer(preFen, database);
@@ -130,10 +160,6 @@ const ChessPracticePage: NextPage = () => {
       }
       const bookSans = new Set(book.moves.map((m) => m.san));
       const isBook = bookSans.has(played.san);
-
-      setGame(trial);
-      setHistory(trial.history());
-      setLastMove({ from: req.from, to: req.to });
 
       if (!isBook) {
         if (book.moves.length === 0) {
@@ -146,13 +172,10 @@ const ChessPracticePage: NextPage = () => {
 
       setStatus({ kind: "right", san: played.san, bookMoves: book.moves });
 
-      // If the practice color is to move next (game stays on us), keep going.
       if (trial.turn() === (orientation === "white" ? "w" : "b")) {
         return;
       }
 
-      // Opponent's turn. Either pick the most-played book reply automatically,
-      // or hand control to the user so they can pick which line to face.
       if (!autoOpponent) {
         setStatus({ kind: "pick-opponent-move" });
         return;
@@ -172,21 +195,23 @@ const ChessPracticePage: NextPage = () => {
           setStatus({ kind: "out-of-book", bookMoves: [] });
           return;
         }
-        setGame(after);
-        setHistory(after.history());
-        setLastMove({ from: m.from as Square, to: m.to as Square });
+        setMainline((prev) => {
+          // Append opponent reply only if the user hasn't navigated/branched away
+          // since we committed our move.
+          if (prev.length === 0 || prev[prev.length - 1] !== played.san) return prev;
+          const next = [...prev, m.san];
+          setCursor(next.length);
+          return next;
+        });
         setStatus({ kind: "your-turn" });
       } catch {
         setError("Couldn't fetch opponent's book reply. You can still keep playing.");
         setStatus({ kind: "your-turn" });
       }
-    };
-
-    void useBook();
+    })();
     return true;
   }
 
-  // User explicitly picks the opponent's reply from the book candidates.
   function playOpponentReply(san: string) {
     if (status.kind !== "pick-opponent-move") return;
     const after = new Chess(game.fen());
@@ -197,47 +222,74 @@ const ChessPracticePage: NextPage = () => {
       return;
     }
     if (!m) return;
-    setGame(after);
-    setHistory(after.history());
-    setLastMove({ from: m.from as Square, to: m.to as Square });
+    commitMove(m.san);
     setStatus({ kind: "your-turn" });
   }
 
-  function undoOnce() {
-    // Undo until it's the practitioner's turn again (so we revert both the opponent's reply and our own move).
-    const g = new Chess();
-    const moves = game.history();
-    // Pop until the player to move equals our color *and* we haven't dropped below the setup.
-    const setupLen = opening?.setupMoves.length ?? 0;
-    let target = moves.length;
-    while (target > setupLen) {
-      target -= 1;
-      // Replay moves[0..target] and check whose turn it is.
-      const test = new Chess();
-      for (let i = 0; i < target; i++) test.move(moves[i]);
-      if (test.turn() === (orientation === "white" ? "w" : "b")) {
-        for (let i = 0; i < target; i++) g.move(moves[i]);
-        setGame(g);
-        setHistory(g.history());
-        setLastMove(null);
-        setStatus({ kind: "your-turn" });
-        return;
-      }
+  // chess.com-style navigation through the mainline.
+  function jumpTo(idx: number) {
+    if (navLocked) return;
+    const clamped = Math.max(0, Math.min(mainline.length, idx));
+    setCursor(clamped);
+    if (status.kind === "pick-opponent-move") {
+      setStatus({ kind: "your-turn" });
+    } else if (status.kind === "wrong" || status.kind === "right") {
+      setStatus({ kind: "your-turn" });
     }
-    // Could not undo further; reset to setup.
-    if (opening) startOpening(opening);
   }
+  function goBack() { jumpTo(cursor - 1); }
+  function goForward() { jumpTo(cursor + 1); }
+  function goToStart() { jumpTo(0); }
+  function goToEnd() { jumpTo(mainline.length); }
+
+  // Keyboard arrows: ←/→ to navigate, Home/End to jump to ends.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (!opening) return;
+      const tag = (e.target as HTMLElement | null)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        goBack();
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        goForward();
+      } else if (e.key === "Home") {
+        e.preventDefault();
+        goToStart();
+      } else if (e.key === "End") {
+        e.preventDefault();
+        goToEnd();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [opening, cursor, mainline.length, navLocked, status.kind]);
 
   const sideToMove = game.turn() === "w" ? "white" : "black";
   const myTurn = sideToMove === orientation;
 
-  const movePairs = useMemo(() => {
-    const pairs: { num: number; white?: string; black?: string }[] = [];
-    for (let i = 0; i < history.length; i += 2) {
-      pairs.push({ num: i / 2 + 1, white: history[i], black: history[i + 1] });
+  // Build (move-number, white-half-move, black-half-move) rows from the mainline.
+  // Each half-move carries its mainline index so a click can jump to it.
+  type PlyCell = { san: string; index: number };
+  type PairRow = { num: number; white?: PlyCell; black?: PlyCell };
+  const movePairs = useMemo<PairRow[]>(() => {
+    const pairs: PairRow[] = [];
+    // chess.js move numbers start at 1 from the standard starting position.
+    // Setup moves are part of the mainline so the row numbering still works.
+    for (let i = 0; i < mainline.length; i += 2) {
+      pairs.push({
+        num: i / 2 + 1,
+        white: { san: mainline[i], index: i + 1 },
+        black:
+          i + 1 < mainline.length
+            ? { san: mainline[i + 1], index: i + 2 }
+            : undefined,
+      });
     }
     return pairs;
-  }, [history]);
+  }, [mainline]);
 
   return (
     <>
@@ -305,13 +357,40 @@ const ChessPracticePage: NextPage = () => {
                     status.kind === "pick-opponent-move"
                   }
                 />
-                <div className="mt-4 flex flex-wrap gap-2 justify-center">
-                  <button
-                    onClick={undoOnce}
-                    className="px-3 py-1.5 rounded bg-white/10 hover:bg-white/20 text-sm"
+                <div className="mt-4 flex items-center gap-1 justify-center">
+                  <NavButton
+                    onClick={goToStart}
+                    disabled={navLocked || cursor === 0}
+                    label="Jump to start (Home)"
                   >
-                    Undo
-                  </button>
+                    ⏮
+                  </NavButton>
+                  <NavButton
+                    onClick={goBack}
+                    disabled={navLocked || cursor === 0}
+                    label="Back one move (←)"
+                  >
+                    ◀
+                  </NavButton>
+                  <NavButton
+                    onClick={goForward}
+                    disabled={navLocked || cursor >= mainline.length}
+                    label="Forward one move (→)"
+                  >
+                    ▶
+                  </NavButton>
+                  <NavButton
+                    onClick={goToEnd}
+                    disabled={navLocked || cursor >= mainline.length}
+                    label="Jump to end (End)"
+                  >
+                    ⏭
+                  </NavButton>
+                  <span className="ml-3 text-xs text-white/50 tabular-nums">
+                    {cursor} / {mainline.length}
+                  </span>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2 justify-center">
                   <button
                     onClick={resetOpening}
                     className="px-3 py-1.5 rounded bg-white/10 hover:bg-white/20 text-sm"
@@ -322,9 +401,8 @@ const ChessPracticePage: NextPage = () => {
                     onClick={() => {
                       setOpening(null);
                       setStatus({ kind: "idle" });
-                      setGame(new Chess());
-                      setHistory([]);
-                      setLastMove(null);
+                      setMainline([]);
+                      setCursor(0);
                       setOpeningName(null);
                     }}
                     className="px-3 py-1.5 rounded bg-white/10 hover:bg-white/20 text-sm"
@@ -358,6 +436,8 @@ const ChessPracticePage: NextPage = () => {
                 error={error}
                 book={bookForCurrentPos}
                 movePairs={movePairs}
+                cursor={cursor}
+                onJump={jumpTo}
               />
             </div>
           )}
@@ -423,6 +503,60 @@ function OpeningPicker({
   );
 }
 
+function PlyButton({
+  ply,
+  cursor,
+  onJump,
+}: {
+  ply: { san: string; index: number } | undefined;
+  cursor: number;
+  onJump: (idx: number) => void;
+}) {
+  if (!ply) return <span />;
+  const isCurrent = cursor === ply.index;
+  return (
+    <button
+      type="button"
+      onClick={() => onJump(ply.index)}
+      className={`text-left px-1.5 py-0.5 rounded ${
+        isCurrent
+          ? "bg-blue-500/30 text-white ring-1 ring-blue-300"
+          : "hover:bg-white/10 text-white/90"
+      }`}
+    >
+      {ply.san}
+    </button>
+  );
+}
+
+function NavButton({
+  onClick,
+  disabled,
+  label,
+  children,
+}: {
+  onClick: () => void;
+  disabled?: boolean;
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      title={label}
+      aria-label={label}
+      className="px-3 py-1.5 rounded bg-white/10 hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed text-sm leading-none"
+    >
+      {children}
+    </button>
+  );
+}
+
+type PlyCell = { san: string; index: number };
+type PairRow = { num: number; white?: PlyCell; black?: PlyCell };
+
 function SidePanel({
   opening,
   myTurn,
@@ -431,14 +565,18 @@ function SidePanel({
   book,
   movePairs,
   onPickOpponent,
+  cursor,
+  onJump,
 }: {
   opening: CuratedOpening;
   myTurn: boolean;
   status: Status;
   error: string | null;
   book: ExplorerResponse | null;
-  movePairs: { num: number; white?: string; black?: string }[];
+  movePairs: PairRow[];
   onPickOpponent: (san: string) => void;
+  cursor: number;
+  onJump: (idx: number) => void;
 }) {
   const pickingOpponent = status.kind === "pick-opponent-move";
   return (
@@ -491,16 +629,24 @@ function SidePanel({
       </div>
 
       <div className="rounded-lg border border-white/10 bg-white/5 p-4">
-        <h2 className="text-lg font-semibold mb-2">Game moves</h2>
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-lg font-semibold">Game moves</h2>
+          <button
+            onClick={() => onJump(0)}
+            className="text-xs text-white/50 hover:text-white underline"
+          >
+            jump to start
+          </button>
+        </div>
         {movePairs.length === 0 ? (
           <p className="text-sm text-white/60">No moves yet.</p>
         ) : (
           <div className="grid grid-cols-[auto_1fr_1fr] gap-x-3 gap-y-1 text-sm font-mono">
             {movePairs.map((p) => (
               <div key={p.num} className="contents">
-                <span className="text-white/50">{p.num}.</span>
-                <span>{p.white ?? ""}</span>
-                <span>{p.black ?? ""}</span>
+                <span className="text-white/50 self-center">{p.num}.</span>
+                <PlyButton ply={p.white} cursor={cursor} onJump={onJump} />
+                <PlyButton ply={p.black} cursor={cursor} onJump={onJump} />
               </div>
             ))}
           </div>
