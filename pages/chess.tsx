@@ -70,7 +70,8 @@ const ChessPracticePage: NextPage = () => {
       })
       .catch((e: unknown) => {
         if ((e as { name?: string })?.name === "AbortError") return;
-        setError("Couldn't reach Lichess. Check your connection and try again.");
+        const msg = e instanceof Error ? e.message : String(e);
+        setError(`Lichess request failed — ${msg}`);
       });
     return () => ctrl.abort();
   }, [game, opening, database]);

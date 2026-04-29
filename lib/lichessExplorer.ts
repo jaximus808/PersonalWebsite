@@ -43,7 +43,17 @@ export async function fetchExplorer(
   const url = `${BASES[db]}?${params.toString()}`;
   const res = await fetch(url, { signal });
   if (!res.ok) {
-    throw new Error(`Lichess explorer error ${res.status}`);
+    let body = "";
+    try {
+      body = (await res.text()).slice(0, 200);
+    } catch {
+      // ignore
+    }
+    const err = new Error(
+      `Lichess explorer ${res.status} ${res.statusText}${body ? `: ${body}` : ""} (url: ${url})`
+    );
+    (err as Error & { status?: number }).status = res.status;
+    throw err;
   }
   return (await res.json()) as ExplorerResponse;
 }
