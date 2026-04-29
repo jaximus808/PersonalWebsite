@@ -47,13 +47,17 @@ export default async function handler(
     return;
   }
 
+  const headers: Record<string, string> = {
+    "User-Agent": "jaxon-poentis-personal-site/1.0 (chess opening trainer)",
+    Accept: "application/json",
+  };
+  const token = process.env.LICHESS_TOKEN;
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
   try {
-    const r = await fetch(upstream.toString(), {
-      headers: {
-        "User-Agent": "jaxon-poentis-personal-site/1.0 (chess opening trainer)",
-        Accept: "application/json",
-      },
-    });
+    const r = await fetch(upstream.toString(), { headers });
     const text = await r.text();
     res.status(r.status);
     // Cache identical positions briefly on the edge to be polite to lichess.
