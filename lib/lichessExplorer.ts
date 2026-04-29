@@ -21,17 +21,17 @@ export type ExplorerResponse = {
 
 export type Database = "masters" | "lichess";
 
-const BASES: Record<Database, string> = {
-  masters: "https://explorer.lichess.ovh/masters",
-  lichess: "https://explorer.lichess.ovh/lichess",
-};
-
+// Calls go through our server-side proxy (/api/lichess-explorer) so that:
+// 1. Lichess sees a proper User-Agent (browsers can't set it)
+// 2. End-user network proxies/VPNs that 401 lichess.ovh are bypassed
+// 3. We can edge-cache identical positions
 export async function fetchExplorer(
   fen: string,
   db: Database = "masters",
   signal?: AbortSignal
 ): Promise<ExplorerResponse> {
   const params = new URLSearchParams({
+    db,
     fen,
     moves: "12",
     topGames: "0",
@@ -40,7 +40,7 @@ export async function fetchExplorer(
     params.set("speeds", "blitz,rapid,classical");
     params.set("ratings", "1800,2000,2200,2500");
   }
-  const url = `${BASES[db]}?${params.toString()}`;
+  const url = `/api/lichess-explorer?${params.toString()}`;
   const res = await fetch(url, { signal });
   if (!res.ok) {
     let body = "";
