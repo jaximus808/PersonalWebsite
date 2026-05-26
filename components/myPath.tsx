@@ -27,6 +27,41 @@ export default function MyPath() {
           >
             <div className="flex items-center">
               <div
+                className={`${styles.journeyImage} h-[9rem] w-[9rem] md:h-[8rem] md:w-[8rem] `}
+              >
+                <Image
+                  alt="front picture"
+                  src="/capital_one_logo.jpg"
+                  fill
+                  style={{ borderRadius: "0.5rem" }}
+                />
+              </div>
+            </div>
+            <div className="col-span-2 mt-4 md:mt-2 ">
+              <h1 className={"text-2xl"}>
+                <strong>Capital One</strong>
+              </h1>
+              <h1 className={`text-lg ${styles.titleTex}`}>
+                <i>Incoming Software Engineering Intern</i>
+              </h1>
+              <h1 className={`text-sm ${styles.dateRangeTex}`}>
+                <i>06/2026 - 08/2026</i>
+              </h1>
+
+              <p className="mt-2">
+                {" "}
+                Joining Capital One's Cloud team as a Software Engineering
+                Intern.
+              </p>
+            </div>
+          </div>
+        </PopInBlock>
+        <PopInBlock>
+          <div
+            className={`${styles.fadedBg} grid grid-cols-1 md:grid-cols-3 p-4 rounded-xl`}
+          >
+            <div className="flex items-center">
+              <div
                 className={`${styles.journeyImage} h-[9rem] w-[7rem] md:h-[8rem] md:w-[6rem] `}
               >
                 <Image
@@ -48,13 +83,12 @@ export default function MyPath() {
                 <i>Fremont, CA</i>
               </h1>
               <h1 className={`text-sm ${styles.dateRangeTex}`}>
-                <i>01/2026</i>
+                <i>01/2026 - 05/2026</i>
               </h1>
 
               <p className="mt-2">
                 {" "}
-                Joining Tesla's Digital Experience Org as a backend Software
-                Engineering Intern.
+                Energy Backend Infra and AI Agents
               </p>
             </div>
           </div>
