@@ -88,7 +88,7 @@ export default function MyPath() {
 
               <p className="mt-2">
                 {" "}
-                Energy Backend Infra and AI Agents
+                Distributed Systems, Energy Backend Infra, and AI Agents
               </p>
             </div>
           </div>
