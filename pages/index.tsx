@@ -20,6 +20,7 @@ import Youtube from "react-youtube";
 import GradientBG from "../components/gradientbg";
 import MyPath from "../components/myPath";
 import TechStack from "../components/techStack";
+import Typewriter from "../components/Typewriter";
 
 function YoutubeVideo(props: any) {
   const opts = {
@@ -172,8 +173,8 @@ const Index = (props: props) => {
 
         <div className={`${styles.mainTitleName} ${styles.animateFadeIn}`}>
           <div className={styles.centerRel}>
-            <div className="text-center md:text-[6vw] text-[80px] px-2 font-thin">
-              Jaxon Poentis
+            <div className="text-center px-2 font-cormorant font-light leading-[1.02] tracking-[0.005em] md:text-[7vw] text-[56px] whitespace-nowrap">
+              <Typewriter text="Hi, I’m Jaxon" />
             </div>
             <ScrollDown />
           </div>

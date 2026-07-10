@@ -1,7 +1,7 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import localFont from 'next/font/local'
-import { Montserrat } from 'next/font/google'
+import { Montserrat, Cormorant } from 'next/font/google'
 import Head from 'next/head'
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -42,10 +42,20 @@ const montserrat = Montserrat({
   display: 'swap'
 })
 
+// Elegant, low-key display serif for the "Jaxon Poentis" wordmark and major
+// section headings. Light weight (300) is the primary voice; see CLAUDE.md
+// "Design Language" for how this is meant to be used.
+const cormorant = Cormorant({
+  subsets: ['latin'],
+  weight: ['300','400','500'],
+  variable: '--font-cormorant',
+  display: 'swap'
+})
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     // Include the montserrat variable so you can use var(--font-montserrat) in CSS
-    <main className={`${titleFont.variable} ${textFont.variable} ${montserrat.variable}`}>
+    <main className={`${titleFont.variable} ${textFont.variable} ${montserrat.variable} ${cormorant.variable}`}>
       <Component {...pageProps} />
       <Analytics />
       <SpeedInsights />

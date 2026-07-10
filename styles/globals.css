@@ -48,7 +48,29 @@ ul {
 
 .fontP
 {
-  
+
+}
+
+/* Typewriter caret — see components/Typewriter.tsx */
+.typewriter-caret {
+  display: inline-block;
+  margin-left: 0.08em;
+  font-weight: 200;
+  color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-0.02em);
+}
+.typewriter-caret--blink {
+  animation: caretBlink 1.05s steps(1) infinite;
+}
+@keyframes caretBlink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    opacity: 0;
+  }
 }
 
 /* @font-face 

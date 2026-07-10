@@ -10,6 +10,8 @@ module.exports = {
       fontFamily: {
         tourner: ["var(--font-tourner)"],
         caviar: ["var(--font-caviarDreams)"],
+        cormorant: ["var(--font-cormorant)", "Georgia", "serif"],
+        montserrat: ["var(--font-montserrat)", "system-ui", "sans-serif"],
       },
       backgroundSize: {
         "size-200": "200% 200%",
