@@ -109,8 +109,7 @@ function keywords(s: string): Set<string> {
 
 function clashes(a: string, b: string): boolean {
   const wb = keywords(b);
-  for (const w of keywords(a)) if (wb.has(w)) return true;
-  return false;
+  return Array.from(keywords(a)).some((w) => wb.has(w));
 }
 
 /** Pick from `arr`, preferring options that don't share a keyword with `avoid`. */
