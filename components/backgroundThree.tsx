@@ -1,15 +1,9 @@
 // "use client"
-import dynamic from 'next/dynamic';
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import css from "../styles/Home.module.css"
-import Router from 'next/router'
 import * as THREE from "three"
 import React, { useState, useEffect, useRef, useMemo, Suspense } from 'react'
 import shapePositions from './shapePositions.json'
-
-function Radians(degrees: number) {
-  return degrees * Math.PI / 180
-}
 
 // Low-poly on purpose: these render as tiny dots, so high tessellation was
 // pure waste. 8x6 keeps them round while cutting ~1,400 tris/sphere down to
@@ -18,137 +12,158 @@ const sphere = new THREE.SphereGeometry(0.1, 8, 6)
 
 const white = new THREE.MeshLambertMaterial({ color: "white" })
 
+type ShapeMap = { [key: string]: number[][] }
 
-function System(props: any): JSX.Element {
+function System({ isMobile, reducedMotion }: { isMobile: boolean; reducedMotion: boolean }): JSX.Element {
+  const camera = useThree((state) => state.camera)
 
-  //MAKE THIS FADE IN ON LOAD
-
-  let scrolPrev = 0;
-  const camera = useThree(state => state.camera)
-
-
-  let yDist = 20
-  let Zdist = 100
-  let xDist = 100
-  const pos: any = useRef([0, 25, 100]);
+  const Zdist = 100
+  const xDist = 100
   const rafRef = useRef<number>()
   const angle = useRef(0)
-  const isMobile = useRef(false)
-  const rotateCamera = () => {
-    let xPos = xDist * Math.sin(angle.current)
-    let zPos = Zdist * Math.cos(angle.current)
+  const scrollPrev = useRef(0)
 
-    camera.position.setZ(zPos);
-    camera.position.setX(xPos);
-    camera.lookAt(0, 0, 0);
+  const rotateCamera = () => {
+    const xPos = xDist * Math.sin(angle.current)
+    const zPos = Zdist * Math.cos(angle.current)
+    camera.position.setZ(zPos)
+    camera.position.setX(xPos)
+    camera.lookAt(0, 0, 0)
   }
 
+  // Scroll nudges the spin on desktop. We only mutate the shared angle here and
+  // let useFrame apply it, so this never fights the render loop.
   const handleScroll = () => {
-    if (isMobile.current || rafRef.current) return
-   
+    if (rafRef.current) return
     rafRef.current = requestAnimationFrame(() => {
-        const y = window.scrollY;
-        angle.current = angle.current + 0.01 * (y - scrolPrev);
-        
-        angle.current = angle.current % (2 * Math.PI);
-        if (angle.current < 0) angle.current += 2 * Math.PI;
-
-        let xPos = xDist * Math.sin(angle.current)
-        let zPos = Zdist * Math.cos(angle.current)
-
-        camera.position.setZ(zPos);
-        camera.position.setX(xPos);
-        camera.lookAt(0, 0, 0);
-        
-        scrolPrev = y;
-        rafRef.current = undefined
-      })
+      const y = window.scrollY
+      angle.current = (angle.current + 0.01 * (y - scrollPrev.current)) % (2 * Math.PI)
+      if (angle.current < 0) angle.current += 2 * Math.PI
+      scrollPrev.current = y
+      rafRef.current = undefined
+    })
   }
 
   useEffect(() => {
-    isMobile.current = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
-      || window.innerWidth <= 768;
-    camera.lookAt(0, 0, 0);
-    if (!isMobile.current) {
-      window.addEventListener("scroll", handleScroll, { passive: true });
-    }  
-    return () => {
-      if (!isMobile.current) {
-        window.removeEventListener("scroll", handleScroll);
-      }
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current)
-      }
+    camera.lookAt(0, 0, 0)
+    // Scroll-driven spin is a desktop-only flourish; on touch it fought with
+    // native scrolling and just added jank, so mobile keeps the gentle auto-spin.
+    if (!isMobile && !reducedMotion) {
+      scrollPrev.current = window.scrollY
+      window.addEventListener("scroll", handleScroll, { passive: true })
     }
-  }, []);
-  const allShapesPositions = useMemo(() => shapePositions as { [key: string]: number[][] }, [])
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMobile, reducedMotion])
 
+  const allShapesPositions = useMemo(() => shapePositions as ShapeMap, [])
 
-  return (OptimizedStars({ allShapesPositions, angle, rotateCamera }))
+  return (
+    <OptimizedStars
+      allShapesPositions={allShapesPositions}
+      angle={angle}
+      rotateCamera={rotateCamera}
+      isMobile={isMobile}
+      reducedMotion={reducedMotion}
+    />
+  )
 }
 
-function OptimizedStars({ allShapesPositions, angle, rotateCamera }: {  allShapesPositions: { [key: string]: number[][] }, angle: React.MutableRefObject<number>, rotateCamera: () => void }) {
+function OptimizedStars({
+  allShapesPositions,
+  angle,
+  rotateCamera,
+  isMobile,
+  reducedMotion,
+}: {
+  allShapesPositions: ShapeMap
+  angle: React.MutableRefObject<number>
+  rotateCamera: () => void
+  isMobile: boolean
+  reducedMotion: boolean
+}) {
   const meshRef = useRef<THREE.InstancedMesh>(null!)
   const tempObject = useMemo(() => new THREE.Object3D(), [])
-  
+
+  // On phones the full 10,800-instance cloud is what causes the periodic
+  // hitching: every 4s a shape change rebuilds and re-uploads that many
+  // matrices on the main thread. Halving the cloud keeps the silhouette
+  // readable while roughly halving the per-morph CPU + GPU-upload cost.
+  const shapes = useMemo(() => {
+    if (!isMobile) return allShapesPositions
+    const out: ShapeMap = {}
+    for (const name of Object.keys(allShapesPositions)) {
+      const arr = allShapesPositions[name]
+      const sampled: number[][] = []
+      for (let i = 0; i < arr.length; i += 2) sampled.push(arr[i])
+      out[name] = sampled
+    }
+    return out
+  }, [allShapesPositions, isMobile])
+
+  const shapeNames = useMemo(() => Object.keys(shapes), [shapes])
+  const totalPositions = shapes[shapeNames[0]].length
+
   const currentShapeRef = useRef(-1) // Start at -1 to indicate initial empty state
   const startPositionsRef = useRef<number[][]>([])
   const targetPositionsRef = useRef<number[][]>([])
   const lerpProgressRef = useRef(0)
   const lastTransitionRef = useRef(0)
   const settledRef = useRef(false) // true once a shape has finished morphing
-  
-  const shapeNames = Object.keys(allShapesPositions)
-  const totalPositions = allShapesPositions[shapeNames[0]].length
-  
+
   useEffect(() => {
-    // Create empty positions (all particles at origin [0, 0, 0])
-    const emptyPositions = Array(totalPositions).fill([0, 0, 0])
-    
-    // Initialize with empty shape transitioning to first shape
-    startPositionsRef.current = emptyPositions
-    targetPositionsRef.current = allShapesPositions[shapeNames[0]]
-  }, [])
-  
+    // Start with every particle at the origin, morphing out to the first shape.
+    startPositionsRef.current = Array(totalPositions).fill([0, 0, 0])
+    targetPositionsRef.current = shapes[shapeNames[0]]
+    currentShapeRef.current = -1
+    lerpProgressRef.current = 0
+    lastTransitionRef.current = 0
+    settledRef.current = false
+  }, [shapes, shapeNames, totalPositions])
+
   useFrame((state) => {
-    if (!meshRef.current && targetPositionsRef.current.length === 0) return
-    
+    if (!meshRef.current || targetPositionsRef.current.length === 0) return
+
     const elapsed = state.clock.elapsedTime
-    angle.current += 0.01
-    rotateCamera()
-    
-    // Check if 4 seconds have passed (but wait for initial transition to complete first)
-    if (currentShapeRef.current >= 0 && elapsed - lastTransitionRef.current >= 4) {
-      // Start new transition
+
+    // The signature slow camera drift. Reduced-motion visitors get a still frame.
+    if (!reducedMotion) {
+      angle.current += 0.01
+      rotateCamera()
+    }
+
+    // Cycle shapes every 4s — but never for reduced motion (stays on shape 0).
+    if (!reducedMotion && currentShapeRef.current >= 0 && elapsed - lastTransitionRef.current >= 4) {
       lastTransitionRef.current = elapsed
       lerpProgressRef.current = 0
-      
-      // Move to next shape
+
       currentShapeRef.current = (currentShapeRef.current + 1) % shapeNames.length
       const nextShapeIndex = (currentShapeRef.current + 1) % shapeNames.length
-      
+
       startPositionsRef.current = targetPositionsRef.current
-      targetPositionsRef.current = allShapesPositions[shapeNames[nextShapeIndex]]
+      targetPositionsRef.current = shapes[shapeNames[nextShapeIndex]]
     } else if (currentShapeRef.current === -1 && elapsed >= 0.5) {
-      // After 0.5 seconds, mark initial transition as complete and start normal cycle
+      // After the initial empty -> first-shape morph completes, begin the cycle.
       if (lerpProgressRef.current >= 1) {
         currentShapeRef.current = 0
         lastTransitionRef.current = elapsed
         lerpProgressRef.current = 0
-        
+
         startPositionsRef.current = targetPositionsRef.current
-        targetPositionsRef.current = allShapesPositions[shapeNames[1]]
+        targetPositionsRef.current = shapes[shapeNames[reducedMotion ? 0 : 1]]
       }
     }
-    
+
     // Update lerp progress (complete transition in 2 seconds)
     lerpProgressRef.current = Math.min(1, (elapsed - lastTransitionRef.current) / 2)
 
-    // Only the ~2s morph between shapes needs the 10,800-instance matrix
-    // rebuild. Once a shape has settled (progress === 1) the positions are
-    // static, so we apply one final frame and then skip the loop entirely
-    // until the next transition — the camera still rotates, but we stop
-    // burning the CPU recomposing every matrix on idle frames.
+    // Only the morph between shapes needs the full matrix rebuild. Once a shape
+    // has settled (progress === 1) the positions are static, so we apply one
+    // final frame and then skip the loop until the next transition — the camera
+    // still rotates, but we stop recomposing every matrix on idle frames.
     if (lerpProgressRef.current < 1) {
       settledRef.current = false
     } else if (settledRef.current) {
@@ -158,9 +173,10 @@ function OptimizedStars({ allShapesPositions, angle, rotateCamera }: {  allShape
     }
 
     // Smooth easing function
-    const eased = lerpProgressRef.current < 0.5
-      ? 2 * lerpProgressRef.current * lerpProgressRef.current
-      : 1 - Math.pow(-2 * lerpProgressRef.current + 2, 2) / 2
+    const eased =
+      lerpProgressRef.current < 0.5
+        ? 2 * lerpProgressRef.current * lerpProgressRef.current
+        : 1 - Math.pow(-2 * lerpProgressRef.current + 2, 2) / 2
 
     // Lerp all positions
     for (let i = 0; i < totalPositions; i++) {
@@ -182,39 +198,48 @@ function OptimizedStars({ allShapesPositions, angle, rotateCamera }: {  allShape
     meshRef.current.instanceMatrix.needsUpdate = true
   })
 
-  return (
-    <instancedMesh ref={meshRef} args={[sphere, white, totalPositions]}>
-      <primitive object={sphere} />
-      <primitive object={white} attach="material" />
-    </instancedMesh>
-  )
+  return <instancedMesh key={totalPositions} ref={meshRef} args={[sphere, white, totalPositions]} />
 }
 
 export default function Background() {
-  // The canvas is fixed and full-screen, so it keeps rendering even when you've
-  // scrolled far past it to read content. Freeze the render loop once the hero
-  // region is well out of view (kept live for the first ~2 viewports so the
-  // hero + about-me stage-blend still animate), and resume on scroll back up.
-  // A frozen frame costs zero GPU — the single biggest win for heat while reading.
+  // Device profile drives both the WebGL context options (which are fixed at
+  // Canvas creation) and the per-frame workload, so resolve it before we mount
+  // the Canvas. Defaults are SSR-safe (desktop, motion on) and get corrected on
+  // mount, which is also why the Canvas is gated behind `mounted`.
+  const [env, setEnv] = useState({ mounted: false, isMobile: false, reducedMotion: false })
+
+  useEffect(() => {
+    const isMobile =
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+      window.innerWidth <= 768
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    setEnv({ mounted: true, isMobile, reducedMotion })
+  }, [])
+
+  // The canvas is position:fixed and always sits behind the (translucent)
+  // content — it never actually scrolls off-screen. The old "freeze once you
+  // scroll past 2 viewports" logic therefore just froze a background you could
+  // still see, which read as the animation breaking on scroll. Instead we only
+  // pause the loop when the tab is genuinely hidden (a real battery win with no
+  // visible freeze); reduced-motion renders a couple of settle frames then stops.
   const [frameloop, setFrameloop] = useState<"always" | "never">("always")
 
   useEffect(() => {
-    let raf = 0
-    const onScroll = () => {
-      if (raf) return
-      raf = requestAnimationFrame(() => {
-        raf = 0
-        const past = window.scrollY > window.innerHeight * 2
-        setFrameloop((prev) => (past ? "never" : "always"))
-      })
+    if (!env.mounted) return
+    if (env.reducedMotion) {
+      setFrameloop("always")
+      const t = setTimeout(() => setFrameloop("never"), 2500)
+      return () => clearTimeout(t)
     }
-    window.addEventListener("scroll", onScroll, { passive: true })
-    onScroll()
-    return () => {
-      window.removeEventListener("scroll", onScroll)
-      if (raf) cancelAnimationFrame(raf)
-    }
-  }, [])
+    const onVisibility = () => setFrameloop(document.hidden ? "never" : "always")
+    document.addEventListener("visibilitychange", onVisibility)
+    onVisibility()
+    return () => document.removeEventListener("visibilitychange", onVisibility)
+  }, [env.mounted, env.reducedMotion])
+
+  if (!env.mounted) {
+    return <div className={css.scene} />
+  }
 
   return (
     <div className={css.scene}>
@@ -222,12 +247,13 @@ export default function Background() {
         shadows={false}
         className={css.canvas}
         frameloop={frameloop}
-        style={{ position: "fixed",background: "transparent"  }} camera={{ zoom: 10, position: [0, 20, 100] }}
+        style={{ position: "fixed", background: "transparent" }}
+        camera={{ zoom: 10, position: [0, 20, 100] }}
         dpr={1}
-        gl={{ 
-          antialias: true,
-          alpha: true, 
-          powerPreference: "high-performance"
+        gl={{
+          antialias: !env.isMobile,
+          alpha: true,
+          powerPreference: env.isMobile ? "default" : "high-performance",
         }}
       >
         <ambientLight intensity={0.1}></ambientLight>
@@ -240,12 +266,9 @@ export default function Background() {
 
         <pointLight intensity={0.4} color="lightblue" position={[-10, 10, 10]} />
 
-        <Suspense fallback={null} >
-
-          <System></System>
+        <Suspense fallback={null}>
+          <System isMobile={env.isMobile} reducedMotion={env.reducedMotion} />
         </Suspense>
-
-        {/* <Box pos={[0,0,-10]}/> */}
       </Canvas>
     </div>
   )
