@@ -1,0 +1,61 @@
+{
+  "_comment": "Config for the geo-aware hero on the landing page. FLOW: one of 'welcome' types in, erases, then the location line (a matching 'rule' or a 'default') types in as the big opener, then an 'invite' fades in. Rules are checked top-to-bottom, FIRST match wins — put specific rules (a city) above broad ones. Only speak about location in a 'rule' where you have a SPECIFIC, personal story (never pin the exact detected city — IP geo is often wrong/off). When no rule matches, a random 'generic' line shows instead, which says NOTHING about location so it reads fine to anyone. Go easy on em dashes; prefer periods/commas. Placeholders: {city}, {region}, {country}. Match fields: cities[] (case-insensitive), regionCodes[] (state code like HI/MO, assumed US unless you add \"country\":\"XX\"), countryCodes[] (US, GB...). Loaded by lib/greetingConfig.ts.",
+
+  "welcome": [
+    "Welcome! Glad you wandered in.",
+    "Hey there. Come on in.",
+    "Welcome to my corner of the internet."
+  ],
+
+  "rules": [
+    {
+      "id": "hawaii",
+      "match": { "regionCodes": ["HI"] },
+      "say": "Hey! I’m from Hawaii too. O’ahu, Roosevelt High, Rough Rider through and through. 🤙"
+    },
+    {
+      "id": "missouri",
+      "match": {
+        "cities": ["St. Louis", "Saint Louis", "Clayton", "University City"],
+        "regionCodes": ["MO"]
+      },
+      "say": "Seems you’re near my current corner of the world. You’ll find me around WashU these days."
+    },
+    {
+      "id": "bay-area",
+      "match": {
+        "cities": [
+          "San Francisco",
+          "Oakland",
+          "Berkeley",
+          "Palo Alto",
+          "Mountain View",
+          "San Jose"
+        ]
+      },
+      "say": "The Bay, maybe? I pass through more than you’d think. Coffee’s on me sometime."
+    },
+    {
+      "id": "nyc",
+      "match": { "cities": ["New York", "Brooklyn", "Manhattan"] },
+      "say": "New York energy. One of my favorite places to lose a weekend."
+    },
+    {
+      "id": "seattle",
+      "match": { "cities": ["Seattle", "Bellevue", "Redmond"] },
+      "say": "Pacific Northwest, if I had to guess. Good coffee, good code."
+    }
+  ],
+
+  "generic": [
+    "Make yourself at home. You’re welcome to wander.",
+    "Glad you found your way here. Good to have you.",
+    "However you got here, I’m happy you came."
+  ],
+
+  "invites": [
+    "There’s a lot rattling around in here. Take a look.",
+    "Step inside; let me show you what I’ve been building.",
+    "Consider this a look inside my head. Stay a while."
+  ]
+}

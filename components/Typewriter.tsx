@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 type Props = {
   /** The text to type out. */
@@ -11,6 +11,8 @@ type Props = {
   className?: string;
   /** Show a blinking caret. */
   caret?: boolean;
+  /** Called once when the full text has finished typing. */
+  onDone?: () => void;
 };
 
 /**
@@ -24,9 +26,13 @@ export default function Typewriter({
   startDelay = 350,
   className = "",
   caret = true,
+  onDone,
 }: Props) {
   const [count, setCount] = useState(0);
   const [started, setStarted] = useState(false);
+  const onDoneRef = useRef(onDone);
+  const firedRef = useRef(false);
+  onDoneRef.current = onDone;
 
   useEffect(() => {
     const prefersReduced = window.matchMedia(
@@ -48,6 +54,13 @@ export default function Typewriter({
   }, [started, count, text.length, speed]);
 
   const done = count >= text.length;
+
+  useEffect(() => {
+    if (started && done && !firedRef.current) {
+      firedRef.current = true;
+      onDoneRef.current?.();
+    }
+  }, [started, done]);
 
   return (
     <span className={className} aria-label={text}>

@@ -73,6 +73,27 @@ ul {
   }
 }
 
+/* Hero scroll-nav entrance (Me / Path / Projects / Blog) — staggered per item
+   via inline animation-delay. See ScrollDown in pages/index.tsx. */
+@keyframes navItemIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.navHint {
+  animation: navItemIn 0.7s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .navHint {
+    animation: none;
+  }
+}
+
 /* @font-face 
 {
   font-family: 'OpenSans'; 

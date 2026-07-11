@@ -114,7 +114,8 @@
     position: absolute;
     border-radius: 50%;
     filter: blur(80px);
-    animation: float 20s ease-in-out infinite;
+    /* Static: animating an 80px blur repaints the whole orb every frame,
+       which was a constant GPU/paint cost for a barely-perceptible drift. */
     z-index: -50;
 }
 .orb1 {
@@ -269,14 +270,53 @@
 
   background-color:rgb(18, 18, 18, 0.66);
   transition-duration: 0.5s;
-  
-  
+
+
 }
 .fadedBg:hover{
 
   background-color:rgb(18, 18, 18, 0.88);
-  
-  
+
+
+}
+
+/* Frosted "stage panel" — content that lives *inside* the 3D scene.
+   Translucent so the particle stage + gradient orbs read through it,
+   with a soft cool glow that echoes the scene's blue light and a
+   depth shadow so it feels seated in space, not pasted on top. */
+.stagePanel {
+  position: relative;
+  background: linear-gradient(
+    160deg,
+    rgba(30, 32, 40, 0.55),
+    rgba(15, 15, 19, 0.62)
+  );
+  backdrop-filter: blur(18px) saturate(120%);
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.06),
+    0 30px 60px -24px rgba(0, 0, 0, 0.6),
+    0 0 44px -14px rgba(163, 203, 255, 0.16);
+  transition: box-shadow 0.6s ease, background 0.6s ease, border-color 0.6s ease;
+}
+
+.stagePanel:hover {
+  border-color: rgba(163, 203, 255, 0.18);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.09),
+    0 34px 70px -24px rgba(0, 0, 0, 0.66),
+    0 0 58px -14px rgba(163, 203, 255, 0.24);
+}
+
+/* Portrait seated in the scene: soft ring + depth shadow so its edges
+   read as part of the stage rather than a hard rectangle. */
+.stageImage {
+  border-radius: 1rem;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 34px 66px -26px rgba(0, 0, 0, 0.62),
+    0 0 48px -18px rgba(163, 203, 255, 0.14);
 }
 
 .textContainerBlog

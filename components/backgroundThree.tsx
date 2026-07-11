@@ -11,7 +11,10 @@ function Radians(degrees: number) {
   return degrees * Math.PI / 180
 }
 
-const sphere = new THREE.SphereGeometry(0.1, 25, 28)
+// Low-poly on purpose: these render as tiny dots, so high tessellation was
+// pure waste. 8x6 keeps them round while cutting ~1,400 tris/sphere down to
+// ~96 — across 10,800 instances that's ~15M tris -> ~1M tris per frame.
+const sphere = new THREE.SphereGeometry(0.1, 8, 6)
 
 const white = new THREE.MeshLambertMaterial({ color: "white" })
 
@@ -93,6 +96,7 @@ function OptimizedStars({ allShapesPositions, angle, rotateCamera }: {  allShape
   const targetPositionsRef = useRef<number[][]>([])
   const lerpProgressRef = useRef(0)
   const lastTransitionRef = useRef(0)
+  const settledRef = useRef(false) // true once a shape has finished morphing
   
   const shapeNames = Object.keys(allShapesPositions)
   const totalPositions = allShapesPositions[shapeNames[0]].length
@@ -139,29 +143,42 @@ function OptimizedStars({ allShapesPositions, angle, rotateCamera }: {  allShape
     
     // Update lerp progress (complete transition in 2 seconds)
     lerpProgressRef.current = Math.min(1, (elapsed - lastTransitionRef.current) / 2)
-    
+
+    // Only the ~2s morph between shapes needs the 10,800-instance matrix
+    // rebuild. Once a shape has settled (progress === 1) the positions are
+    // static, so we apply one final frame and then skip the loop entirely
+    // until the next transition — the camera still rotates, but we stop
+    // burning the CPU recomposing every matrix on idle frames.
+    if (lerpProgressRef.current < 1) {
+      settledRef.current = false
+    } else if (settledRef.current) {
+      return
+    } else {
+      settledRef.current = true
+    }
+
     // Smooth easing function
     const eased = lerpProgressRef.current < 0.5
       ? 2 * lerpProgressRef.current * lerpProgressRef.current
       : 1 - Math.pow(-2 * lerpProgressRef.current + 2, 2) / 2
-    
+
     // Lerp all positions
     for (let i = 0; i < totalPositions; i++) {
       const start = startPositionsRef.current[i]
       const target = targetPositionsRef.current[i]
 
-      if (!start || !target) continue 
-      
+      if (!start || !target) continue
+
       const x = start[0] + (target[0] - start[0]) * eased
       const y = start[1] + (target[1] - start[1]) * eased
       const z = start[2] + (target[2] - start[2]) * eased
-      
+
       tempObject.position.set(x, y, z)
       tempObject.scale.setScalar(0.15)
       tempObject.updateMatrix()
       meshRef.current.setMatrixAt(i, tempObject.matrix)
     }
-    
+
     meshRef.current.instanceMatrix.needsUpdate = true
   })
 
@@ -174,14 +191,39 @@ function OptimizedStars({ allShapesPositions, angle, rotateCamera }: {  allShape
 }
 
 export default function Background() {
+  // The canvas is fixed and full-screen, so it keeps rendering even when you've
+  // scrolled far past it to read content. Freeze the render loop once the hero
+  // region is well out of view (kept live for the first ~2 viewports so the
+  // hero + about-me stage-blend still animate), and resume on scroll back up.
+  // A frozen frame costs zero GPU — the single biggest win for heat while reading.
+  const [frameloop, setFrameloop] = useState<"always" | "never">("always")
+
+  useEffect(() => {
+    let raf = 0
+    const onScroll = () => {
+      if (raf) return
+      raf = requestAnimationFrame(() => {
+        raf = 0
+        const past = window.scrollY > window.innerHeight * 2
+        setFrameloop((prev) => (past ? "never" : "always"))
+      })
+    }
+    window.addEventListener("scroll", onScroll, { passive: true })
+    onScroll()
+    return () => {
+      window.removeEventListener("scroll", onScroll)
+      if (raf) cancelAnimationFrame(raf)
+    }
+  }, [])
 
   return (
     <div className={css.scene}>
       <Canvas
         shadows={false}
         className={css.canvas}
+        frameloop={frameloop}
         style={{ position: "fixed",background: "transparent"  }} camera={{ zoom: 10, position: [0, 20, 100] }}
-        dpr={[1, 2]}
+        dpr={1}
         gl={{ 
           antialias: true,
           alpha: true, 

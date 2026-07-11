@@ -36,7 +36,9 @@ This project is planned and tracked on a **Tandem canvas**. At the **start of ev
 
 **Motion:** subtle and slow (200–1500ms, ease-out). Purposeful only — no bouncy/childish effects. Always honor `prefers-reduced-motion` (see `components/Typewriter.tsx` for the pattern).
 
-**Reusable pieces:** `components/Typewriter.tsx` — tasteful typing effect (used for the "Hi, I'm Jaxon" hero entrance). Reuse it rather than reinventing.
+**Landing hero:** `components/LivingGreeting.tsx` — a geo-aware "living greeting": a welcome types in and erases, then a location-aware opener types in (only a personal location story shows a place; otherwise a generic, location-free line), then an invitation fades in. All copy + location rules live in `config/greeting.json`; visitor location comes from `pages/api/geo.ts` (Vercel edge headers in prod, IP lookup in dev). Random lines are chosen after mount to avoid hydration mismatches.
+
+**Reusable typing effects:** `components/Typewriter.tsx` (type once, `onDone` callback) and `components/TypeErase.tsx` (type → hold → erase → type final). Reuse these rather than reinventing.
 
 ## Project quick reference
 

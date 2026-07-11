@@ -2,552 +2,378 @@ import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import { PopInBlock } from "./popinBlockContext";
 
-export default function MyPath() {
+type DetailSection = { label: string; items: string[] };
+
+type Entry = {
+  org: string;
+  role: string;
+  location?: string;
+  dates: string;
+  logo: string;
+  logoLight?: boolean; // transparent logo that needs a light tile
+  blurb: string;
+  detailsLabel?: string;
+  details?: DetailSection[];
+};
+
+type YearGroup = { year: string; entries: Entry[] };
+
+const timeline: YearGroup[] = [
+  {
+    year: "2026",
+    entries: [
+      {
+        org: "Capital One",
+        role: "Incoming Software Engineering Intern",
+        dates: "06/2026 — 08/2026",
+        logo: "/capital_one_logo.jpg",
+        blurb:
+          "Joining Capital One's Cloud team as a Software Engineering Intern.",
+      },
+      {
+        org: "Tesla",
+        role: "Software Engineering Intern",
+        location: "Fremont, CA",
+        dates: "01/2026 — 05/2026",
+        logo: "/teslalogo.png",
+        blurb: "Distributed Systems, Energy Backend Infra, and AI Agents.",
+      },
+    ],
+  },
+  {
+    year: "2025",
+    entries: [
+      {
+        org: "WashU McKelvey Engineering",
+        role: "System Software Teaching Assistant",
+        location: "St. Louis, MO",
+        dates: "08/2025 — Present",
+        logo: "/mck_logo_2.png",
+        logoLight: true,
+        blurb:
+          "Assist students with x86 assembly reading, C code, and memory concepts.",
+      },
+      {
+        org: "Spectrum",
+        role: "Software Engineering Intern",
+        location: "St. Louis, MO",
+        dates: "05/2025 — 08/2025",
+        logo: "/spectrum.png",
+        blurb:
+          "Service Delivery team — built cloud backend controllers in Salesforce Java.",
+      },
+      {
+        org: "WashU IT — Devstac",
+        role: "Software Engineer",
+        location: "St. Louis, MO",
+        dates: "04/2025 — Present",
+        logo: "/devstac.jpg",
+        blurb:
+          "Building full-stack software for internal and external clients, from web apps to mobile apps.",
+        detailsLabel: "Key skills",
+        details: [
+          {
+            label: "Key skills",
+            items: [
+              "Node.js + TypeScript",
+              "API Development",
+              "Supabase Database",
+              "React",
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    year: "2024",
+    entries: [
+      {
+        org: "Health XR",
+        role: "Founding Software Engineer",
+        location: "St. Louis, MO",
+        dates: "09/2024 — 01/2025",
+        logo: "/healthxr.png",
+        blurb:
+          "Built the first prototype of a Meta Quest XR healthcare assistant in Unity + C#, winning #1 at St. Louis Startup Tech Week.",
+        detailsLabel: "Key features built",
+        details: [
+          {
+            label: "Key features built",
+            items: [
+              "Integrated reality environment in Unity",
+              "Wrist button in the virtual world wired to a FastAPI backend",
+              "AI analysis of medical documents rendered into the 3D world",
+            ],
+          },
+        ],
+      },
+      {
+        org: "Flashcardify.ai",
+        role: "Software Engineering Intern",
+        location: "St. Louis, MO",
+        dates: "09/2024 — 01/2025",
+        logo: "/flashcardify.png",
+        blurb:
+          "Built out backend infrastructure for flashcard decks with Node.js and Supabase.",
+        detailsLabel: "Key features built",
+        details: [
+          {
+            label: "Key features built",
+            items: [
+              "Deck privacy controls (public / private visibility)",
+              "Full-text search using Supabase",
+              "Tagging system for deck organization and discovery",
+              "Search matching by deck names and metadata",
+            ],
+          },
+        ],
+      },
+      {
+        org: "WashU McKelvey Engineering",
+        role: "Data Structures & Algorithms Teaching Assistant",
+        location: "St. Louis, MO",
+        dates: "01/2025 — 12/2025",
+        logo: "/mck_logo_2.png",
+        logoLight: true,
+        blurb:
+          "Guided students through data structures, algorithm implementation, and runtime analysis.",
+      },
+    ],
+  },
+];
+
+const education: Entry = {
+  org: "Washington University in St. Louis",
+  role: "B.S. — CS + Math, and Entrepreneurship",
+  location: "GPA 3.76",
+  dates: "08/2023 — Expected 05/2027",
+  logo: "/washulogo.png",
+  blurb:
+    "Pursuing CS + Math with a focus on systems and algorithms, involved in entrepreneurship and student organizations on campus.",
+  detailsLabel: "Notable classes & clubs",
+  details: [
+    {
+      label: "Notable classes",
+      items: [
+        "Cloud Computing",
+        "Intro to Cryptography",
+        "System Software",
+        "Parallel and Concurrent Programming",
+        "Linear Algebra (proof-based)",
+        "Object-Oriented Programming (C++)",
+      ],
+    },
+    {
+      label: "Campus involvement",
+      items: [
+        "WashU Robotics (Project Lead)",
+        "Google Developer Group (Core Lead)",
+        "LNYF (Multimedia)",
+      ],
+    },
+  ],
+};
+
+function LogoTile({ entry }: { entry: Entry }) {
   return (
     <div
-      className={`md:text-left text-center pt-4 mt-16  ${styles.textContainer} s   `}
+      className={`relative flex-none h-16 w-16 md:h-[4.75rem] md:w-[4.75rem] rounded-xl overflow-hidden ring-1 ring-white/10 p-2 ${
+        entry.logoLight ? "bg-white" : "bg-white/[0.06]"
+      }`}
     >
-      <h1
-        className={`${styles.fontNormal} font-thin`}
-        style={{ fontSize: "300%", textAlign: "center" }}
-      >
-        My Path
-        {/* <span className={`${styles.fontNormal} font-light`}>{`  |  `}</span> */}
-        <br></br>
-        <div className="">
-          <div className="mt-4 relative left-1/2 w-1/2 translate-x-[-50%] border-b-2 border-white h-2 "></div>
-        </div>
-      </h1>
-      <div
-        className={`grid sm:grid-cols-1 gap-x-14 gap-y-12 mt-16 w-[80%]  ${styles.centerRelX}`}
-      >
-        <PopInBlock>
-          <div
-            className={`${styles.fadedBg} grid grid-cols-1 md:grid-cols-3 p-4 rounded-xl`}
-          >
-            <div className="flex items-center">
-              <div
-                className={`${styles.journeyImage} h-[9rem] w-[9rem] md:h-[8rem] md:w-[8rem] `}
-              >
-                <Image
-                  alt="front picture"
-                  src="/capital_one_logo.jpg"
-                  fill
-                  style={{ borderRadius: "0.5rem" }}
-                />
-              </div>
-            </div>
-            <div className="col-span-2 mt-4 md:mt-2 ">
-              <h1 className={"text-2xl"}>
-                <strong>Capital One</strong>
-              </h1>
-              <h1 className={`text-lg ${styles.titleTex}`}>
-                <i>Incoming Software Engineering Intern</i>
-              </h1>
-              <h1 className={`text-sm ${styles.dateRangeTex}`}>
-                <i>06/2026 - 08/2026</i>
-              </h1>
+      <Image
+        alt={`${entry.org} logo`}
+        src={entry.logo}
+        fill
+        sizes="76px"
+        className="object-contain p-1"
+      />
+    </div>
+  );
+}
 
-              <p className="mt-2">
-                {" "}
-                Joining Capital One's Cloud team as a Software Engineering
-                Intern.
-              </p>
-            </div>
+function EntryDetails({ entry }: { entry: Entry }) {
+  if (!entry.details) return null;
+  return (
+    <details className="group mt-4">
+      <summary className="cursor-pointer list-none inline-flex items-center gap-1.5 text-[0.7rem] uppercase tracking-[0.16em] text-blue-300/80 hover:text-blue-300 transition-colors duration-300">
+        <span className="transition-transform duration-300 group-open:rotate-90">
+          ›
+        </span>
+        {entry.detailsLabel ?? "More"}
+      </summary>
+      <div className="mt-4 space-y-4">
+        {entry.details.map((section) => (
+          <div key={section.label}>
+            <p className="text-[0.7rem] uppercase tracking-[0.16em] text-white/45">
+              {section.label}
+            </p>
+            <ul className="mt-2 space-y-1.5">
+              {section.items.map((item) => (
+                <li
+                  key={item}
+                  className="flex gap-2.5 text-sm text-white/65 font-light leading-relaxed"
+                >
+                  <span className="mt-2 h-1 w-1 flex-none rounded-full bg-blue-300/60" />
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
-        </PopInBlock>
-        <PopInBlock>
-          <div
-            className={`${styles.fadedBg} grid grid-cols-1 md:grid-cols-3 p-4 rounded-xl`}
-          >
-            <div className="flex items-center">
-              <div
-                className={`${styles.journeyImage} h-[9rem] w-[7rem] md:h-[8rem] md:w-[6rem] `}
-              >
-                <Image
-                  alt="front picture"
-                  src="/teslalogo.png"
-                  fill
-                  style={{ borderRadius: "0.5rem" }}
-                />
-              </div>
-            </div>
-            <div className="col-span-2 mt-4 md:mt-2 ">
-              <h1 className={"text-2xl"}>
-                <strong>Tesla</strong>
-              </h1>
-              <h1 className={`text-lg ${styles.titleTex}`}>
-                <i>Software Engineering Intern</i>
-              </h1>
-              <h1 className={`text-sm ${styles.dateRangeTex}`}>
-                <i>Fremont, CA</i>
-              </h1>
-              <h1 className={`text-sm ${styles.dateRangeTex}`}>
-                <i>01/2026 - 05/2026</i>
-              </h1>
-
-              <p className="mt-2">
-                {" "}
-                Distributed Systems, Energy Backend Infra, and AI Agents
-              </p>
-            </div>
-          </div>
-        </PopInBlock>
+        ))}
       </div>
-      <PopInBlock>
-        <div>
-          <div className="">
-            <div className="mt-4 relative left-1/2 w-1/2 translate-x-[-50%] border-b-2 border-white h-8 border-x-2 rounded-b-xl"></div>
-          </div>
-          <div className="">
-            <div className="w-1/2 border-r-2 border-white h-8"></div>
-          </div>
-          <div className="text-center text-xl p-4">
-            <i>2026</i>
-          </div>
-          <div className="">
-            <div className="w-1/2 border-r-2 border-white h-8"></div>
-          </div>
-          <div className="">
-            <div className=" relative left-1/2 w-1/2 translate-x-[-50%] border-t-2 border-white h-8 border-x-2 rounded-t-xl"></div>
-          </div>
-        </div>
-      </PopInBlock>
-      <div
-        className={`grid sm:grid-cols-1 gap-x-14 gap-y-8 mt-4 w-[80%]  ${styles.centerRelX}`}
-      >
-        <PopInBlock>
-          <div
-            className={`${styles.fadedBg} grid grid-cols-1 md:grid-cols-3 p-4 rounded-xl`}
-          >
-            <div className="flex items-center">
-              <div
-                className={`${styles.journeyImage} h-[9rem] w-[9rem] md:h-[8rem] md:w-[14rem]  `}
-              >
-                <Image
-                  alt="front picture"
-                  src="/mck_logo_2.png"
-                  fill
-                  className="bg-white"
-                  style={{ borderRadius: "0.5rem" }}
-                />
-              </div>
-            </div>
-            <div className="col-span-2 mt-4 md:mt-2 ">
-              <h1 className={"text-2xl"}>
-                <strong>WashU Mckelvey Engineering</strong>
-              </h1>
-              <h1 className={`text-lg ${styles.titleTex}`}>
-                <i>System Software Teaching Assistant</i>
-              </h1>
-              <h1 className={`text-sm ${styles.dateRangeTex}`}>
-                <i>St. Louis, MO</i>
-              </h1>
-              <h1 className={`text-sm ${styles.dateRangeTex}`}>
-                <i>08/2025-Present</i>
-              </h1>
-              <p className="mt-2">
-                {" "}
-                Assist Students in x86 Assembly reading, C code, and memory
-                concepts.{" "}
-              </p>
-            </div>
-          </div>
-        </PopInBlock>
+    </details>
+  );
+}
 
-        <PopInBlock>
-          <div
-            className={`${styles.fadedBg} grid grid-cols-1 md:grid-cols-3 p-4 rounded-xl`}
-          >
-            <div className="flex items-center">
-              <div
-                className={`${styles.journeyImage} h-[12rem] w-[12rem] md:h-[8.5rem] md:w-[8.5rem] `}
-              >
-                <Image
-                  alt="front picture"
-                  src="/spectrum.png"
-                  fill
-                  style={{ borderRadius: "0.5rem" }}
-                />
-              </div>
-            </div>
-            <div className="col-span-2 mt-4 md:mt-2 ">
-              <h1 className={"text-2xl"}>
-                <strong>Spectrum</strong>
-              </h1>
-              <h1 className={`text-lg ${styles.titleTex}`}>
-                <i>Software Engineering Intern</i>
-              </h1>
-              <h1 className={`text-sm ${styles.dateRangeTex}`}>
-                <i>St. Louis, MO</i>
-              </h1>
-              <h1 className={`text-sm ${styles.dateRangeTex}`}>
-                <i>05/2025 - 08/2025</i>
-              </h1>
-              <p className="mt-2">
-                Software Engineering Intern in Service Delivery Team. Worked on
-                Cloud Backend Controllers in Salesforce Java
-              </p>
-            </div>
-          </div>
-        </PopInBlock>
-
-        <PopInBlock>
-          <div
-            className={`${styles.fadedBg} grid grid-cols-1 md:grid-cols-3 p-4 rounded-xl`}
-          >
-            <div className="flex items-center">
-              <div
-                className={`${styles.journeyImage} h-[9rem] w-[9rem] md:h-[8rem] md:w-[8rem] `}
-              >
-                <Image
-                  alt="front picture"
-                  src="/devstac.jpg"
-                  fill
-                  style={{ borderRadius: "0.5rem" }}
-                />
-              </div>
-            </div>
-            <div className="col-span-2 mt-4 md:mt-2 ">
-              <h1 className={"text-2xl"}>
-                <strong>WashU IT - Devstac</strong>
-              </h1>
-              <h1 className={`text-lg ${styles.titleTex}`}>
-                <i>Software Engineer</i>
-              </h1>
-              <h1 className={`text-sm ${styles.dateRangeTex}`}>
-                <i>St. Louis, MO</i>
-              </h1>
-              <h1 className={`text-sm ${styles.dateRangeTex}`}>
-                <i>04/2025 - Present</i>
-              </h1>
-              <p className="mt-2">
-                Building full-stack software for internal and external clients
-                ranging from web-apps to mobile-apps
-              </p>
-              <details className="mt-2">
-                <summary className="cursor-pointer text-blue-200">
-                  More Info
-                </summary>
-                <div className=" p-2 mt-2 rounded-md">
-                  <p className="underline">Key Skills:</p>
-                  <ul className="list-disc ml-5">
-                    <li>Node.js + Typescript</li>
-                    <li>API Development</li>
-                    <li>Supabase Database</li>
-                    <li>React</li>
-                  </ul>
-                </div>
-              </details>
-            </div>
-          </div>
-        </PopInBlock>
+function EntryCard({ entry }: { entry: Entry }) {
+  return (
+    <div
+      className={`${styles.stagePanel} rounded-2xl p-5 md:p-6 flex flex-col sm:flex-row gap-5`}
+    >
+      <LogoTile entry={entry} />
+      <div className="flex-1 min-w-0">
+        <h3 className="font-montserrat text-xl md:text-2xl font-medium text-white leading-snug">
+          {entry.org}
+        </h3>
+        <p className="mt-1 font-montserrat text-blue-300 text-sm md:text-base font-light">
+          {entry.role}
+        </p>
+        <p className="mt-2 text-[0.7rem] uppercase tracking-[0.14em] text-white/45">
+          {entry.location ? `${entry.location}  ·  ${entry.dates}` : entry.dates}
+        </p>
+        <p className="mt-3 text-sm md:text-base text-white/70 font-light leading-relaxed">
+          {entry.blurb}
+        </p>
+        <EntryDetails entry={entry} />
       </div>
-      <PopInBlock>
-        <div>
-          <div className="">
-            <div className="mt-4 relative left-1/2 w-1/2 translate-x-[-50%] border-b-2 border-white h-8 border-x-2 rounded-b-xl"></div>
-          </div>
-          <div className="">
-            <div className="w-1/2 border-r-2 border-white h-8"></div>
-          </div>
-          <div className="text-center text-xl p-4">
-            <i>2025</i>
-          </div>
-          <div className="">
-            <div className="w-1/2 border-r-2 border-white h-8"></div>
-          </div>
-          <div className="">
-            <div className=" relative left-1/2 w-1/2 translate-x-[-50%] border-t-2 border-white h-8 border-x-2 rounded-t-xl"></div>
-          </div>
+    </div>
+  );
+}
+
+// One row on the rail: an accent node on the vertical line + the card.
+function TimelineRow({ entry }: { entry: Entry }) {
+  return (
+    <PopInBlock variant="materialize">
+      <div className="flex gap-5 md:gap-8 pb-10">
+        <div className="relative flex-none w-4 flex justify-center pt-7">
+          <span className="h-2.5 w-2.5 rounded-full bg-blue-300/80 ring-4 ring-[#121212]" />
         </div>
-      </PopInBlock>
-      <div
-        className={`grid sm:grid-cols-1 gap-x-14 gap-y-8 mt-4 w-[80%]  ${styles.centerRelX}`}
-      >
-        <PopInBlock>
-          <div
-            className={`${styles.fadedBg} grid grid-cols-1 md:grid-cols-3 p-4 rounded-xl`}
-          >
-            <div className="flex items-center">
-              <div
-                className={`${styles.journeyImage} h-[8rem] w-[10rem] md:h-[7rem] md:w-[9rem]  `}
-              >
-                <Image
-                  alt="front picture"
-                  src="/healthxr.png"
-                  fill
-                  style={{ borderRadius: "0.5rem" }}
-                />
-              </div>
-            </div>
-
-            <div className="col-span-2 mt-4 md:mt-2 ">
-              <h1 className={"text-2xl"}>
-                <strong>Health XR</strong>
-              </h1>
-              <h1 className={`text-lg ${styles.titleTex}`}>
-                <i>Founding Software Engineer</i>
-              </h1>
-              <h1 className={`text-sm ${styles.dateRangeTex}`}>
-                <i>St. Louis, MO</i>
-              </h1>
-              <h1 className={`text-sm ${styles.dateRangeTex}`}>
-                <i>09/2024 - 01/2025</i>
-              </h1>
-              <p className="mt-2">
-                Developed the first prototype of Meta Quest XR Healthcare
-                assistant within Unity + C#, winning #1 at St. Louis startup
-                tech week.
-              </p>
-               <details className="mt-2">
-                <summary className="cursor-pointer text-blue-200">
-                  More Info
-                </summary>
-                <div className=" p-2 mt-2 rounded-md">
-                  <p className="underline">Key Features Built:</p>
-                  <ul className="list-disc ml-5">
-                    <li>Created Intergrated Reality Env. in Unity </li>
-                    <li>Added wrist button in virtual world that integrates with FastAPI backend</li>
-                    <li>Rendered AI analysis of Medial Document onto 3D world</li>
-                  </ul>
-                </div>
-              </details>
-            </div>
-          </div>
-        </PopInBlock>
-        <PopInBlock>
-          <div
-            className={`${styles.fadedBg} grid grid-cols-1 md:grid-cols-3 p-4 rounded-xl`}
-          >
-            <div className="flex items-center">
-              <div
-                className={`${styles.journeyImage} h-[8rem] w-[12rem] md:h-[8rem] md:w-[12rem] `}
-              >
-                <Image
-                  alt="front picture"
-                  src="/flashcardify.png"
-                  fill
-                  style={{ borderRadius: "0.5rem" }}
-                />
-              </div>
-            </div>
-
-            <div className="col-span-2 mt-4 md:mt-2 ">
-              <h1 className={"text-2xl"}>
-                <strong>Flashcardify.ai</strong>
-              </h1>
-              <h1 className={`text-lg ${styles.titleTex}`}>
-                <i>Software Engineering Intern</i>
-              </h1>
-              <h1 className={`text-sm ${styles.dateRangeTex}`}>
-                <i>St. Louis, MO</i>
-              </h1>
-              <h1 className={`text-sm ${styles.dateRangeTex}`}>
-                <i>09/2024 - 01/2025</i>
-              </h1>
-              <p className="mt-2">
-                Built-out backend infrastructure for flashcard decks with
-                Node.js and Supabase{" "}
-              </p>
-              <details className="mt-2">
-                <summary className="cursor-pointer text-blue-200">
-                  More Info
-                </summary>
-                <div className=" p-2 mt-2 rounded-md">
-                  <p className="underline">Key Features Built:</p>
-                  <ul className="list-disc ml-5">
-                    <li>Deck privacy controls (public/private visibility)</li>
-                    <li>Full-text search functionality using Supabase</li>
-                    <li>Tagging system for deck organization and discovery</li>
-                    <li>Search matching by deck names and metadata</li>
-                  </ul>
-                </div>
-              </details>
-            </div>
-          </div>
-        </PopInBlock>
-
-        <PopInBlock>
-          <div
-            className={`${styles.fadedBg} grid grid-cols-1 md:grid-cols-3 p-4 rounded-xl`}
-          >
-            <div className="flex items-center">
-              <div
-                className={`${styles.journeyImage} h-[9rem] w-[9rem] md:h-[8rem] md:w-[14rem] `}
-              >
-                <Image
-                  alt="front picture"
-                  src="/mck_logo_2.png"
-                  fill
-                  className="bg-white"
-                  style={{ borderRadius: "0.5rem" }}
-                />
-              </div>
-            </div>
-            <div className="col-span-2 mt-4 md:mt-2 ">
-              <h1 className={"text-2xl"}>
-                <strong>WashU Mckelvey Engineering</strong>
-              </h1>
-              <h1 className={`text-lg ${styles.titleTex}`}>
-                <i>Data Structures and Algorithms Teaching Assistant</i>
-              </h1>
-              <h1 className={`text-sm ${styles.dateRangeTex}`}>
-                <i>St. Louis, MO</i>
-              </h1>
-              <h1 className={`text-sm ${styles.dateRangeTex}`}>
-                <i>01/2025-12/2025</i>
-              </h1>
-              <p className="mt-2">
-                {" "}
-                Assisted students in developing data structures, implementation
-                of algorithms, and runtime analysis.{" "}
-              </p>
-            </div>
-          </div>
-        </PopInBlock>
+        <div className="flex-1 min-w-0">
+          <EntryCard entry={entry} />
+        </div>
       </div>
-      <PopInBlock>
-        <div>
-          <div className="">
-            <div className="mt-4 relative left-1/2 w-1/2 translate-x-[-50%] border-b-2 border-white h-8 border-x-2 rounded-b-xl"></div>
-          </div>
+    </PopInBlock>
+  );
+}
 
-          <div className="">
-            <div className="w-1/2 border-r-2 border-white h-8"></div>
-          </div>
-          <div className="text-center text-xl p-4">
-            <i>2024</i>
-          </div>
-          <div className="">
-            <div className="w-1/2 border-r-2 border-white h-8"></div>
-          </div>
-          <div className="">
-            <div className=" relative left-1/2 w-1/2 translate-x-[-50%] border-t-2 border-white h-8 border-x-2 rounded-t-xl"></div>
-          </div>
-        </div>
-      </PopInBlock>
-      <PopInBlock>
+function YearStation({ year }: { year: string }) {
+  return (
+    <div className="flex items-center gap-5 mt-14 mb-7 first:mt-0">
+      <div className="relative flex-none w-4 flex justify-center">
+        <span className="h-4 w-4 rounded-full border border-white/40 bg-[#121212]" />
+      </div>
+      <span className="font-cormorant font-light text-4xl md:text-5xl text-white/85 leading-none">
+        {year}
+      </span>
+    </div>
+  );
+}
+
+export default function MyPath() {
+  return (
+    <div className={`pt-4 mt-16 ${styles.textContainer}`}>
+      {/* Section header */}
+      <div className="text-center">
+        <p className="text-xs uppercase tracking-[0.18em] text-white/50 font-montserrat">
+          The journey so far
+        </p>
+        <h1 className="mt-3 font-cormorant font-light text-5xl md:text-6xl text-white">
+          My Path
+        </h1>
+        <div className="mt-5 mx-auto h-px w-16 bg-white/25" />
+      </div>
+
+      {/* Timeline rail */}
+      <div className="relative w-[90%] md:w-[80%] max-w-3xl mx-auto mt-16">
         <div
-          className={`grid sm:grid-cols-1 gap-x-14 gap-y-12 mt-4 w-[80%]  ${styles.centerRelX} `}
-        >
-          <div
-            className={`${styles.fadedBg} grid grid-cols-1 md:grid-cols-3 p-4 rounded-xl`}
-          >
-            <div className="col-span-3 text-center text-3xl font-thin mb-4 flex justify-center">
-              <div className="w-1/2 border-b-2 pb-2">Education</div>
+          aria-hidden="true"
+          className="pointer-events-none absolute top-2 bottom-16 left-2 w-px bg-gradient-to-b from-transparent via-white/15 to-white/5"
+        />
+
+        {timeline.map((group) => (
+          <div key={group.year}>
+            <PopInBlock variant="materialize">
+              <YearStation year={group.year} />
+            </PopInBlock>
+            {group.entries.map((entry) => (
+              <TimelineRow key={`${entry.org}-${entry.dates}`} entry={entry} />
+            ))}
+          </div>
+        ))}
+
+        {/* Education */}
+        <PopInBlock variant="materialize">
+          <YearStation year="2023" />
+        </PopInBlock>
+        <PopInBlock variant="materialize">
+          <div className="flex gap-5 md:gap-8 pb-10">
+            <div className="relative flex-none w-4 flex justify-center pt-7">
+              <span className="h-2.5 w-2.5 rounded-full bg-blue-300/80 ring-4 ring-[#121212]" />
             </div>
-            <div className="flex items-center">
+            <div className="flex-1 min-w-0">
+              <p className="mb-3 text-[0.7rem] uppercase tracking-[0.16em] text-white/45">
+                Education
+              </p>
+              <EntryCard entry={education} />
+            </div>
+          </div>
+        </PopInBlock>
+
+        {/* Origin — where it all began */}
+        <PopInBlock variant="materialize">
+          <div className="flex gap-5 md:gap-8 pb-10">
+            <div className="relative flex-none w-4 flex justify-center pt-7">
+              <span className="h-2.5 w-2.5 rounded-full bg-blue-300/80 ring-4 ring-[#121212]" />
+            </div>
+            <div className="flex-1 min-w-0">
               <div
-                className={`${styles.journeyImage} h-[8rem] w-[8rem] md:h-[9rem] md:w-[9rem] `}
+                className={`${styles.stagePanel} rounded-2xl p-7 md:p-9 text-center`}
               >
-                <Image
-                  alt="front picture"
-                  src="/washulogo.png"
-                  fill
-                  style={{ borderRadius: "0.5rem" }}
-                />
+                <p className="text-xs uppercase tracking-[0.18em] text-white/45 font-montserrat">
+                  2019 — Present
+                </p>
+                <h3 className="mt-3 font-cormorant font-light text-3xl md:text-4xl text-white">
+                  A Lifelong Journey of Learning
+                </h3>
+                <p className="mt-2 text-blue-300 text-sm md:text-base font-light">
+                  Aspiring Software Engineer
+                </p>
+                <p className="mt-5 max-w-xl mx-auto text-sm md:text-base text-white/70 font-light leading-relaxed">
+                  What began as a simple curiosity for making a video game
+                  during the COVID-19 pandemic ignited my passion for all things
+                  software — and a lifelong drive to keep learning and building.
+                </p>
               </div>
             </div>
+          </div>
+        </PopInBlock>
 
-            <div className="col-span-2 mt-4 md:mt-2 ">
-              <h1 className={"text-2xl"}>
-                <strong>Washington University in St. Louis</strong>
-              </h1>
-              <h1 className={`text-lg ${styles.titleTex}`}>
-                <i>Bachelor in Science, CS + Math, and Entrepnuership</i>
-              </h1>
-              <h1 className={`text-sm ${styles.dateRangeTex}`}>
-                <i>GPA: 3.76</i>
-              </h1>
-              <h1 className={`text-sm ${styles.dateRangeTex}`}>
-                <i>08/2023 - Expected: 05/2027</i>
-              </h1>
-              <p className="mt-2">
-                Pursuing CS + Math with a focus on systems and algorithms,
-                involved in entrepreneurship and student organizations on
-                campus.
-              </p>
-              <details className="mt-2">
-                <summary className="cursor-pointer text-blue-200">
-                  Notable classes + Clubs
-                </summary>
-                <div className=" p-2 mt-2 rounded-md">
-                  <p className="underline">Notable Classes:</p>
-                  <ul className="list-disc ml-5">
-                    <li>Cloud Computing</li>
-                    <li>Intro to Cryptography</li>
-                    <li>System Software</li>
-                    <li>Parallel and Concurrent Programming</li>
-                    <li>Linear Algebra (proof-based)</li>
-                    <li>Object-Oriented Programming (C++)</li>
-                  </ul>
-
-                  <p className="mt-4 underline">Campus Involvement:</p>
-                  <ul className="list-disc ml-5">
-                    <li>WashU Robotics (Project Lead)</li>
-                    <li>Google Developer Group (Core Lead)</li>
-                    <li>LNYF (MultiMedia)</li>
-                  </ul>
-                </div>
-              </details>
-            </div>
-          </div>
-        </div>
-      </PopInBlock>
-
-      <PopInBlock>
-        <div>
-          <div className="">
-            <div className="mt-4 relative left-1/2 w-1/2 translate-x-[-50%] border-b-2 border-white h-8 border-x-2 rounded-b-xl"></div>
-          </div>
-
-          <div className="">
-            <div className="w-1/2 border-r-2 border-white h-16"></div>
-          </div>
-          <div className="text-center text-xl p-4">
-            <i>2023</i>
-          </div>
-          <div className="">
-            <div className="w-1/2 border-r-2 border-white h-16"></div>
-          </div>
-        </div>
-      </PopInBlock>
-      <PopInBlock>
-        <div
-          className={`${styles.fadedBg} rounded-xl p-8 mt-4 w-2/3 text-center relative left-1/2 translate-x-[-50%]`}
-        >
-          <h1 className={"text-3xl"}>
-            <strong>A Lifelong Journey of Learning</strong>
-          </h1>
-          <h1 className={`text-xl ${styles.titleTex}`}>
-            <i>Aspiring Software Engineer</i>
-          </h1>
-          <h1 className={`text-lg ${styles.dateRangeTex}`}>
-            <i>2019 - Present</i>
-          </h1>
-          <br></br>
-          <p className="w-4/5 mx-auto">
-            What began as a simple curiosity for making a video game during the
-            Covid-19 pandemic has ignited my passion for all things software,
-            and a lifelong drive to keep learning and building.
-          </p>
-        </div>
-      </PopInBlock>
-      <PopInBlock>
-        <div>
-          <div className="">
-            <div className="mt-2 w-1/2 border-r-2 border-white h-16"></div>
-          </div>
-          <div className="">
-            <div className="relative left-1/2 w-16 translate-x-[-50%] h-16 border-2 border-white rounded-full">
-              <div className="relative left-1/2 top-1/2 w-16 translate-x-[-50%] translate-y-[-50%] text-center">
+        {/* Root node — a station on the rail */}
+        <PopInBlock variant="materialize">
+          <div className="flex items-center gap-5 md:gap-8 pt-2 pb-2">
+            <div className="relative flex-none w-4 flex justify-center">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/25 bg-[#121212] text-xl">
                 🌺
-              </div>
+              </span>
             </div>
+            <p className="text-[0.7rem] uppercase tracking-[0.18em] text-white/45 font-montserrat">
+              Where it all began · Oʻahu, Hawaiʻi
+            </p>
           </div>
-        </div>
-      </PopInBlock>
+        </PopInBlock>
+      </div>
     </div>
   );
 }

@@ -20,7 +20,7 @@ import Youtube from "react-youtube";
 import GradientBG from "../components/gradientbg";
 import MyPath from "../components/myPath";
 import TechStack from "../components/techStack";
-import Typewriter from "../components/Typewriter";
+import LivingGreeting from "../components/LivingGreeting";
 
 function YoutubeVideo(props: any) {
   const opts = {
@@ -98,27 +98,32 @@ function ScrollDown(props: any) {
       window.removeEventListener("scroll", handleScroll);
     };
   });
+  const items = [
+    { href: "#whoIam", label: "Me" },
+    { href: "#path", label: "Path" },
+    { href: "#projects", label: "Projects" },
+    { href: "#blogs", label: "Blog" },
+  ];
   return (
-    <>
-      {/* <h2 className={`${styles.scrollDownTitle} transition-duration-5 lg:text-[2vw] text-2xl text-center font-thin`} ref={scrollTitle} >- scroll down -</h2> */}
-      <div
-        ref={scrollbar}
-        className={`mt-4 ${styles.scrollBarTitle} flex flex-row justify-center items-center gap-8 w-[25rem] md:w-1/2 text-center p-4  lg:text-[2vw] text-2xl underline font-thin ${styles.centerRelX}`}
-      >
-        <a href="#whoIam" className="hover:text-blue-300 duration-300">
-          Me
+    <div
+      ref={scrollbar}
+      className={`mt-10 md:mt-12 ${styles.scrollBarTitle} ${styles.centerRelX} flex flex-row justify-center items-center gap-7 md:gap-10 font-cormorant`}
+    >
+      {items.map((it, i) => (
+        <a
+          key={it.href}
+          href={it.href}
+          style={{ animationDelay: `${650 + i * 120}ms` }}
+          className="navHint group relative text-white/55 hover:text-white transition-colors duration-300 md:text-[1.7vw] text-xl"
+        >
+          {it.label}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute left-1/2 -bottom-1 h-px w-[72%] -translate-x-1/2 origin-center scale-x-0 bg-white/60 transition-transform duration-300 ease-out group-hover:scale-x-100"
+          />
         </a>
-        <a href="#path" className="hover:text-blue-300 duration-300">
-          Path
-        </a>
-        <a href="#projects" className="hover:text-blue-300 duration-300">
-          Projects
-        </a>
-        <a href="#blogs" className="hover:text-blue-300 duration-300">
-          Blog
-        </a>
-      </div>
-    </>
+      ))}
+    </div>
   );
 }
 
@@ -173,9 +178,7 @@ const Index = (props: props) => {
 
         <div className={`${styles.mainTitleName} ${styles.animateFadeIn}`}>
           <div className={styles.centerRel}>
-            <div className="text-center px-2 font-cormorant font-light leading-[1.02] tracking-[0.005em] md:text-[7vw] text-[56px] whitespace-nowrap">
-              <Typewriter text="Hi, I’m Jaxon" />
-            </div>
+            <LivingGreeting />
             <ScrollDown />
           </div>
         </div>
@@ -184,24 +187,24 @@ const Index = (props: props) => {
             <h1 style={{ textAlign: "center" }} className="text-5xl"></h1>
             <br></br>
             <div
-              className={`grid md:grid-cols-2 w-full h-full py-4 relative left-1/2 translate-x-[-50%] gap-x-8  bg-[#121212] `}
+              className={`grid md:grid-cols-2 w-full h-full py-4 relative left-1/2 translate-x-[-50%] gap-x-8`}
             >
-              <PopInBlock>
+              <PopInBlock variant="materialize">
                 <div
-                  className={`${styles.frontImage} mt-2 md:ml-10 w-[280px] h-[392px] md:w-[320px] md:h-[448px] lg:w-[380px] lg:h-[532px] xl:w-[480px] xl:h-[672px] 2xl:w-[580px] 2xl:h-[812px]`}
+                  className={`${styles.frontImage} ${styles.stageImage} mt-2 md:ml-10 w-[280px] h-[392px] md:w-[320px] md:h-[448px] lg:w-[380px] lg:h-[532px] xl:w-[480px] xl:h-[672px] 2xl:w-[580px] 2xl:h-[812px]`}
                 >
                   <Image
                     alt="front picture"
                     src="/aura_pic.jpg"
                     fill
-                    className="rounded-md object-cover"
+                    className="rounded-2xl object-cover"
                   />
                 </div>
               </PopInBlock>
-              <PopInBlock>
+              <PopInBlock variant="materialize" delay={100}>
                 <div className={`w-full flex px-4 md:p-0 mt-4 md:mt-0 `}>
                   <div
-                    className={`${styles.fadedBg} p-6 rounded-xl md:w-[87%] `}
+                    className={`${styles.stagePanel} p-6 md:p-8 rounded-2xl md:w-[87%] `}
                   >
                     <h2
                       className={`${styles.fontNormal} text-2xl xl:text-3xl 2xl:text-4xl md:text-left text-center`}

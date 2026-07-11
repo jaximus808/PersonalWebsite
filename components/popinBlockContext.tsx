@@ -51,9 +51,17 @@ export function ScrollObserverProvider({ children }: { children: ReactNode }) {
 interface PopInBlockProps {
   children: ReactNode;
   delay?: number;
+  // "rise" (default): gentle fade + slide up.
+  // "materialize": condenses out of the stage — blurred, shrunk and low,
+  // then sharpens, scales up and settles. Reduced-motion falls back to fade.
+  variant?: "rise" | "materialize";
 }
 
-export function PopInBlock({ children, delay = 0 }: PopInBlockProps) {
+export function PopInBlock({
+  children,
+  delay = 0,
+  variant = "rise",
+}: PopInBlockProps) {
   const blockRef = useRef<HTMLDivElement>(null);
   const { observer, visibleElements } = useContext(ScrollContext);
   const isVisible = visibleElements.has(blockRef.current as Element);
@@ -65,6 +73,22 @@ export function PopInBlock({ children, delay = 0 }: PopInBlockProps) {
       return () => observer.unobserve(element);
     }
   }, [observer]);
+
+  if (variant === "materialize") {
+    return (
+      <div
+        ref={blockRef}
+        className={`transition-all duration-500 ease-out will-change-transform motion-reduce:transition-opacity motion-reduce:duration-300 ${
+          isVisible
+            ? "opacity-100 translate-y-0 scale-100 blur-0"
+            : "opacity-0 translate-y-6 scale-[0.98] blur-[4px] motion-reduce:translate-y-0 motion-reduce:scale-100 motion-reduce:blur-0"
+        }`}
+        style={{ transitionDelay: `${delay}ms` }}
+      >
+        {children}
+      </div>
+    );
+  }
 
   return (
     <div
