@@ -4,61 +4,85 @@ import { PopInBlock } from "./popinBlockContext";
 type Domain = {
   index: string;
   title: string;
+  // Short label above the title — used to flag the two focus areas.
+  eyebrow?: string;
   blurb: string;
+  // Concrete things actually built/shipped — grounded in the real work on
+  // "My Path" (Tesla, Spectrum, WashU Robotics, Health XR, Devstac …).
+  proof: string[];
   tech: string[];
 };
 
-// Curated by domain rather than a flat wall of logos — each area names what was
-// actually built, then the tools behind it. Grounded in the real work on "My Path".
-const domains: Domain[] = [
+// The two areas I go deepest in — given real estate and a "what I built"
+// column so the depth reads, instead of a flat wall of logos.
+const focusDomains: Domain[] = [
   {
     index: "01",
     title: "Distributed & Backend Systems",
+    eyebrow: "Focus area",
     blurb:
-      "Fault-tolerant services and backend infrastructure — distributed systems and energy-platform work at Tesla, cloud backend controllers at Spectrum, and real-time APIs that hold up under load.",
+      "Where I go deepest — microservices and the infrastructure underneath them, built to stay correct while the load and the failure modes pile up.",
+    proof: [
+      "Built microservices powering energy-platform backend infrastructure at Tesla",
+      "Cloud backend controllers for Spectrum's Service Delivery platform",
+      "Real-time APIs and services over Supabase / Postgres at WashU's Devstac",
+      "Joining Capital One's Cloud team to keep building at scale",
+    ],
     tech: [
       "Go",
       "Java",
+      "Microservices",
       "Node.js",
       "WebSockets",
-      "Real-time Systems",
       "Docker",
       "REST APIs",
+      "PostgreSQL",
     ],
   },
   {
     index: "02",
     title: "Robotics & Low-Level Systems",
+    eyebrow: "Focus area",
     blurb:
-      "Project lead for WashU Robotics, paired with a deep dive into the machine itself — ROS control, x86 assembly, and the concurrency and memory model underneath.",
+      "The other end of the stack — machines that have to survive the physical world, and a real understanding of the concurrency and memory model they run on.",
+    proof: [
+      "Project Lead for WashU Robotics, driving the team's ROS-based control work",
+      "Teach x86 assembly, C, and the memory model as a System Software TA",
+      "Concurrency and parallelism from Parallel & Concurrent Programming coursework",
+    ],
     tech: [
       "C",
       "C++",
       "ROS",
       "x86 Assembly",
       "Concurrency",
+      "Parallelism",
       "Memory Systems",
     ],
   },
+];
+
+// Strong supporting areas — kept tighter so the focus areas lead.
+const supportingDomains: Domain[] = [
   {
     index: "03",
     title: "Full-Stack Product",
     blurb:
-      "End-to-end products people actually use — typed React front ends over well-designed APIs, databases, and auth, shipped from prototype to production.",
-    tech: [
-      "TypeScript",
-      "React",
-      "Next.js",
-      "Supabase",
-      "Prisma",
-      "Tailwind",
+      "End-to-end products people actually use, shipped from prototype to production.",
+    proof: [
+      "Won #1 at STL Startup Tech Week with a Meta Quest XR health assistant",
+      "Flashcard backend: full-text search, tagging, and privacy controls",
     ],
+    tech: ["TypeScript", "React", "Next.js", "Supabase", "Prisma", "Tailwind"],
   },
   {
     index: "04",
     title: "Applied AI",
-    blurb:
-      "Language models wired into real products — AI agents at Tesla, medical-document analysis inside an XR assistant, and LLM-backed features end to end.",
+    blurb: "Language models wired into real products, end to end.",
+    proof: [
+      "AI agents at Tesla",
+      "LLM analysis of medical documents inside an XR assistant",
+    ],
     tech: ["Python", "AI Agents", "LLM Integration", "FastAPI"],
   },
 ];
@@ -74,7 +98,66 @@ function Chip({ label }: { label: string }) {
   );
 }
 
-function DomainCard({ domain }: { domain: Domain }) {
+function ProofList({ items }: { items: string[] }) {
+  return (
+    <ul className="space-y-2.5">
+      {items.map((item) => (
+        <li
+          key={item}
+          className="flex gap-2.5 text-sm md:text-[0.95rem] text-white/70 font-light leading-relaxed"
+        >
+          <span className="mt-2 h-1 w-1 flex-none rounded-full bg-blue-300/60" />
+          {item}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+// Featured card for a focus area: an editorial two-column split — the pitch on
+// the left, the concrete "what I've built" ledger on the right.
+function FocusCard({ domain }: { domain: Domain }) {
+  return (
+    <div className={`${styles.stagePanel} h-full rounded-2xl p-7 md:p-9`}>
+      <div className="flex flex-col md:flex-row gap-7 md:gap-12">
+        <div className="md:w-[42%]">
+          {domain.eyebrow ? (
+            <p className="text-[0.7rem] uppercase tracking-[0.18em] text-blue-300/80 font-montserrat">
+              {domain.eyebrow}
+            </p>
+          ) : null}
+          <div className="mt-3 flex items-baseline gap-3">
+            <span className="font-cormorant font-light text-2xl text-blue-300/70 leading-none">
+              {domain.index}
+            </span>
+            <h3 className="font-cormorant font-light text-3xl md:text-4xl text-white leading-tight">
+              {domain.title}
+            </h3>
+          </div>
+          <p className="mt-4 text-sm md:text-base text-white/70 font-light leading-relaxed">
+            {domain.blurb}
+          </p>
+        </div>
+        <div className="md:w-[58%] md:border-l md:border-white/10 md:pl-12">
+          <p className="text-[0.7rem] uppercase tracking-[0.16em] text-white/45 font-montserrat">
+            What I&apos;ve built
+          </p>
+          <div className="mt-4">
+            <ProofList items={domain.proof} />
+          </div>
+        </div>
+      </div>
+      <div className="mt-7 flex flex-wrap gap-2 border-t border-white/[0.06] pt-6">
+        {domain.tech.map((t) => (
+          <Chip key={t} label={t} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Tighter card for a supporting area.
+function SupportingCard({ domain }: { domain: Domain }) {
   return (
     <div className={`${styles.stagePanel} h-full rounded-2xl p-6 md:p-7`}>
       <div className="flex items-baseline gap-3">
@@ -88,7 +171,10 @@ function DomainCard({ domain }: { domain: Domain }) {
       <p className="mt-4 text-sm md:text-base text-white/70 font-light leading-relaxed">
         {domain.blurb}
       </p>
-      <div className="mt-5 flex flex-wrap gap-2">
+      <div className="mt-5">
+        <ProofList items={domain.proof} />
+      </div>
+      <div className="mt-6 flex flex-wrap gap-2">
         {domain.tech.map((t) => (
           <Chip key={t} label={t} />
         ))}
@@ -109,13 +195,27 @@ export default function TechStack() {
           My Tech Stack
         </h1>
         <div className="mt-5 mx-auto h-px w-16 bg-white/25" />
+        <p className="mt-6 mx-auto max-w-xl text-sm md:text-base text-white/60 font-light leading-relaxed">
+          I&apos;m happiest deep in systems — microservices that hold up under
+          load, and robots that have to survive the physical world.
+          Everything below is grounded in something I&apos;ve actually shipped.
+        </p>
       </div>
 
-      {/* Domain grid */}
-      <div className="mx-auto mt-14 grid w-[90%] md:w-[80%] max-w-4xl grid-cols-1 md:grid-cols-2 gap-5">
-        {domains.map((domain, i) => (
+      {/* Focus areas — the depth leads */}
+      <div className="mx-auto mt-14 flex w-[90%] md:w-[80%] max-w-4xl flex-col gap-5">
+        {focusDomains.map((domain, i) => (
           <PopInBlock key={domain.index} variant="materialize" delay={i * 80}>
-            <DomainCard domain={domain} />
+            <FocusCard domain={domain} />
+          </PopInBlock>
+        ))}
+      </div>
+
+      {/* Supporting areas */}
+      <div className="mx-auto mt-5 grid w-[90%] md:w-[80%] max-w-4xl grid-cols-1 md:grid-cols-2 gap-5">
+        {supportingDomains.map((domain, i) => (
+          <PopInBlock key={domain.index} variant="materialize" delay={i * 80}>
+            <SupportingCard domain={domain} />
           </PopInBlock>
         ))}
       </div>

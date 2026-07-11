@@ -1,7 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import styles from "../styles/Home.module.css";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import Background from "../components/backgroundThree";
@@ -22,31 +21,10 @@ import jsonwebtoken from "jsonwebtoken";
 
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
 import UnderConstruction from "../components/UnderConstruction";
-import YouTube from "react-youtube";
 import GradientBG from "../components/gradientbg";
 
 const PROJECTS_PER_PAGE = 6;
 
-function YoutubeVideo(props: any) {
-  const opts = {
-    height: "100%",
-    width: "95%",
-    playerVars: {
-      autoplay: 0,
-    },
-  };
-
-  return (
-    <div className={`${styles.centerRelX} ${props.className}`}>
-      <YouTube
-        className="relative flex iterms-center justify-center"
-        style={{ width: "100%", height: "100%" }}
-        videoId={props.vId}
-        opts={opts}
-      />
-    </div>
-  );
-}
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const parsedCookies = cookies.parse(
     context.req.headers.cookie ? context.req.headers.cookie : ""
@@ -385,13 +363,14 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ auth }) => {
           </div>
         )}
 
-        <div>
-          <h1 className="text-5xl font-bold text-white mb-8 text-center mt-10">
+        <div className="pt-24 md:pt-28 text-center">
+          <p className="text-xs uppercase tracking-[0.18em] text-white/50 font-montserrat">
+            Things I&apos;ve designed, built &amp; shipped
+          </p>
+          <h1 className="mt-3 font-cormorant font-light text-5xl md:text-6xl text-white">
             My Projects
           </h1>
-          <div className="">
-            <div className="mt-2 relative left-1/2 w-1/2 translate-x-[-50%] border-t-2 border-white h-2 "></div>
-          </div>
+          <div className="mt-5 mx-auto h-px w-16 bg-white/25" />
         </div>
 
         {loading ? (
@@ -422,23 +401,31 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ auth }) => {
                       </div>
                     )}
 
-                    {/* Project Media */}
+                    {/* Project Media — uniform 16:9 thumbnail for both
+                        screenshots and YouTube videos so every card lines up */}
                     {project.mediaLink && (
-                      <div className="mb-4 rounded-xl overflow-hidden">
-                        {project.youtube ? (
-                          <div className="aspect-video flex items-center justify-center">
-                            <YoutubeVideo
-                              className={"h-full w-full rounded-lg"}
-                              vId={project.mediaLink}
-                            />
-                          </div>
-                        ) : (
-                          <img
-                            src={project.mediaLink}
-                            alt={project.name}
-                            className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
-                          />
-                        )}
+                      <div className="mb-4 aspect-video rounded-xl overflow-hidden bg-white/5">
+                        <img
+                          src={
+                            project.youtube
+                              ? `https://img.youtube.com/vi/${project.mediaLink}/maxresdefault.jpg`
+                              : project.mediaLink
+                          }
+                          alt={project.name}
+                          loading="lazy"
+                          onError={(e) => {
+                            // maxresdefault is missing for some videos —
+                            // fall back to the always-present hqdefault.
+                            const img = e.currentTarget;
+                            if (
+                              project.youtube &&
+                              img.src.includes("maxresdefault")
+                            ) {
+                              img.src = `https://img.youtube.com/vi/${project.mediaLink}/hqdefault.jpg`;
+                            }
+                          }}
+                          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
+                        />
                       </div>
                     )}
 

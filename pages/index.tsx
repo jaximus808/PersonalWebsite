@@ -22,6 +22,21 @@ import MyPath from "../components/myPath";
 import TechStack from "../components/techStack";
 import LivingGreeting from "../components/LivingGreeting";
 
+// Distill a blog's markup-lite content into a quiet plain-text preview:
+// drop image markers (*<i>...*), unwrap bold headings (*<b>...*), keep prose.
+function blogPreview(content: string): string {
+  return content
+    .split("*")
+    .map((segment) => segment.trim())
+    .filter(
+      (segment) => segment.length > 0 && segment.substring(0, 3) !== "<i>"
+    )
+    .map((segment) =>
+      segment.substring(0, 3) === "<b>" ? segment.substring(3) : segment
+    )
+    .join(" ");
+}
+
 function YoutubeVideo(props: any) {
   const opts = {
     height: "100%",
@@ -338,104 +353,68 @@ const Index = (props: props) => {
 
             <TechStack />
             <div id="projects"></div>
-            <div className={`${styles.textContainer}  py-4  text-white mt-16`}>
-              <Link href={"/projects"}>
-                <h1
-                  className="font-thin"
-                  style={{
-                    fontSize: "400%",
-                    textAlign: "center",
-                    cursor: "pointer",
-                  }}
-                >
-                  My Recent Projects 🧑‍💻
+            <div className={`pt-4 mt-24 ${styles.textContainer} text-white`}>
+              {/* Section header — matches the My Path / Tech Stack cadence */}
+              <div className="text-center">
+                <p className="text-xs uppercase tracking-[0.18em] text-white/50 font-montserrat">
+                  A few things I&apos;ve built
+                </p>
+                <h1 className="mt-3 font-cormorant font-light text-5xl md:text-6xl text-white">
+                  Recent Projects
                 </h1>
-              </Link>
-              <div className="">
-                <div className="mt-4 relative left-1/2 w-1/2 translate-x-[-50%] border-b-2 border-white h-2 "></div>
+                <div className="mt-5 mx-auto h-px w-16 bg-white/25" />
               </div>
-              <div className="mt-4 flex items-center justify-center">
+
+              <div className="mt-14 flex items-center justify-center">
                 {frontData.pastProjFav ? (
                   frontData.pastProjFav.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-3 flex mt-4 gap-8 md:gap-4 lg:gap-4 p-4 px-8 max-w-[90rem]">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-6 px-8 w-full max-w-6xl">
                       {frontData.pastProjFav.map((data: any) => {
                         return (
-                          <PopInBlock key={data.id}>
+                          <PopInBlock key={data.id} variant="materialize">
                             <div
-                              key={data.id}
-                              className="h-full w-full flex justify-center"
+                              onClick={() => {
+                                window.location.href = `/projects/${data.name}`;
+                              }}
+                              className={`${styles.stagePanel} group h-full overflow-hidden rounded-2xl cursor-pointer`}
                             >
-                              <div className=" max-w-[80rem]">
-                                <div
-                                  onClick={() => {
-                                    window.location.href = `/projects/${data.name}`;
-                                  }}
-                                  className={`${styles.projectContainerText} ${styles.gradent}  rounded-lg py-12 px-4  bg-[#343434] cursor-pointer`}
-                                  style={{ textAlign: "left" }}
-                                >
-                                  <div className="">
-                                    {
-                                      data.youtube ? (
-                                        <div
-                                          className={` ${styles.journeyImage} md:w-full  `}
-                                        >
-                                          <Suspense fallback={<h3>loading</h3>}>
-                                            <YoutubeVideo
-                                              className={"h-[40vw] md:h-[18vw]"}
-                                              vId={data.mediaLink}
-                                            />
-                                          </Suspense>
-                                        </div>
-                                      ) : (
-                                        <div
-                                          className={`${styles.journeyImage} w-[15rem] sm:w-96 h-36 sm:h-72`}
-                                        >
-                                          <Image
-                                            alt="front picture"
-                                            src={data.mediaLink}
-                                            fill
-                                            style={{ borderRadius: "0.5rem" }}
-                                          />
-                                        </div>
-                                      )
-                                      // <Image alt='media picture' src={data.mediaLink} className='relative left-1/2 translate-x-[-50%]' width={0} height={0} style={{ width: '100%', height: 'auto' }}/>
+                              {data.youtube ? (
+                                <div className="relative aspect-video w-full overflow-hidden bg-white/5">
+                                  <Suspense
+                                    fallback={
+                                      <div className="flex h-full w-full items-center justify-center text-xs uppercase tracking-[0.18em] text-white/40">
+                                        Loading…
+                                      </div>
                                     }
-                                    <div className="px-6 mt-4">
-                                      <h2
-                                        className="text-3xl font-bold font-italic mt-2"
-                                        style={{
-                                          overflowWrap: "break-word",
-                                          cursor: "pointer",
-                                          textDecoration: "",
-                                        }}
-                                      >
-                                        {data.name.replace(/_/g, " ")}
-                                      </h2>
-                                      <h3
-                                        className={`text-md mt-4 italic`}
-                                        style={{
-                                          overflow: "hidden",
-                                          WebkitLineClamp: 4,
-                                          WebkitBoxOrient: "vertical",
-                                          display: "-webkit-box",
-                                        }}
-                                      >
-                                        {data.projectDate}
-                                      </h3>
-                                      <h3
-                                        className={`text-md mt-4`}
-                                        style={{
-                                          overflow: "hidden",
-                                          WebkitLineClamp: 4,
-                                          WebkitBoxOrient: "vertical",
-                                          display: "-webkit-box",
-                                        }}
-                                      >
-                                        {data.shortDescription}
-                                      </h3>
-                                    </div>
-                                  </div>
+                                  >
+                                    <YoutubeVideo
+                                      className={"h-full w-full"}
+                                      vId={data.mediaLink}
+                                    />
+                                  </Suspense>
                                 </div>
+                              ) : (
+                                <div className="relative aspect-video w-full overflow-hidden bg-white/5">
+                                  <Image
+                                    alt={data.name.replace(/_/g, " ")}
+                                    src={data.mediaLink}
+                                    fill
+                                    className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                                  />
+                                </div>
+                              )}
+                              <div className="p-6">
+                                <h2 className="font-cormorant font-light text-2xl md:text-3xl text-white leading-tight transition-colors duration-300 group-hover:text-blue-300">
+                                  {data.name.replace(/_/g, " ")}
+                                </h2>
+                                {data.projectDate ? (
+                                  <p className="mt-2 text-[0.7rem] uppercase tracking-[0.16em] text-white/45 font-montserrat">
+                                    {data.projectDate}
+                                  </p>
+                                ) : null}
+                                <p className="mt-3 text-sm text-white/65 font-light leading-relaxed line-clamp-3">
+                                  {data.shortDescription}
+                                </p>
                               </div>
                             </div>
                           </PopInBlock>
@@ -444,135 +423,131 @@ const Index = (props: props) => {
                     </div>
                   ) : (
                     <PopInBlock>
-                      <h3 className="text-center text-3xl">
-                        Sorry Projects Could Not Be Loaded, Try Again!
-                      </h3>
+                      <p className="text-center text-sm uppercase tracking-[0.18em] text-white/50 font-montserrat">
+                        Sorry, projects could not be loaded — try again.
+                      </p>
                     </PopInBlock>
                   )
                 ) : (
                   <PopInBlock>
-                    <h3 className="text-center text-3xl">Loading...</h3>
+                    <p className="text-center text-sm uppercase tracking-[0.18em] text-white/50 font-montserrat">
+                      Loading…
+                    </p>
                   </PopInBlock>
                 )}
+              </div>
+
+              {/* Connective cue → the full projects page */}
+              <div className="mt-12 text-center">
+                <Link
+                  href={"/projects"}
+                  className="inline-flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.18em] text-blue-300/80 hover:text-blue-300 transition-colors duration-300 font-montserrat"
+                >
+                  View all projects
+                  <span aria-hidden="true">→</span>
+                </Link>
               </div>
             </div>
           </div>
 
           <div id="blogs"></div>
-          <div
-            className={`${styles.textContainer} ${styles.gradentBlock2} py-4 mt-12 pb-12 text-white `}
-            style={{ textAlign: "center" }}
-          >
-            <Link href={"/blog"}>
-              <span className="hover:text-[#a3cbff] duration-200 text-[350%] cursor-pointer font-thin">
-                Recent Blog 💡
-              </span>
-            </Link>
-            <div className="">
-              <div className="mt-2 relative left-1/2 w-1/2 translate-x-[-50%] border-t-2 border-white h-2 "></div>
+          <div className={`pt-4 mt-24 pb-4 ${styles.textContainer} text-white`}>
+            {/* Section header — same cadence as the rest of the page */}
+            <div className="text-center">
+              <p className="text-xs uppercase tracking-[0.18em] text-white/50 font-montserrat">
+                Thoughts, notes &amp; what I&apos;m building
+              </p>
+              <h1 className="mt-3 font-cormorant font-light text-5xl md:text-6xl text-white">
+                From the Blog
+              </h1>
+              <div className="mt-5 mx-auto h-px w-16 bg-white/25" />
             </div>
 
             {frontData.recentBlogs ? (
               frontData.recentBlogs.length == 0 ? (
                 <PopInBlock>
-                  <h3 style={{ textAlign: "center", fontSize: "2vw" }}>
-                    Sorry blogs could not be loaded, try again!
-                  </h3>
+                  <p className="mt-12 text-center text-sm uppercase tracking-[0.18em] text-white/50 font-montserrat">
+                    Sorry, blogs could not be loaded — try again.
+                  </p>
                 </PopInBlock>
               ) : (
-                frontData.recentBlogs.map((data: any) => {
-                  return (
-                    <PopInBlock key={data.id}>
-                      <div
-                        onClick={() => {
-                          window.location.href = `/blogs/${data.id}`;
-                        }}
-                        className={`${styles.gradentBlog} bg-[#2C2C2E] hover:bg-[#2C2C2E] pt-4 pb-8 px-8 mt-4  w-3/5 relative left-1/2 translate-x-[-50%] rounded-md cursor-pointer duration-200`}
-                        style={{ textAlign: "left" }}
-                      >
-                        <div>
-                          <div className={`flex w-full  `}>
-                            <div className="w-[15rem] h-[15rem]">
-                              {
-                                /* // eslint-disable-next-line @next/next/no-img-element */
-                                <img
-                                  alt="front picture"
-                                  src={data.mediaPic}
-                                  style={{
-                                    borderRadius: "0.5rem",
-                                    width: "100%",
-                                    height: "100%",
-                                    objectFit: "cover",
-                                  }}
-                                />
-                              }
+                <div className="mx-auto w-[90%] max-w-3xl mt-14">
+                  {/* Editorial list — mirrors the /blog page */}
+                  <div className="border-t border-white/10 text-left">
+                    {frontData.recentBlogs.map((data: any) => (
+                      <PopInBlock key={data.id} variant="materialize">
+                        <div
+                          onClick={() => {
+                            window.location.href = `/blogs/${data.id}`;
+                          }}
+                          className="group block cursor-pointer"
+                        >
+                          <article className="grid grid-cols-1 md:grid-cols-[1fr_auto] items-start gap-6 md:gap-10 py-9 border-b border-white/10 transition-colors duration-500 group-hover:border-white/20">
+                            <div className="min-w-0">
+                              <p className="flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.18em] text-white/45 font-montserrat">
+                                {data.datePosted
+                                  ? new Date(
+                                      data.datePosted
+                                    ).toLocaleDateString("en-US", {
+                                      year: "numeric",
+                                      month: "long",
+                                      day: "numeric",
+                                    })
+                                  : ""}
+                              </p>
+
+                              <h2 className="mt-3 font-cormorant font-light text-3xl md:text-4xl text-white leading-tight transition-colors duration-300 group-hover:text-blue-300">
+                                {data.title}
+                              </h2>
+
+                              <p className="mt-3 text-sm md:text-base text-white/60 font-light leading-relaxed line-clamp-2">
+                                {blogPreview(data.content)}
+                              </p>
+
+                              <span className="mt-5 inline-flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.18em] text-blue-300/80 transition-colors duration-300 group-hover:text-blue-300">
+                                Read
+                                <span
+                                  aria-hidden="true"
+                                  className="transition-transform duration-300 group-hover:translate-x-1"
+                                >
+                                  →
+                                </span>
+                              </span>
                             </div>
-                          </div>
+
+                            {data.mediaPic && (
+                              <div className="hidden md:block relative h-28 w-44 flex-none overflow-hidden rounded-xl ring-1 ring-white/10">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={data.mediaPic}
+                                  alt={data.title}
+                                  className="h-full w-full object-cover opacity-80 transition-opacity duration-500 group-hover:opacity-100"
+                                />
+                              </div>
+                            )}
+                          </article>
                         </div>
-                        <div className="mt-4"></div>
-                        <h2>
-                          <div
-                            className={`text-2xl font-semibold hover:underline `}
-                            style={{
-                              cursor: "pointer",
-                              overflowWrap: "break-word",
-                            }}
-                          >
-                            {data.title}
-                          </div>
-                        </h2>
-                        <div>
-                          <h3
-                            className="text-lg font-thin"
-                            style={{
-                              overflow: "hidden",
-                              WebkitLineClamp: 3,
-                              WebkitBoxOrient: "vertical",
-                              display: "-webkit-box",
-                            }}
-                          >
-                            <i>
-                              {new Date(data.datePosted).toLocaleDateString()}
-                            </i>
-                          </h3>
-                          <br></br>
-                          <h3
-                            className="font-light text-sm"
-                            style={{
-                              overflow: "hidden",
-                              WebkitLineClamp: 3,
-                              WebkitBoxOrient: "vertical",
-                              display: "-webkit-box",
-                            }}
-                          >
-                            {data.content
-                              .split("*")
-                              .map((data: any, key: any) => {
-                                if (data.length == 0) return "";
-                                if (
-                                  data.length >= 3 &&
-                                  data.substring(0, 3) == "<i>"
-                                ) {
-                                  return "";
-                                } else if (
-                                  data.length >= 3 &&
-                                  data.substring(0, 3) == "<b>"
-                                ) {
-                                  return data.substring(3);
-                                } else {
-                                  return data;
-                                }
-                              })}
-                          </h3>
-                        </div>
-                      </div>
-                    </PopInBlock>
-                  );
-                })
+                      </PopInBlock>
+                    ))}
+                  </div>
+
+                  {/* Connective cue → the full blog */}
+                  <div className="mt-10 text-center">
+                    <Link
+                      href={"/blog"}
+                      className="inline-flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.18em] text-blue-300/80 hover:text-blue-300 transition-colors duration-300 font-montserrat"
+                    >
+                      Read the blog
+                      <span aria-hidden="true">→</span>
+                    </Link>
+                  </div>
+                </div>
               )
             ) : (
               <PopInBlock>
-                <h3 className="text-center text-3xl">Loading...</h3>
+                <p className="mt-12 text-center text-sm uppercase tracking-[0.18em] text-white/50 font-montserrat">
+                  Loading…
+                </p>
               </PopInBlock>
             )}
           </div>

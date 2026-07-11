@@ -16,8 +16,25 @@ import jsonwebtoken from "jsonwebtoken";
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
 import UnderConstruction from "../components/UnderConstruction";
 import GradientBG from "../components/gradientbg";
+import {
+  ScrollObserverProvider,
+  PopInBlock,
+} from "../components/popinBlockContext";
 
 const BLOGS_PER_PAGE = 6;
+
+// Distill a blog's markup-lite content into a quiet plain-text preview:
+// drop image markers (*<i>...*), unwrap bold headings (*<b>...*), keep prose.
+function blogPreview(content: string): string {
+  return content
+    .split("*")
+    .map((segment) => segment.trim())
+    .filter((segment) => segment.length > 0 && segment.substring(0, 3) !== "<i>")
+    .map((segment) =>
+      segment.substring(0, 3) === "<b>" ? segment.substring(3) : segment
+    )
+    .join(" ");
+}
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const parsedCookies = cookies.parse(
@@ -155,7 +172,8 @@ const BlogPage: React.FC<BlogPageProps> = ({ auth }) => {
   };
 
   return (
-    <div>
+    <ScrollObserverProvider>
+      <div>
       <Head>
         <title>Jaxon Poentis</title>
         <meta name="description" content="Personal Page For Jaxon Poentis" />
@@ -274,136 +292,119 @@ const BlogPage: React.FC<BlogPageProps> = ({ auth }) => {
             </div>
           </div>
         )}
-        <div>
-          <h1 className="text-5xl font-bold text-white mb-8 text-center mt-10">
-            My Blogs
+        <div className="pt-24 md:pt-28 text-center">
+          <p className="text-xs uppercase tracking-[0.18em] text-white/50 font-montserrat">
+            Thoughts, notes & what I&apos;m building
+          </p>
+          <h1 className="mt-3 font-cormorant font-light text-5xl md:text-6xl text-white">
+            The Blog
           </h1>
-          <div className="">
-            <div className="mt-2 relative left-1/2 w-1/2 translate-x-[-50%] border-t-2 border-white h-2 "></div>
-          </div>
+          <div className="mt-5 mx-auto h-px w-16 bg-white/25" />
         </div>
         {loading ? (
-          <div className="min-h-screen flex items-center justify-center">
-            <div className="text-white text-2xl">Blogs Loading...</div>
+          <div className="min-h-[40vh] flex items-center justify-center">
+            <div className="text-sm uppercase tracking-[0.18em] text-white/50 font-montserrat">
+              Loading…
+            </div>
           </div>
         ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12 py-4 px-12 ">
+          <div className="mx-auto w-[90%] max-w-3xl mt-16">
+            {/* Editorial list — one calm row per post, hairline dividers */}
+            <div className="border-t border-white/10">
               {blogs
                 .slice(
                   blogPage * BLOGS_PER_PAGE,
                   Math.min((blogPage + 1) * BLOGS_PER_PAGE, blogs.length)
                 )
                 .map((blog) => (
-                  <Link
-                    key={blog.id}
-                    className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 cursor-pointer group"
-                    href={`/blogs/${blog.id}`}
-                  >
-                    {/* Blog Image */}
-                    {blog.mediaPic && (
-                      <div className="mb-4 rounded-xl overflow-hidden">
-                        <img
-                          src={blog.mediaPic}
-                          alt={blog.title}
-                          className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
-                        />
-                      </div>
-                    )}
+                  <PopInBlock key={blog.id} variant="materialize">
+                    <Link href={`/blogs/${blog.id}`} className="group block">
+                      <article className="grid grid-cols-1 md:grid-cols-[1fr_auto] items-start gap-6 md:gap-10 py-9 border-b border-white/10 transition-colors duration-500 group-hover:border-white/20">
+                        <div className="min-w-0">
+                          <p className="flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.18em] text-white/45 font-montserrat">
+                            <Calendar className="w-3.5 h-3.5" />
+                            {blog.datePosted
+                              ? new Date(blog.datePosted).toLocaleDateString(
+                                  "en-US",
+                                  {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                  }
+                                )
+                              : ""}
+                          </p>
 
-                    {/* Blog Title */}
-                    <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-blue-200 transition-colors">
-                      {blog.title}
-                    </h3>
+                          <h2 className="mt-3 font-cormorant font-light text-3xl md:text-4xl text-white leading-tight transition-colors duration-300 group-hover:text-blue-300">
+                            {blog.title}
+                          </h2>
 
-                    {/* Blog Date */}
-                    <div className="flex items-center text-white/70 mb-4">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      <span className="text-sm">
-                        {blog.datePosted
-                          ? new Date(blog.datePosted).toDateString()
-                          : ""}
-                      </span>
-                    </div>
+                          <p className="mt-3 text-sm md:text-base text-white/60 font-light leading-relaxed line-clamp-2">
+                            {blogPreview(blog.content)}
+                          </p>
 
-                    {/* Blog Content Preview */}
-                    <div className="text-white/80 line-clamp-3 mb-4">
-                      {blog.content.split("*").map((data: any, key: any) => {
-                        if (data.length == 0) return <div key={key}></div>;
-                        if (data.length >= 3 && data.substring(0, 3) == "<i>") {
-                          return <></>;
-                        } else if (
-                          data.length >= 3 &&
-                          data.substring(0, 3) == "<b>"
-                        ) {
-                          return (
-                            <h3
-                              key={key}
-                              className="font-bold"
-                              style={{ whiteSpace: "pre-wrap" }}
-                            >
-                              {data.substring(3)}
-                            </h3>
-                          );
-                        } else {
-                          return (
-                            <h3 key={key} style={{ whiteSpace: "pre-wrap" }}>
-                              {data}
-                            </h3>
-                          );
-                        }
-                      })}
-                    </div>
+                          <span className="mt-5 inline-flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.18em] text-blue-300/80 transition-colors duration-300 group-hover:text-blue-300">
+                            Read
+                            <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+                          </span>
+                        </div>
 
-                    <div className="text-blue-300 font-medium group-hover:text-blue-200 flex items-center">
-                      Read more
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </Link>
+                        {blog.mediaPic && (
+                          <div className="hidden md:block relative h-28 w-44 flex-none overflow-hidden rounded-xl ring-1 ring-white/10">
+                            <img
+                              src={blog.mediaPic}
+                              alt={blog.title}
+                              className="h-full w-full object-cover opacity-80 transition-opacity duration-500 group-hover:opacity-100"
+                            />
+                          </div>
+                        )}
+                      </article>
+                    </Link>
+                  </PopInBlock>
                 ))}
             </div>
 
-            {/* Pagination */}
+            {/* Pagination — quiet, text-only */}
             {blogs.length > BLOGS_PER_PAGE && (
-              <div className="flex justify-center items-center gap-4 pb-12">
+              <div className="flex justify-center items-center gap-8 pt-10 pb-20 font-montserrat">
                 <button
                   onClick={movePageBackward}
                   disabled={!showBackButton}
-                  className={`px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-lg text-white flex items-center gap-2 transition-all shadow-lg ${
+                  className={`inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] transition-colors duration-300 ${
                     showBackButton
-                      ? "hover:bg-white/20 cursor-pointer"
-                      : "opacity-50 cursor-not-allowed"
+                      ? "text-white/70 hover:text-blue-300 cursor-pointer"
+                      : "text-white/25 cursor-not-allowed"
                   }`}
                 >
-                  <ArrowLeft className="w-5 h-5" />
+                  <ArrowLeft className="w-4 h-4" />
                   Previous
                 </button>
 
-                <span className="text-white bg-white/10 backdrop-blur-md px-6 py-3 rounded-lg border border-white/20">
-                  Page {blogPage + 1} of{" "}
-                  {Math.ceil(blogs.length / BLOGS_PER_PAGE)}
+                <span className="text-[0.7rem] uppercase tracking-[0.18em] text-white/45">
+                  {blogPage + 1} / {Math.ceil(blogs.length / BLOGS_PER_PAGE)}
                 </span>
 
                 <button
                   onClick={movePageForward}
                   disabled={!showForwardButton}
-                  className={`px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-lg text-white flex items-center gap-2 transition-all shadow-lg ${
+                  className={`inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] transition-colors duration-300 ${
                     showForwardButton
-                      ? "hover:bg-white/20 cursor-pointer"
-                      : "opacity-50 cursor-not-allowed"
+                      ? "text-white/70 hover:text-blue-300 cursor-pointer"
+                      : "text-white/25 cursor-not-allowed"
                   }`}
                 >
                   Next
-                  <ArrowRight className="w-5 h-5" />
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             )}
-          </>
+          </div>
         )}
       </>
 
       <Footer authenticated={false} authSense={false} />
-    </div>
+      </div>
+    </ScrollObserverProvider>
   );
 };
 
