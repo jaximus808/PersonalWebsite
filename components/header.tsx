@@ -60,9 +60,8 @@ const Header: NextPage = () => {
               <Link href='/' className='text-3xl font-cormorant font-light tracking-[0.01em]'>Jaxon Poentis</Link>
 
               </span>
-            <Link className='text-lg mt-1 font-montserrat font-light' replace href='/projects'>Projects</Link>
-            <Link className='text-lg mt-1 font-montserrat font-light' replace  href='/blog'>Blog</Link>
-            <Link className='text-lg mt-1 font-montserrat font-light' replace href='/'>Home</Link>
+            <Link className='text-lg mt-1 font-cormorant font-light' replace href='/projects'>Projects</Link>
+            <Link className='text-lg mt-1 font-cormorant font-light' replace  href='/blog'>Blog</Link>
     
     
           </div>
