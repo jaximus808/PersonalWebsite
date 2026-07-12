@@ -28,7 +28,7 @@ const timeline: YearGroup[] = [
         dates: "06/2026 — 08/2026",
         logo: "/capital_one_logo.jpg",
         blurb:
-          "Cloud Ops Resilience Engineering — security group visibility, audits, role shopping, GIST value/range search over millions of rows, and agent skills answering business questions in natural language over our API.",
+          "Cloud Resilience, Security Tooling, GIST-Indexed Search, and Agent Skills.",
       },
       {
         org: "Tesla",
