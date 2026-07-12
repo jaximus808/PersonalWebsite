@@ -12,6 +12,8 @@ type Props = {
   eraseSpeed?: number;
   holdMs?: number;
   className?: string;
+  /** Fires once when `intro` finishes typing, before the hold/erase begins. */
+  onIntroDone?: () => void;
   onDone?: () => void;
 };
 
@@ -27,12 +29,23 @@ export default function TypeErase({
   eraseSpeed = 32,
   holdMs = 950,
   className = "",
+  onIntroDone,
   onDone,
 }: Props) {
   const [display, setDisplay] = useState("");
   const [phase, setPhase] = useState<Phase>("intro");
   const onDoneRef = useRef(onDone);
   onDoneRef.current = onDone;
+  const onIntroDoneRef = useRef(onIntroDone);
+  onIntroDoneRef.current = onIntroDone;
+  const firedIntroRef = useRef(false);
+
+  const fireIntroDone = () => {
+    if (!firedIntroRef.current) {
+      firedIntroRef.current = true;
+      onIntroDoneRef.current?.();
+    }
+  };
   const [reduced] = useState(
     () =>
       typeof window !== "undefined" &&
@@ -46,6 +59,7 @@ export default function TypeErase({
       if (finalText != null) {
         setDisplay(finalText);
         setPhase("done");
+        fireIntroDone();
         onDoneRef.current?.();
       }
       return;
@@ -59,6 +73,7 @@ export default function TypeErase({
           typeSpeed
         );
       } else {
+        fireIntroDone();
         t = setTimeout(() => setPhase("hold"), 0);
       }
     } else if (phase === "hold") {

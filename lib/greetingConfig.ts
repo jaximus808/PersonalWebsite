@@ -19,6 +19,8 @@ type RuleMatch = {
 type Rule = { id: string; match: RuleMatch; say: string };
 type GreetingConfig = {
   welcome: string[];
+  /** Fixed one-line "who I am" statement shown after the welcome. Not random. */
+  identity: string;
   rules: Rule[];
   generic: string[];
   invites: string[];
@@ -123,3 +125,6 @@ function pickAvoiding(arr: string[], avoid?: string): string {
 
 export const randomWelcome = (): string => pick(cfg.welcome);
 export const randomInvite = (): string => pick(cfg.invites);
+
+/** The fixed "who I am" line. Consistent every visit — not random. */
+export const identityLine = (): string => cfg.identity;

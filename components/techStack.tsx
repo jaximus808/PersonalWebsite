@@ -8,7 +8,8 @@ type Domain = {
   eyebrow?: string;
   blurb: string;
   // Concrete things actually built/shipped — grounded in the real work on
-  // "My Path" (Tesla, Spectrum, WashU Robotics, Health XR, Devstac …).
+  // "My Path" (Capital One, Tesla, Tandem/MCP, Spectrum, WashU Robotics,
+  // Health XR, Devstac …).
   proof: string[];
   tech: string[];
 };
@@ -21,7 +22,7 @@ const focusDomains: Domain[] = [
     title: "Distributed & Backend Systems",
     eyebrow: "Focus area",
     blurb:
-      "Where I go deepest — microservices and the infrastructure underneath them, built to stay correct while the load and the failure modes pile up.",
+      "This is the work I know best. Microservices and the infrastructure they run on, and keeping all of it correct once real traffic and weird edge cases start piling up.",
     proof: [
       "Built microservices powering energy-platform backend infrastructure at Tesla",
       "Cloud backend controllers for Spectrum's Service Delivery platform",
@@ -41,10 +42,31 @@ const focusDomains: Domain[] = [
   },
   {
     index: "02",
+    title: "Applied AI & Agents",
+    eyebrow: "Focus area",
+    blurb:
+      "I build with LLMs and agents where they actually do something, inside real products and hooked up to real machines, not just answering questions in a chat box.",
+    proof: [
+      "Building AI agents at Capital One and Tesla",
+      "Built Tandem, an MCP server where people and AI agents work on the same planning canvas together",
+      "Wiring agents to MCPs and skills so they can trigger real automation and physical movement",
+      "LLM analysis of medical documents inside a Meta Quest XR assistant",
+    ],
+    tech: [
+      "Python",
+      "AI Agents",
+      "MCP",
+      "LLM Integration",
+      "Skills",
+      "FastAPI",
+    ],
+  },
+  {
+    index: "03",
     title: "Robotics & Low-Level Systems",
     eyebrow: "Focus area",
     blurb:
-      "The other end of the stack — machines that have to survive the physical world, and a real understanding of the concurrency and memory model they run on.",
+      "The other side of what I do: low-level code and robotics. Machines that have to work in the real world, the concurrency and memory details underneath them, and increasingly an AI layer on top deciding what they should do.",
     proof: [
       "Project Lead for WashU Robotics, driving the team's ROS-based control work",
       "Teach x86 assembly, C, and the memory model as a System Software TA",
@@ -65,25 +87,15 @@ const focusDomains: Domain[] = [
 // Strong supporting areas — kept tighter so the focus areas lead.
 const supportingDomains: Domain[] = [
   {
-    index: "03",
+    index: "04",
     title: "Full-Stack Product",
     blurb:
-      "End-to-end products people actually use, shipped from prototype to production.",
+      "Whole products, from the first prototype to something people actually use.",
     proof: [
       "Won #1 at STL Startup Tech Week with a Meta Quest XR health assistant",
       "Flashcard backend: full-text search, tagging, and privacy controls",
     ],
     tech: ["TypeScript", "React", "Next.js", "Supabase", "Prisma", "Tailwind"],
-  },
-  {
-    index: "04",
-    title: "Applied AI",
-    blurb: "Language models wired into real products, end to end.",
-    proof: [
-      "AI agents at Tesla",
-      "LLM analysis of medical documents inside an XR assistant",
-    ],
-    tech: ["Python", "AI Agents", "LLM Integration", "FastAPI"],
   },
 ];
 
@@ -196,9 +208,9 @@ export default function TechStack() {
         </h1>
         <div className="mt-5 mx-auto h-px w-16 bg-white/25" />
         <p className="mt-6 mx-auto max-w-xl text-sm md:text-base text-white/60 font-light leading-relaxed">
-          I&apos;m happiest deep in systems — microservices that hold up under
-          load, and robots that have to survive the physical world.
-          Everything below is grounded in something I&apos;ve actually shipped.
+          Most of what I do sits close to the machine: backend systems, AI
+          agents, and robotics. Everything here is something I&apos;ve actually
+          built and shipped, not just read about.
         </p>
       </div>
 
@@ -212,7 +224,7 @@ export default function TechStack() {
       </div>
 
       {/* Supporting areas */}
-      <div className="mx-auto mt-5 grid w-[90%] md:w-[80%] max-w-4xl grid-cols-1 md:grid-cols-2 gap-5">
+      <div className="mx-auto mt-5 flex w-[90%] md:w-[80%] max-w-4xl flex-col gap-5">
         {supportingDomains.map((domain, i) => (
           <PopInBlock key={domain.index} variant="materialize" delay={i * 80}>
             <SupportingCard domain={domain} />
