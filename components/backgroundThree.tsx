@@ -113,6 +113,7 @@ function OptimizedStars({
   const lerpProgressRef = useRef(0)
   const lastTransitionRef = useRef(0)
   const settledRef = useRef(false) // true once a shape has finished morphing
+  const timeRef = useRef(0) // our own monotonic clock (see useFrame)
 
   useEffect(() => {
     // Start with every particle at the origin, morphing out to the first shape.
@@ -122,16 +123,29 @@ function OptimizedStars({
     lerpProgressRef.current = 0
     lastTransitionRef.current = 0
     settledRef.current = false
+    timeRef.current = 0
   }, [shapes, shapeNames, totalPositions])
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     if (!meshRef.current || targetPositionsRef.current.length === 0) return
 
-    const elapsed = state.clock.elapsedTime
+    // Local, monotonic time. We accumulate a *clamped* per-frame delta instead of
+    // reading state.clock.elapsedTime directly: when the tab is hidden R3F pauses
+    // the loop and, on return, restarts the THREE.Clock — which resets
+    // elapsedTime toward 0. That used to make (elapsed - lastTransition) go
+    // sharply negative, the easing term squared it into the hundreds, and every
+    // particle got extrapolated far past its target — the "everything's gone /
+    // particles freak out after tabbing back" bug. Accumulating a clamped delta
+    // is immune to the reset and to any single huge catch-up frame.
+    const dt = Math.min(delta, 0.05)
+    timeRef.current += dt
+    const elapsed = timeRef.current
 
     // The signature slow camera drift. Reduced-motion visitors get a still frame.
+    // dt-scaled so the speed is the same regardless of frame rate (0.01/frame at
+    // 60fps == 0.6/s).
     if (!reducedMotion) {
-      angle.current += 0.01
+      angle.current += dt * 0.6
       rotateCamera()
     }
 
@@ -157,8 +171,9 @@ function OptimizedStars({
       }
     }
 
-    // Update lerp progress (complete transition in 2 seconds)
-    lerpProgressRef.current = Math.min(1, (elapsed - lastTransitionRef.current) / 2)
+    // Update lerp progress (complete transition in 2 seconds). Guarded to [0, 1]
+    // so no timing edge case can ever drive the easing outside its intended range.
+    lerpProgressRef.current = Math.max(0, Math.min(1, (elapsed - lastTransitionRef.current) / 2))
 
     // Only the morph between shapes needs the full matrix rebuild. Once a shape
     // has settled (progress === 1) the positions are static, so we apply one
@@ -256,15 +271,18 @@ export default function Background() {
           powerPreference: env.isMobile ? "default" : "high-performance",
         }}
       >
-        <ambientLight intensity={0.1}></ambientLight>
+        <ambientLight intensity={0.12}></ambientLight>
 
-        <pointLight intensity={0.4} color="#cc00cc" position={[10, 10, -10]} />
+        {/* Palette: soft blue key with a whisper of violet on the far side, so
+            the cloud keeps depth without the old loud magenta. Blue is the
+            design north-star accent (#a3cbff); violet is only a faint rim. */}
+        <pointLight intensity={0.35} color="#8f7fd6" position={[10, 10, -10]} />
 
-        <pointLight intensity={1} color="#cc00cc" position={[0, 9, 35]} />
-        <pointLight intensity={0.4} color="#2aa1c9" position={[20, 9, 35]} />
-        <pointLight intensity={0.4} color="#cc00cc" position={[-20, 9, 35]} />
+        <pointLight intensity={0.95} color="#cfe0ff" position={[0, 9, 35]} />
+        <pointLight intensity={0.4} color="#7fb0ff" position={[20, 9, 35]} />
+        <pointLight intensity={0.35} color="#9a8fe0" position={[-20, 9, 35]} />
 
-        <pointLight intensity={0.4} color="lightblue" position={[-10, 10, 10]} />
+        <pointLight intensity={0.4} color="#a3cbff" position={[-10, 10, 10]} />
 
         <Suspense fallback={null}>
           <System isMobile={env.isMobile} reducedMotion={env.reducedMotion} />
