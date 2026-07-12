@@ -35,6 +35,10 @@ export default function LivingGreeting() {
   const [revealIdentity, setRevealIdentity] = useState(false);
 
   const identity = identityLine();
+  // Break the identity onto two lines at "previously".
+  const idBreak = identity.indexOf("pre");
+  const idLine1 = idBreak > 0 ? identity.slice(0, idBreak).trimEnd() : identity;
+  const idLine2 = idBreak > 0 ? identity.slice(idBreak) : "";
 
   useEffect(() => {
     setWelcome(randomWelcome());
@@ -84,16 +88,33 @@ export default function LivingGreeting() {
           revealIdentity ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
         }`}
       >
-        <div className="h-8 w-8 md:h-9 md:w-9 flex-none overflow-hidden rounded-full ring-1 ring-white/15 shadow-[0_0_18px_rgba(163,203,255,0.12)]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/headshot.jpg"
-            alt="Jaxon"
-            className="h-full w-full object-cover"
+        <div className="group relative h-10 w-10 md:h-12 md:w-12 flex-none">
+          {/* A blue "comet" of light sweeps around the ring on hover. */}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute -inset-[3px] rounded-full opacity-0 blur-[3px] transition-opacity duration-500 group-hover:opacity-100 motion-safe:group-hover:animate-[spin_3s_linear_infinite]"
+            style={{
+              background:
+                "conic-gradient(from 0deg, transparent 0deg 210deg, rgba(163,203,255,0.85) 320deg, transparent 360deg)",
+            }}
           />
+          <div className="relative h-full w-full overflow-hidden rounded-full ring-1 ring-white/15 shadow-[0_0_18px_rgba(163,203,255,0.12)] transition-all duration-500 ease-out group-hover:ring-blue-300/60 group-hover:shadow-[0_0_26px_rgba(163,203,255,0.45)]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/headshot.jpg"
+              alt="Jaxon"
+              className="h-full w-full object-cover transition-transform duration-700 ease-out motion-safe:group-hover:scale-110"
+            />
+          </div>
         </div>
-        <p className="font-cormorant font-light text-white/70 md:text-[1.7vw] text-lg leading-snug text-left md:whitespace-nowrap">
-          {identity}
+        <p className="font-cormorant font-light text-white/70 md:text-[1.7vw] text-lg leading-snug text-left">
+          {idLine1}
+          {idLine2 && (
+            <>
+              <br />
+              {idLine2}
+            </>
+          )}
         </p>
       </div>
     </div>
