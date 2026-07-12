@@ -24,11 +24,11 @@ const timeline: YearGroup[] = [
     entries: [
       {
         org: "Capital One",
-        role: "Incoming Software Engineering Intern",
+        role: "Software Engineer Intern",
         dates: "06/2026 — 08/2026",
         logo: "/capital_one_logo.jpg",
         blurb:
-          "Joining Capital One's Cloud team as a Software Engineering Intern.",
+          "Cloud Ops Resilience Engineering — security group visibility, audits, role shopping, GIST value/range search over millions of rows, and agent skills answering business questions in natural language over our API.",
       },
       {
         org: "Tesla",
