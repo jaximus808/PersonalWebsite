@@ -66,6 +66,21 @@ export function PopInBlock({
   const { observer, visibleElements } = useContext(ScrollContext);
   const isVisible = visibleElements.has(blockRef.current as Element);
 
+  // SEO-critical: content must be fully visible in the server-rendered HTML.
+  // Crawlers and AI scrapers that don't run JS (or don't scroll) must see the
+  // text — never ship it at opacity 0. The hidden "pre-animation" state is
+  // only armed after hydration, and only for blocks that start below the
+  // viewport (those animate in on scroll; everything else just stays visible).
+  const [armed, setArmed] = useState(false);
+  useEffect(() => {
+    const element = blockRef.current;
+    if (element && element.getBoundingClientRect().top > window.innerHeight) {
+      setArmed(true);
+    }
+  }, []);
+
+  const hidden = armed && !isVisible;
+
   useEffect(() => {
     const element = blockRef.current;
     if (observer && element) {
@@ -79,9 +94,9 @@ export function PopInBlock({
       <div
         ref={blockRef}
         className={`transition-all duration-500 ease-out will-change-transform motion-reduce:transition-opacity motion-reduce:duration-300 ${
-          isVisible
-            ? "opacity-100 translate-y-0 scale-100 blur-0"
-            : "opacity-0 translate-y-6 scale-[0.98] blur-[4px] motion-reduce:translate-y-0 motion-reduce:scale-100 motion-reduce:blur-0"
+          hidden
+            ? "opacity-0 translate-y-6 scale-[0.98] blur-[4px] motion-reduce:translate-y-0 motion-reduce:scale-100 motion-reduce:blur-0"
+            : "opacity-100 translate-y-0 scale-100 blur-0"
         }`}
         style={{ transitionDelay: `${delay}ms` }}
       >
@@ -94,7 +109,7 @@ export function PopInBlock({
     <div
       ref={blockRef}
       className={`transition-all duration-700 ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+        hidden ? "opacity-0 translate-y-8" : "opacity-100 translate-y-0"
       }`}
       style={{ transitionDelay: `${delay}ms` }}
     >

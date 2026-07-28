@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import Head from 'next/head'
+import Seo from '../components/Seo'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import Header from '../components/header'
@@ -83,11 +83,11 @@ const Index = () => {
   return (
     <div className=''>
 
-      <Head>
-        <title>Jaxon Poentis</title>
-        <meta name="description" content="Personal Page For Jaxon Poentis" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <Seo
+        title="Contact | Jaxon Poentis — Software Engineer"
+        description="Get in touch with Jaxon Poentis — software engineer (Capital One, Tesla) studying CS + Math at Washington University in St. Louis."
+        path="/contact"
+      />
         <Header/>
         <UnderConstruction title='About Me Page'/>
      

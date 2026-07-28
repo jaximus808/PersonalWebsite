@@ -1,4 +1,4 @@
-import Head from 'next/head'
+import Seo from '../../components/Seo'
 import styles from '../../styles/Home.module.css'
 import Header from '../../components/header'
 import Footer from '../../components/footer'
@@ -118,12 +118,15 @@ const Index: React.FC<props> = props => {
   
   return ( 
     <div className="min-h-screen bg-[#0a0a0a]">
-      <Head>
-        <title>{props.exist ? props.projectData.name.replace(/_/g, " ") + ' | Jaxon Poentis' : 'Project | Jaxon Poentis'}</title>
-        <meta name="description" content="Personal Page For Jaxon Poentis" />
-        <meta property="og:image" content="/metadata.jpg" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <Seo
+        title={props.exist ? props.projectData.name.replace(/_/g, " ") + ' | Jaxon Poentis' : 'Project | Jaxon Poentis'}
+        description={
+          props.exist && props.projectData.shortDescription
+            ? `${props.projectData.name.replace(/_/g, " ")} — a project by Jaxon Poentis, software engineer. ${props.projectData.shortDescription}`
+            : undefined
+        }
+        path={`/projects/${encodeURIComponent(props.id)}`}
+      />
       
       <Header/>
       

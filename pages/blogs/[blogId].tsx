@@ -1,4 +1,4 @@
-import Head from 'next/head'
+import Seo from '../../components/Seo'
 import styles from '../../styles/Home.module.css'
 import Header from '../../components/header'
 import Footer from '../../components/footer'
@@ -134,12 +134,16 @@ const Index: React.FC<props> = props => {
   
   return ( 
   <div className="min-h-screen bg-[#0a0a0a]">
-      <Head>
-        <title>{props.exist ? props.blog.title + ' | Jaxon Poentis' : 'Blog | Jaxon Poentis'}</title>
-        <meta name="description" content="Personal Page For Jaxon Poentis" />
-        <meta property="og:image" content="/metadata.jpg" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <Seo
+        title={props.exist ? props.blog.title + ' | Jaxon Poentis' : 'Blog | Jaxon Poentis'}
+        description={
+          props.exist && props.blog.content
+            ? `${props.blog.title} — a blog post by Jaxon Poentis, software engineer. ${props.blog.content.replace(/\*(<[bi]>)?/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 150)}…`
+            : undefined
+        }
+        path={`/blogs/${props.blogid}`}
+        ogType="article"
+      />
       
       <Header/>
       

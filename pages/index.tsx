@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Link from "next/link";
-import Head from "next/head";
+import Seo, { PERSON_JSONLD } from "../components/Seo";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import Header from "../components/header";
@@ -183,11 +183,16 @@ const Index = (props: props) => {
       <div className="text-caviar ">
         <Background />
         <GradientBG />
-        <Head>
-          <title>Jaxon Poentis</title>
-          <meta name="description" content="Personal Page For Jaxon Poentis" />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
+        <Seo
+          title="Jaxon Poentis — Software Engineer · Capital One, Tesla · CS + Math at WashU"
+          path="/"
+          ogType="profile"
+        >
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(PERSON_JSONLD) }}
+          />
+        </Seo>
         {}
         <Header />
 
