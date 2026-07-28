@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import Head from "next/head";
+import Seo from "../components/Seo";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Chess, type Square } from "chess.js";
@@ -293,13 +293,11 @@ const ChessPracticePage: NextPage = () => {
 
   return (
     <>
-      <Head>
-        <title>Chess Opening Trainer · Jaxon Poentis</title>
-        <meta
-          name="description"
-          content="Practice chess openings with Lichess opening explorer data."
-        />
-      </Head>
+      <Seo
+        title="Chess Opening Trainer · Jaxon Poentis"
+        description="Practice chess openings with Lichess opening explorer data — an interactive trainer built by software engineer Jaxon Poentis."
+        path="/chess"
+      />
       <Header />
       <main
         className="min-h-screen w-full pt-28 pb-16 text-white"
