@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import Head from "next/head";
+import Seo from "../components/Seo";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import Header from "../components/header";
@@ -174,11 +174,11 @@ const BlogPage: React.FC<BlogPageProps> = ({ auth }) => {
   return (
     <ScrollObserverProvider>
       <div>
-      <Head>
-        <title>Jaxon Poentis</title>
-        <meta name="description" content="Personal Page For Jaxon Poentis" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <Seo
+        title="Blog | Jaxon Poentis — Software Engineer"
+        description="Notes and write-ups by Jaxon Poentis, software engineer — building distributed systems, AI agents, and robotics; intern at Capital One and previously Tesla."
+        path="/blog"
+      />
       <Header />
       <Background />
       <GradientBG />

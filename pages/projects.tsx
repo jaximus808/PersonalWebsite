@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import Head from "next/head";
+import Seo from "../components/Seo";
 import Image from "next/image";
 import Header from "../components/header";
 import Footer from "../components/footer";
@@ -180,11 +180,11 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ auth }) => {
 
   return (
     <div>
-      <Head>
-        <title>Projects | Jaxon Poentis</title>
-        <meta name="description" content="Personal Page For Jaxon Poentis" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <Seo
+        title="Projects | Jaxon Poentis — Software Engineer"
+        description="Software projects by Jaxon Poentis — distributed systems, AI agents, robotics, XR, and full-stack builds from a software engineer with experience at Capital One and Tesla."
+        path="/projects"
+      />
       <Header />
       <Background />
       <GradientBG />

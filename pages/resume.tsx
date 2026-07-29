@@ -1,5 +1,6 @@
 'use client'
 import Header from "../components/header"
+import Seo from "../components/Seo"
 
 const resume = {
   name: "Jaxon Poentis",
@@ -122,6 +123,11 @@ function Entry({ entry }: { entry: { org: string; role: string; location?: strin
 export default function ResumePage() {
   return (
     <div className="bg-[#121212] text-white">
+      <Seo
+        title="Resume — Jaxon Poentis · Software Engineer"
+        description="Resume of Jaxon Poentis: Software Engineering Intern at Capital One (2026) and Tesla (2026), previously Spectrum. CS + Math at Washington University in St. Louis, expected 2027."
+        path="/resume"
+      />
       {/* Full-viewport PDF first */}
       <div className="flex flex-col h-screen">
         <Header />
