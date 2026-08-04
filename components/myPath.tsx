@@ -143,6 +143,27 @@ const timeline: YearGroup[] = [
   },
 ];
 
+const isef: Entry = {
+  org: "Regeneron ISEF",
+  role: "Finalist — Robotics & Intelligent Machines",
+  location: "Atlanta, GA",
+  dates: "05/2022",
+  logo: "/isef_logo.png",
+  blurb:
+    "Represented Hawaiʻi at the world's largest pre-college STEM competition with my robotic hand — using hand tracking and server architecture to control a robotic hand over the internet.",
+  detailsLabel: "The project",
+  details: [
+    {
+      label: "The project",
+      items: [
+        "Real-time hand tracking streamed as joint coordinates to a servo-driven robotic hand",
+        "Four-part networking architecture: Master Server, Fleet Server, Robotic Client, and User Client",
+        "An affordable prototype for robotic telepresence — physically representing yourself somewhere you can't be",
+      ],
+    },
+  ],
+};
+
 const education: Entry = {
   org: "Washington University in St. Louis",
   role: "B.S. — CS + Math, and Entrepreneurship",
@@ -330,6 +351,12 @@ export default function MyPath() {
             </div>
           </div>
         </PopInBlock>
+
+        {/* ISEF 2022 — the robotic hand */}
+        <PopInBlock variant="materialize">
+          <YearStation year="2022" />
+        </PopInBlock>
+        <TimelineRow entry={isef} />
 
         {/* Origin — where it all began */}
         <PopInBlock variant="materialize">
