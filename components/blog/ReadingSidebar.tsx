@@ -1,36 +1,87 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-type PostLink = {
+type Section = "blog" | "projects";
+
+type RailItem = {
   id: string;
-  title: string;
+  label: string;
+  href: string;
 };
 
-// How many recent posts the rail lists before deferring to the blog index.
-const MAX_POSTS = 7;
+// How many recent entries the rail lists before deferring to the index page.
+const MAX_ITEMS = 7;
+
+const SECTIONS: Record<
+  Section,
+  {
+    heading: string;
+    index: string;
+    all: string;
+    endpoint: string;
+    toItems: (data: any) => RailItem[];
+  }
+> = {
+  blog: {
+    heading: "Writing",
+    index: "/blog",
+    all: "All posts",
+    endpoint: "/api/getBlogs?summary=1",
+    toItems: (data) =>
+      (Array.isArray(data?.blogs) ? data.blogs : []).map((blog: any) => ({
+        id: String(blog.id),
+        label: String(blog.title),
+        href: `/blogs/${blog.id}`,
+      })),
+  },
+  projects: {
+    heading: "Work",
+    index: "/projects",
+    all: "All projects",
+    endpoint: "/api/getProjects?summary=1",
+    toItems: (data) =>
+      (Array.isArray(data?.projects) ? data.projects : []).map(
+        (project: any) => ({
+          id: String(project.name),
+          label: String(project.name).replace(/_/g, " "),
+          href: `/projects/${encodeURIComponent(project.name)}`,
+        })
+      ),
+  },
+};
+
+const NAV: { section: Section; label: string; href: string }[] = [
+  { section: "blog", label: "Blog", href: "/blog" },
+  { section: "projects", label: "Projects", href: "/projects" },
+];
 
 // Left rail for long-form reading on wide screens: the name, the site's two
-// destinations, and the recent posts with the current one marked.
-const ReadingSidebar: React.FC<{ activeId?: string }> = ({ activeId }) => {
-  const [posts, setPosts] = useState<PostLink[]>([]);
+// destinations, and the recent entries of the current section with the one
+// being read marked.
+const ReadingSidebar: React.FC<{ section?: Section; activeId?: string }> = ({
+  section = "blog",
+  activeId,
+}) => {
+  const [items, setItems] = useState<RailItem[]>([]);
+  const config = SECTIONS[section];
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch("/api/getBlogs?summary=1", { signal: controller.signal })
-      .then((res) => (res.ok ? res.json() : { blogs: [] }))
+    fetch(SECTIONS[section].endpoint, { signal: controller.signal })
+      .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (controller.signal.aborted) return;
-        setPosts(Array.isArray(data?.blogs) ? data.blogs : []);
+        setItems(SECTIONS[section].toItems(data));
       })
       // The rail is optional; the article stands without the list.
       .catch(() => {});
     return () => controller.abort();
-  }, []);
+  }, [section]);
 
-  // Recent posts, always including the one being read.
-  const visible = posts.slice(0, MAX_POSTS);
-  const active = posts.find((post) => post.id === activeId);
-  if (active && !visible.some((post) => post.id === active.id)) {
+  // Recent entries, always including the one being read.
+  const visible = items.slice(0, MAX_ITEMS);
+  const active = items.find((item) => item.id === activeId);
+  if (active && !visible.some((item) => item.id === active.id)) {
     visible[visible.length - 1] = active;
   }
 
@@ -47,41 +98,44 @@ const ReadingSidebar: React.FC<{ activeId?: string }> = ({ activeId }) => {
 
       <nav aria-label="Site" className="mt-12">
         <ul className="m-0 space-y-3 text-sm font-light">
-          <li className="m-0">
-            <Link
-              href="/projects"
-              className="text-white/60 transition-colors duration-300 hover:text-blue-300"
-            >
-              Projects
-            </Link>
-          </li>
-          <li className="relative m-0">
-            <span
-              aria-hidden="true"
-              className="absolute -left-4 top-1/2 h-1 w-1 -translate-y-1/2 rounded-full bg-blue-300"
-            />
-            <Link
-              href="/blog"
-              className="text-blue-300 transition-colors duration-300 hover:text-white"
-            >
-              Blog
-            </Link>
-          </li>
+          {NAV.map((entry) => {
+            const isCurrent = entry.section === section;
+            return (
+              <li key={entry.section} className="relative m-0">
+                {isCurrent && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute -left-4 top-1/2 h-1 w-1 -translate-y-1/2 rounded-full bg-blue-300"
+                  />
+                )}
+                <Link
+                  href={entry.href}
+                  className={`transition-colors duration-300 ${
+                    isCurrent
+                      ? "text-blue-300 hover:text-white"
+                      : "text-white/60 hover:text-blue-300"
+                  }`}
+                >
+                  {entry.label}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </nav>
 
       {visible.length > 0 && (
-        <nav aria-label="Posts" className="mt-12">
+        <nav aria-label={config.heading} className="mt-12">
           <p className="text-[0.65rem] uppercase tracking-[0.18em] text-white/40">
-            Writing
+            {config.heading}
           </p>
           <ul className="m-0 mt-4 space-y-3 border-l border-white/10 text-[0.8rem] font-light leading-snug">
-            {visible.map((post) => {
-              const isActive = post.id === activeId;
+            {visible.map((item) => {
+              const isActive = item.id === activeId;
               return (
-                <li key={post.id} className="m-0">
+                <li key={item.id} className="m-0">
                   <Link
-                    href={`/blogs/${post.id}`}
+                    href={item.href}
                     aria-current={isActive ? "page" : undefined}
                     className={`-ml-px border-l pl-4 line-clamp-2 transition-colors duration-300 ${
                       isActive
@@ -89,18 +143,18 @@ const ReadingSidebar: React.FC<{ activeId?: string }> = ({ activeId }) => {
                         : "border-transparent text-white/45 hover:text-blue-300"
                     }`}
                   >
-                    {post.title}
+                    {item.label}
                   </Link>
                 </li>
               );
             })}
           </ul>
-          {posts.length > visible.length && (
+          {items.length > visible.length && (
             <Link
-              href="/blog"
+              href={config.index}
               className="mt-5 inline-block text-[0.65rem] uppercase tracking-[0.18em] text-white/40 transition-colors duration-300 hover:text-blue-300"
             >
-              All posts
+              {config.all}
             </Link>
           )}
         </nav>

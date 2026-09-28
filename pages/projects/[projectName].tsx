@@ -1,279 +1,393 @@
-import Seo from '../../components/Seo'
-import styles from '../../styles/Home.module.css'
-import Header from '../../components/header'
-import Footer from '../../components/footer'
-import Background from '../../components/backgroundThree'
-import * as cookies from "cookie"
-import { GetServerSideProps } from 'next'
-import Link from 'next/link'
-import * as jsonwebtoken from "jsonwebtoken"
-import { Suspense } from 'react'
-import Image from 'next/image'
-import { PrismaClient, Projects } from "@prisma/client"
-import YouTube from "react-youtube"
-import { Calendar, ExternalLink, Github, Star, ArrowLeft } from 'lucide-react'
+import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import YouTube from "react-youtube";
+import { ArrowLeft, ArrowUpRight } from "lucide-react";
 
-function YoutubeVideo(props: any) {
-  const opts = {
-    height: "100%",
-    width: "95%",
-    playerVars: {
-      autoplay: 0,
-    },
-  };
-  
-  return (
-    <div className={`${styles.centerRelX} ${props.className}`}>
-      <YouTube
-        className="relative flex items-center justify-center"
-        style={{ width: "100%", height: "100%" }}
-        videoId={props.vId}
-        opts={opts}
-      />
-    </div>
-  );
+import Seo from "../../components/Seo";
+import ReadingHeader from "../../components/blog/ReadingHeader";
+import ReadingSidebar from "../../components/blog/ReadingSidebar";
+import BlogContent from "../../components/blog/BlogContent";
+import { ArticleSkeleton } from "../../components/blog/BlogSkeleton";
+
+type Project = {
+  id: string;
+  name: string;
+  mediaLink?: string | null;
+  youtube?: boolean | null;
+  description?: string | null;
+  shortDescription?: string | null;
+  linkName?: string | null;
+  projectDate?: string | null;
+  favorite?: boolean | null;
+  projectLinks?: string | null;
+};
+
+type LoadState =
+  | { status: "loading" }
+  | { status: "found"; project: Project }
+  | { status: "notfound" }
+  | { status: "error" };
+
+type ProjectLink = {
+  href: string;
+  label: string;
+};
+
+const CONFIRM_WINDOW_MS = 4000;
+
+function displayName(name: string): string {
+  return name.replace(/_/g, " ");
 }
 
-const prisma = new PrismaClient();
-
-type props = {
-  id: string,
-  exist: boolean
-  projectData: any,
-  authenticated: boolean
+function formatDate(value?: string | null): string {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    // A bare YYYY-MM-DD parses as UTC midnight; keep it on that calendar day.
+    timeZone: /^\d{4}-\d{2}-\d{2}$/.test(value) ? "UTC" : undefined,
+  });
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const parsedCookies = cookies.parse(context.req.headers.cookie ? context.req.headers.cookie : "");
-  
-  const token = parsedCookies.token;
+// projectLinks holds comma-separated URLs; linkName is the display name and
+// only fits when there is a single link. Anything that is not http(s) is
+// dropped.
+function parseLinks(project: Project): ProjectLink[] {
+  const urls = (project.projectLinks ?? "")
+    .split(",")
+    .map((part) => part.trim())
+    .filter((part) => /^https?:\/\//i.test(part));
 
-  let authenticated = false; 
-  if (!token) {
-    authenticated = false;
-  } else {
+  return urls.map((href) => {
+    let label = "Visit";
     try {
-      jsonwebtoken.verify(token, process.env.ADMIN_PASS!);
-      authenticated = true;
+      const host = new URL(href).hostname.replace(/^www\./, "");
+      label = host === "github.com" ? "GitHub" : host;
     } catch {
-      authenticated = false;
+      // keep the fallback label
     }
-  }
-  
-  const { projectName } = context.query
-  if (!projectName) {
-    return {
-      props: {
-        projectData: "",
-        exist: false
-      }
+    if (urls.length === 1 && project.linkName?.trim()) {
+      label = project.linkName.trim();
     }
-  }
-  
-  try {
-    const project = await prisma.projects.findMany({
-      where: {
-        name: projectName.toString()
-      }
-    })
-    
-    const proj_data = JSON.parse(JSON.stringify(project))[0]
-    if (!proj_data) {
-      throw "error"
-    }
-    
-    return {
-      props: {
-        projectData: proj_data,
-        exist: true,
-        authenticated: authenticated,
-        id: projectName,
-      }
-    }
-  } catch {
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/projects",
-      },
-      props: {},
-    }
-  }
+    return { href, label };
+  });
 }
 
-const Index: React.FC<props> = props => {
-  const deleteProject = async () => {
-    const response = await fetch("/api/admin/deleteProjects", {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        post_name: props.id
-      }) 
-    }).then(() => {
-      location.replace("/projects");
-    })
-  }
-  
-  return ( 
-    <div className="min-h-screen bg-[#0a0a0a]">
+const ProjectPage = () => {
+  const router = useRouter();
+  const rawName = router.query.projectName;
+  const projectName = router.isReady
+    ? Array.isArray(rawName)
+      ? rawName[0]
+      : rawName
+    : undefined;
+
+  const [state, setState] = useState<LoadState>({ status: "loading" });
+  const [authenticated, setAuthenticated] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  // Load the project. Re-runs when the name changes or the reader retries; the
+  // AbortController drops any response that belongs to a previous name.
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    setConfirmingDelete(false);
+    setDeleteError("");
+
+    if (!projectName) {
+      setState({ status: "notfound" });
+      return;
+    }
+
+    const controller = new AbortController();
+    setState({ status: "loading" });
+
+    (async () => {
+      try {
+        const res = await fetch(
+          `/api/getProject?name=${encodeURIComponent(projectName)}`,
+          { signal: controller.signal }
+        );
+        if (res.status === 404) {
+          if (!controller.signal.aborted) setState({ status: "notfound" });
+          return;
+        }
+        if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+        const data = await res.json();
+        if (controller.signal.aborted) return;
+        if (data.fail || !data.project) {
+          setState({ status: "notfound" });
+        } else {
+          setState({ status: "found", project: data.project as Project });
+        }
+      } catch {
+        if (controller.signal.aborted) return;
+        setState({ status: "error" });
+      }
+    })();
+
+    return () => controller.abort();
+  }, [router.isReady, projectName, attempt]);
+
+  // Admin check runs alongside the project fetch and never blocks the page.
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/admin/me", { signal: controller.signal })
+      .then((res) => (res.ok ? res.json() : { authenticated: false }))
+      .then((data) => {
+        if (!controller.signal.aborted) {
+          setAuthenticated(Boolean(data?.authenticated));
+        }
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) setAuthenticated(false);
+      });
+    return () => controller.abort();
+  }, []);
+
+  // The delete confirmation quietly expires if the second click never comes.
+  useEffect(() => {
+    if (!confirmingDelete) return;
+    const timer = setTimeout(
+      () => setConfirmingDelete(false),
+      CONFIRM_WINDOW_MS
+    );
+    return () => clearTimeout(timer);
+  }, [confirmingDelete]);
+
+  const handleDelete = useCallback(async () => {
+    if (!projectName || deleting) return;
+    if (!confirmingDelete) {
+      setDeleteError("");
+      setConfirmingDelete(true);
+      return;
+    }
+
+    setConfirmingDelete(false);
+    setDeleting(true);
+    try {
+      const res = await fetch("/api/admin/deleteProjects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ post_name: projectName }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!mountedRef.current) return;
+      if (data?.pass) {
+        router.replace("/projects");
+        return;
+      }
+      setDeleteError(
+        data?.msg ||
+          (res.status === 401
+            ? "You are not signed in. Log in again to delete this project."
+            : "The project could not be deleted. Please try again.")
+      );
+    } catch {
+      if (!mountedRef.current) return;
+      setDeleteError("The project could not be deleted. Please try again.");
+    }
+    setDeleting(false);
+  }, [projectName, confirmingDelete, deleting, router]);
+
+  const project = state.status === "found" ? state.project : null;
+  const title = project ? displayName(project.name) : "";
+  const dated = project ? formatDate(project.projectDate) : "";
+  const links = project ? parseLinks(project) : [];
+
+  return (
+    <div className="min-h-screen bg-[#121212]">
       <Seo
-        title={props.exist ? props.projectData.name.replace(/_/g, " ") + ' | Jaxon Poentis' : 'Project | Jaxon Poentis'}
+        title={project ? `${title} | Jaxon Poentis` : "Project | Jaxon Poentis"}
         description={
-          props.exist && props.projectData.shortDescription
-            ? `${props.projectData.name.replace(/_/g, " ")} — a project by Jaxon Poentis, software engineer. ${props.projectData.shortDescription}`
+          project?.shortDescription
+            ? `${title} — a project by Jaxon Poentis, software engineer. ${project.shortDescription}`
             : undefined
         }
-        path={`/projects/${encodeURIComponent(props.id)}`}
+        path={
+          projectName
+            ? `/projects/${encodeURIComponent(projectName)}`
+            : "/projects"
+        }
       />
-      
-      <Header/>
-      
-      <main className="max-w-6xl mx-auto px-6 py-12 md:py-16">
-        {/* Back to Projects Link */}
-        <Link href="/projects">
-          <div className="inline-flex items-center text-white/70 hover:text-white transition-colors mb-8 group">
-            <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
-            Back to Projects
-          </div>
-        </Link>
 
-        {props.exist ? (
-          <article className="bg-[#121212] rounded-2xl shadow-2xl overflow-hidden">
-            {/* Project Header */}
-            <header className="px-8 md:px-12 pt-12 pb-8 border-b border-gray-800">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight mb-6">
-                    {props.projectData.name.replace(/_/g, " ")}
-                  </h1>
-                  
-                  {/* Project Metadata */}
-                  <div className="flex flex-wrap gap-4 items-center">
-                    {props.projectData.projectDate && (
-                      <div className="flex items-center text-gray-400 text-lg">
-                        <Calendar className="w-5 h-5 mr-2" />
-                        <time dateTime={props.projectData.projectDate}>
-                          {new Date(props.projectData.projectDate).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                          })}
-                        </time>
-                      </div>
-                    )}
-                    
-                    {props.projectData.favorite && (
-                      <div className="flex items-center bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full">
-                        <Star className="w-4 h-4 mr-2 fill-current" />
-                        Featured Project
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
+      {/* Wide screens get the left rail; narrower ones keep the slim top bar. */}
+      <div className="min-[1200px]:hidden">
+        <ReadingHeader />
+      </div>
+      <ReadingSidebar section="projects" activeId={projectName} />
 
-              {/* Short Description */}
-              {props.projectData.shortDescription && (
-                <p className="text-xl text-gray-300 mt-6 leading-relaxed">
-                  {props.projectData.shortDescription}
+      <main className="mx-auto w-full max-w-[700px] px-6 pt-28 md:pt-32 pb-24 font-montserrat">
+        {state.status === "loading" && <ArticleSkeleton />}
+
+        {project && (
+          <article>
+            <header>
+              <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.7rem] uppercase tracking-[0.18em] text-white/60">
+                <span>Project</span>
+                {dated && <span aria-hidden="true">·</span>}
+                {dated && <time>{dated}</time>}
+                {project.favorite && <span aria-hidden="true">·</span>}
+                {project.favorite && <span>Featured</span>}
+              </p>
+
+              <h1 className="mt-5 font-cormorant font-light text-4xl md:text-6xl leading-[1.08] text-white">
+                {title}
+              </h1>
+
+              {project.shortDescription && (
+                <p className="mt-6 text-lg md:text-xl font-light leading-relaxed text-white/60">
+                  {project.shortDescription}
                 </p>
+              )}
+
+              {links.length > 0 && (
+                <ul className="m-0 mt-7 flex flex-wrap gap-x-7 gap-y-3">
+                  {links.map((link) => (
+                    <li key={link.href} className="m-0">
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.18em] text-blue-300/80 transition-colors duration-300 hover:text-blue-300"
+                      >
+                        {link.label}
+                        <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               )}
             </header>
 
-            {/* Project Media */}
-            <div className="px-8 md:px-12 py-10">
-              {props.projectData.youtube ? (
-                <div className="w-full aspect-video bg-black/30 rounded-xl overflow-hidden mb-10">
-                  <Suspense fallback={
-                    <div className="w-full h-full flex items-center justify-center text-white">
-                      Loading video...
-                    </div>
-                  }>
-                    <YoutubeVideo 
-                      vId={props.projectData.mediaLink}
-                      className="w-full h-full"
-                    />
-                  </Suspense>
+            {project.mediaLink &&
+              (project.youtube ? (
+                <div className="mt-10 aspect-video overflow-hidden rounded-xl bg-white/[0.05] ring-1 ring-white/10">
+                  <YouTube
+                    videoId={project.mediaLink}
+                    className="h-full w-full"
+                    iframeClassName="h-full w-full"
+                    opts={{
+                      width: "100%",
+                      height: "100%",
+                      playerVars: { autoplay: 0 },
+                    }}
+                  />
                 </div>
               ) : (
-                <figure className="mb-10 rounded-xl overflow-hidden">
-                  <Image 
-                    src={props.projectData.mediaLink} 
-                    width={1200} 
-                    height={675}
-                    alt={props.projectData.name}
-                    className="w-full h-auto object-cover"
-                  /> 
-                </figure>
-              )}
+                <div className="mt-10 overflow-hidden rounded-xl ring-1 ring-white/10">
+                  <img
+                    src={project.mediaLink}
+                    alt={title}
+                    className="w-full max-h-[28rem] object-cover"
+                  />
+                </div>
+              ))}
 
-              {/* Project Description */}
-              <div className="prose prose-invert prose-lg max-w-none mb-10">
-                <p className="text-gray-300 text-lg leading-relaxed whitespace-pre-wrap">
-                  {props.projectData.description}
-                </p>
-              </div>
-
-              {/* Project Links */}
-              <div className="flex flex-wrap gap-4">
-                {props.projectData.linkName && (
-                  <a 
-                    href={props.projectData.linkName}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-lg"
-                  >
-                    <Github className="w-5 h-5 mr-2" />
-                    View Repository
-                  </a>
-                )}
-                
-                {props.projectData.projectLinks && props.projectData.projectLinks !== "" && (
-                  <a 
-                    href={props.projectData.projectLinks}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-lg"
-                  >
-                    <ExternalLink className="w-5 h-5 mr-2" />
-                    Live Demo
-                  </a>
-                )}
-              </div>
+            <div className="mt-12">
+              <BlogContent
+                content={project.description ?? ""}
+                format="markdown"
+              />
             </div>
-
-            {/* Admin Controls */}
-            {props.authenticated && (
-              <div className="px-8 md:px-12 pb-8 border-t border-gray-800 pt-6">
-                <button 
-                  onClick={deleteProject}
-                  className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors duration-200"
-                >
-                  Delete Project
-                </button>
-              </div>
-            )}
           </article>
-        ) : (
-          <div className="bg-[#121212] rounded-2xl shadow-2xl p-12 text-center">
-            <h1 className="text-3xl font-bold text-white mb-4">Project Not Found</h1>
-            <p className="text-gray-400 text-lg mb-8">
-              The project you're looking for doesn't exist or has been removed.
+        )}
+
+        {state.status === "notfound" && (
+          <div>
+            <p className="text-[0.7rem] uppercase tracking-[0.18em] text-white/60">
+              Nothing here
             </p>
-            <Link href="/projects">
-              <div className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200">
-                Back to Projects
-              </div>
-            </Link>
+            <h1 className="mt-5 font-cormorant font-light text-4xl md:text-5xl leading-tight text-white">
+              This project could not be found
+            </h1>
+            <p className="mt-5 font-light leading-relaxed text-white/60">
+              It may have been moved or removed.
+            </p>
           </div>
         )}
-      </main>
-      
-      <Footer authenticated={false} authSense={false} />
-    </div>
-  )
-}
 
-export default Index;
+        {state.status === "error" && (
+          <div role="alert">
+            <p className="text-[0.7rem] uppercase tracking-[0.18em] text-white/60">
+              Something went wrong
+            </p>
+            <h1 className="mt-5 font-cormorant font-light text-4xl md:text-5xl leading-tight text-white">
+              This project did not load
+            </h1>
+            <p className="mt-5 font-light leading-relaxed text-white/60">
+              The connection may have dropped.{" "}
+              <button
+                type="button"
+                onClick={() => setAttempt((n) => n + 1)}
+                className="text-blue-300/80 underline underline-offset-4 decoration-blue-300/30 transition-colors duration-300 hover:text-blue-300"
+              >
+                Try again
+              </button>
+            </p>
+          </div>
+        )}
+
+        {state.status !== "loading" && (
+          <footer className="mt-16 border-t border-white/10 pt-8">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <Link
+                href="/projects"
+                className="group inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-white/60 transition-colors duration-300 hover:text-blue-300"
+              >
+                <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
+                Back to projects
+              </Link>
+
+              {authenticated && project && (
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  disabled={deleting}
+                  className={`text-xs uppercase tracking-[0.18em] transition-colors duration-300 disabled:cursor-not-allowed disabled:text-white/25 ${
+                    confirmingDelete
+                      ? "text-red-300"
+                      : "text-white/40 hover:text-red-300"
+                  }`}
+                >
+                  {deleting
+                    ? "Deleting…"
+                    : confirmingDelete
+                    ? "Click again to confirm"
+                    : "Delete project"}
+                </button>
+              )}
+            </div>
+
+            {deleteError && (
+              <p
+                role="alert"
+                className="mt-4 text-right text-sm font-light text-red-300/90"
+              >
+                {deleteError}
+              </p>
+            )}
+          </footer>
+        )}
+      </main>
+    </div>
+  );
+};
+
+export default ProjectPage;
