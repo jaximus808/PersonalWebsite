@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { ArrowLeft } from "lucide-react";
 
 import Seo from "../../components/Seo";
-import Header from "../../components/header";
+import ReadingHeader from "../../components/blog/ReadingHeader";
 import BlogContent from "../../components/blog/BlogContent";
 import { ArticleSkeleton } from "../../components/blog/BlogSkeleton";
 import { blogPreview, readingTime } from "../../lib/blogFormat";
@@ -197,9 +197,9 @@ const BlogPostPage = () => {
         ogType="article"
       />
 
-      <Header />
+      <ReadingHeader />
 
-      <main className="mx-auto w-full max-w-[700px] px-6 pt-32 md:pt-40 pb-24 font-montserrat">
+      <main className="mx-auto w-full max-w-[700px] px-6 pt-28 md:pt-32 pb-24 font-montserrat">
         {state.status === "loading" && <ArticleSkeleton />}
 
         {blog && (
