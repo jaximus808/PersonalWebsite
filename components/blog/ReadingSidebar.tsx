@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { useEffect, useState } from "react";
+
+import { useCachedJson } from "../../lib/useCachedJson";
 
 type Section = "blog" | "projects";
 
@@ -45,7 +46,7 @@ const SECTIONS: Record<
           id: String(project.name),
           label: String(project.name).replace(/_/g, " "),
           href: `/projects/${encodeURIComponent(project.name)}`,
-        })
+        }),
       ),
   },
 };
@@ -55,6 +56,12 @@ const NAV: { section: Section; label: string; href: string }[] = [
   { section: "projects", label: "Projects", href: "/projects" },
 ];
 
+// A failed lookup must not overwrite a good cached list.
+const succeeded = (data: any) => data?.fail !== true;
+
+// Widths of the placeholder lines shown while the first list loads.
+const PLACEHOLDERS = ["w-4/5", "w-3/5", "w-11/12", "w-2/3"];
+
 // Left rail for long-form reading on wide screens: the name, the site's two
 // destinations, and the recent entries of the current section with the one
 // being read marked.
@@ -62,21 +69,12 @@ const ReadingSidebar: React.FC<{ section?: Section; activeId?: string }> = ({
   section = "blog",
   activeId,
 }) => {
-  const [items, setItems] = useState<RailItem[]>([]);
   const config = SECTIONS[section];
-
-  useEffect(() => {
-    const controller = new AbortController();
-    fetch(SECTIONS[section].endpoint, { signal: controller.signal })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (controller.signal.aborted) return;
-        setItems(SECTIONS[section].toItems(data));
-      })
-      // The rail is optional; the article stands without the list.
-      .catch(() => {});
-    return () => controller.abort();
-  }, [section]);
+  // Cached copy shows at once; the background refetch swaps it only if the
+  // list changed. The rail is optional, so a failed request just leaves the
+  // heading and the index link.
+  const { data, loading } = useCachedJson<any>(config.endpoint, succeeded);
+  const items = config.toItems(data);
 
   // Recent entries, always including the one being read.
   const visible = items.slice(0, MAX_ITEMS);
@@ -124,11 +122,26 @@ const ReadingSidebar: React.FC<{ section?: Section; activeId?: string }> = ({
         </ul>
       </nav>
 
-      {visible.length > 0 && (
-        <nav aria-label={config.heading} className="mt-12">
-          <p className="text-[0.65rem] uppercase tracking-[0.18em] text-white/40">
-            {config.heading}
-          </p>
+      <nav aria-label={config.heading} className="mt-12">
+        <p className="text-[0.65rem] uppercase tracking-[0.18em] text-white/40">
+          {config.heading}
+        </p>
+
+        {loading && (
+          <div
+            aria-hidden="true"
+            className="mt-4 space-y-4 border-l border-white/10 pl-4 motion-safe:animate-[pulse_2.6s_ease-in-out_infinite]"
+          >
+            {PLACEHOLDERS.map((width) => (
+              <div
+                key={width}
+                className={`h-2.5 rounded bg-white/[0.07] ${width}`}
+              />
+            ))}
+          </div>
+        )}
+
+        {visible.length > 0 && (
           <ul className="m-0 mt-4 space-y-3 border-l border-white/10 text-[0.8rem] font-light leading-snug">
             {visible.map((item) => {
               const isActive = item.id === activeId;
@@ -149,16 +162,15 @@ const ReadingSidebar: React.FC<{ section?: Section; activeId?: string }> = ({
               );
             })}
           </ul>
-          {items.length > visible.length && (
-            <Link
-              href={config.index}
-              className="mt-5 inline-block text-[0.65rem] uppercase tracking-[0.18em] text-white/40 transition-colors duration-300 hover:text-blue-300"
-            >
-              {config.all}
-            </Link>
-          )}
-        </nav>
-      )}
+        )}
+
+        <Link
+          href={config.index}
+          className="mt-5 inline-block text-[0.65rem] uppercase tracking-[0.18em] text-white/40 transition-colors duration-300 hover:text-blue-300"
+        >
+          {config.all}
+        </Link>
+      </nav>
     </aside>
   );
 };
