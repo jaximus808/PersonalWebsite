@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 
 import Seo from "../../components/Seo";
 import ReadingHeader from "../../components/blog/ReadingHeader";
+import ReadingSidebar from "../../components/blog/ReadingSidebar";
 import BlogContent from "../../components/blog/BlogContent";
 import { ArticleSkeleton } from "../../components/blog/BlogSkeleton";
 import { blogPreview, readingTime } from "../../lib/blogFormat";
@@ -197,7 +198,11 @@ const BlogPostPage = () => {
         ogType="article"
       />
 
-      <ReadingHeader />
+      {/* Wide screens get the left rail; narrower ones keep the slim top bar. */}
+      <div className="min-[1200px]:hidden">
+        <ReadingHeader />
+      </div>
+      <ReadingSidebar activeId={blogId} />
 
       <main className="mx-auto w-full max-w-[700px] px-6 pt-28 md:pt-32 pb-24 font-montserrat">
         {state.status === "loading" && <ArticleSkeleton />}

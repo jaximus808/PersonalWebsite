@@ -6,11 +6,17 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  // ?summary=1 returns only what a navigation list needs, skipping post bodies.
+  const summary = Boolean(req.query.summary);
+
   try {
     const blogs = await prisma.blog.findMany({
       orderBy: {
         datePosted: "desc",
       },
+      ...(summary
+        ? { select: { id: true, title: true, datePosted: true } }
+        : {}),
     });
 
     res.setHeader(
