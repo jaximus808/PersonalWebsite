@@ -3,7 +3,7 @@ import Seo from "../components/Seo";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import Background from "../components/backgroundThree";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { Calendar, ArrowLeft, ArrowRight } from "lucide-react";
 
@@ -15,6 +15,7 @@ import {
 import BlogContent from "../components/blog/BlogContent";
 import { BlogListSkeleton } from "../components/blog/BlogSkeleton";
 import { blogPreview } from "../lib/blogFormat";
+import { useCachedJson } from "../lib/useCachedJson";
 
 const BLOGS_PER_PAGE = 6;
 
@@ -39,9 +40,28 @@ const FIELD_INPUT =
 const QUIET_BUTTON =
   "text-xs uppercase tracking-[0.18em] text-white/60 transition-colors duration-300 hover:text-blue-300";
 
+// A failed lookup must not replace a good cached list.
+const hasList = (data: any) =>
+  data?.fail !== true && Array.isArray(data?.blogs);
+
+function parseList(raw: string | null): BlogListItem[] {
+  if (!raw) return [];
+  try {
+    const blogs = JSON.parse(raw)?.blogs;
+    return Array.isArray(blogs) ? blogs : [];
+  } catch {
+    return [];
+  }
+}
+
 const BlogPage: NextPage = () => {
-  const [status, setStatus] = useState<ListStatus>("loading");
-  const [blogs, setBlogs] = useState<BlogListItem[]>([]);
+  // Cached list shows at once; the background refetch replaces it only when
+  // the server's list differs.
+  const { raw, loading, failed, retry } = useCachedJson("/api/getBlogs", {
+    isUsable: hasList,
+  });
+  const blogs = useMemo(() => parseList(raw), [raw]);
+  const status: ListStatus = loading ? "loading" : failed ? "error" : "ready";
   const [blogPage, setBlogPage] = useState(0);
 
   const [auth, setAuth] = useState(false);
@@ -55,39 +75,6 @@ const BlogPage: NextPage = () => {
   const [editorMode, setEditorMode] = useState<EditorMode>("write");
   const [responseText, setResponse] = useState("");
   const [publishing, setPublishing] = useState(false);
-
-  // Each load gets a ticket; a response is only applied if its ticket is
-  // still the latest and the page is still mounted.
-  const loadTicket = useRef(0);
-
-  const loadBlogs = useCallback(async () => {
-    const ticket = ++loadTicket.current;
-    setStatus("loading");
-    try {
-      const res = await fetch("/api/getBlogs");
-      if (!res.ok) throw new Error(`Request failed: ${res.status}`);
-      const data = await res.json();
-      if (ticket !== loadTicket.current) return;
-      if (data.fail || !Array.isArray(data.blogs)) {
-        setStatus("error");
-        return;
-      }
-      setBlogs(data.blogs);
-      setBlogPage(0);
-      setStatus("ready");
-    } catch {
-      if (ticket !== loadTicket.current) return;
-      setStatus("error");
-    }
-  }, []);
-
-  useEffect(() => {
-    loadBlogs();
-    return () => {
-      // Invalidate any in-flight load on unmount.
-      loadTicket.current++;
-    };
-  }, [loadBlogs]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -380,7 +367,7 @@ const BlogPage: NextPage = () => {
               </p>
               <button
                 type="button"
-                onClick={loadBlogs}
+                onClick={retry}
                 className="mt-5 text-xs uppercase tracking-[0.18em] text-blue-300/80 transition-colors duration-300 hover:text-blue-300"
               >
                 Try again

@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 
-// Stale-while-revalidate for small JSON lists: show the last known copy at
+// Stale-while-revalidate for JSON endpoints: show the last known copy at
 // once, refetch in the background, and only touch the screen and the cache
 // when the server's answer differs.
 
@@ -14,8 +14,12 @@ export function cacheKey(url: string): string {
 // Survives client-side navigations; localStorage survives reloads.
 const memory = new Map<string, string>();
 
-function readStored(url: string): string | null {
-  if (typeof window === "undefined") return null;
+// False until the first page has hydrated. Until then the cache must not be
+// read during render, or the client's first render would not match the HTML.
+let hydrated = false;
+
+function readStored(url: string | null): string | null {
+  if (!url || typeof window === "undefined") return null;
   const held = memory.get(url);
   if (held !== undefined) return held;
   try {
@@ -37,66 +41,151 @@ function writeStored(url: string, raw: string) {
   }
 }
 
-function parse<T>(raw: string | null | undefined): T | null {
-  if (!raw) return null;
+function dropStored(url: string) {
+  memory.delete(url);
   try {
-    return JSON.parse(raw) as T;
+    window.localStorage.removeItem(cacheKey(url));
   } catch {
-    return null;
+    // Nothing to clean up if storage is unavailable.
   }
 }
+
+function usable(raw: string | null, isUsable: (data: any) => boolean) {
+  if (!raw) return false;
+  try {
+    return isUsable(JSON.parse(raw));
+  } catch {
+    return false;
+  }
+}
+
+const useIsomorphicLayoutEffect =
+  typeof window === "undefined" ? useEffect : useLayoutEffect;
+
+type Options = {
+  /** Rejects answers that must not replace a good cached copy, such as
+   *  `{ fail: true }` from a database hiccup. Must be a stable function. */
+  isUsable?: (data: any) => boolean;
+  /** Read the cache during the very first render, even while hydrating. Only
+   *  for subtrees that tolerate differing from the server's HTML. */
+  eager?: boolean;
+};
+
+type State = {
+  url: string | null;
+  raw: string | null;
+  settled: boolean;
+  failed: boolean;
+  notFound: boolean;
+};
 
 type Result = {
   /** The JSON text as the server sent it, or null when nothing is known. */
   raw: string | null;
-  /** True until there is something to show or the request has settled. */
+  /** Nothing to show yet and the request has not settled. */
   loading: boolean;
+  /** The request settled without a usable answer and nothing is cached. */
+  failed: boolean;
+  /** The server answered 404; any cached copy has been dropped. */
+  notFound: boolean;
+  /** Run the request again. */
+  retry: () => void;
 };
 
-/**
- * The cached copy is read during the first client render, so that render can
- * differ from the server's HTML. Callers must render the result in a subtree
- * that tolerates that (see ReadingSidebar, which fills the same markup from an
- * inline script before hydration).
- *
- * @param url      endpoint returning JSON; also the cache key
- * @param isUsable rejects answers that should not replace a good cached copy
- *                 (for example `{ fail: true }` from a database hiccup)
- */
-export function useCachedJson<T>(
-  url: string,
-  isUsable: (data: T) => boolean = () => true,
-): Result {
-  const [raw, setRaw] = useState<string | null>(() => readStored(url));
-  const [settled, setSettled] = useState(false);
+const accept = () => true;
+
+/** @param url endpoint returning JSON, also the cache key; null waits. */
+export function useCachedJson(url: string | null, options: Options = {}): Result {
+  const isUsable = options.isUsable ?? accept;
+  const eager = options.eager ?? false;
+
+  const fresh = (next: string | null, read: boolean): State => ({
+    url: next,
+    raw: read ? readStored(next) : null,
+    settled: false,
+    failed: false,
+    notFound: false,
+  });
+
+  const [state, setState] = useState<State>(() =>
+    fresh(url, eager || hydrated),
+  );
+  const [attempt, setAttempt] = useState(0);
+
+  // A different endpoint (moving between posts): switch to its cached copy in
+  // the same render, so the previous entry never shows under the new address.
+  let current = state;
+  if (state.url !== url) {
+    current = fresh(url, true);
+    setState(current);
+  }
+
+  // First load of the site: pick up the cache right after hydration, before
+  // the browser paints the hydrated page.
+  useIsomorphicLayoutEffect(() => {
+    hydrated = true;
+    const stored = readStored(url);
+    if (!stored) return;
+    setState((prev) =>
+      prev.url === url && prev.raw === null ? { ...prev, raw: stored } : prev,
+    );
+  }, [url]);
 
   useEffect(() => {
+    if (!url) return;
     const controller = new AbortController();
-    let current = readStored(url);
-    setRaw(current);
-    setSettled(false);
+    const apply = (change: (prev: State) => State) => {
+      if (controller.signal.aborted) return;
+      setState((prev) => (prev.url === url ? change(prev) : prev));
+    };
 
     fetch(url, { signal: controller.signal })
-      .then((res) => (res.ok ? res.text() : null))
-      .then((fresh) => {
-        if (controller.signal.aborted) return;
-        const data = parse<T>(fresh);
-        if (fresh && data !== null && isUsable(data) && fresh !== current) {
-          current = fresh;
-          writeStored(url, fresh);
-          setRaw(fresh);
+      .then(async (res) => {
+        if (res.status === 404) {
+          dropStored(url);
+          apply((prev) => ({
+            ...prev,
+            raw: null,
+            settled: true,
+            failed: false,
+            notFound: true,
+          }));
+          return;
         }
-        setSettled(true);
+        const text = res.ok ? await res.text() : null;
+        if (!usable(text, isUsable)) {
+          apply((prev) => ({ ...prev, settled: true, failed: true }));
+          return;
+        }
+        if (text !== readStored(url)) writeStored(url, text as string);
+        apply((prev) => ({
+          ...prev,
+          raw: text,
+          settled: true,
+          failed: false,
+          notFound: false,
+        }));
       })
       .catch(() => {
-        if (!controller.signal.aborted) setSettled(true);
+        apply((prev) => ({ ...prev, settled: true, failed: true }));
       });
 
     return () => controller.abort();
-    // isUsable is a stable predicate by contract; keying on it would refetch
-    // on every render for inline functions.
+    // isUsable is stable by contract.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [url]);
+  }, [url, attempt]);
 
-  return { raw, loading: raw === null && !settled };
+  const retry = useCallback(() => {
+    setState((prev) => ({ ...prev, settled: false, failed: false }));
+    setAttempt((n) => n + 1);
+  }, []);
+
+  const hasData = current.raw !== null;
+  return {
+    raw: current.raw,
+    loading: !hasData && !current.settled,
+    failed: !hasData && current.settled && current.failed,
+    notFound: current.notFound,
+    retry,
+  };
 }

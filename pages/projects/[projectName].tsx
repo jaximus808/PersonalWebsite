@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import YouTube from "react-youtube";
@@ -8,6 +8,7 @@ import Seo from "../../components/Seo";
 import ReadingHeader from "../../components/blog/ReadingHeader";
 import ReadingSidebar from "../../components/blog/ReadingSidebar";
 import BlogContent from "../../components/blog/BlogContent";
+import { useCachedJson } from "../../lib/useCachedJson";
 import { ArticleSkeleton } from "../../components/blog/BlogSkeleton";
 
 type Project = {
@@ -23,11 +24,17 @@ type Project = {
   projectLinks?: string | null;
 };
 
-type LoadState =
-  | { status: "loading" }
-  | { status: "found"; project: Project }
-  | { status: "notfound" }
-  | { status: "error" };
+// A lookup that failed must not replace a good cached copy.
+const hasEntry = (data: any) => data?.fail !== true && Boolean(data?.project);
+
+function parseEntry(raw: string | null): Project | null {
+  if (!raw) return null;
+  try {
+    return (JSON.parse(raw)?.project as Project) ?? null;
+  } catch {
+    return null;
+  }
+}
 
 type ProjectLink = {
   href: string;
@@ -86,9 +93,16 @@ const ProjectPage = () => {
       : rawName
     : undefined;
 
-  const [state, setState] = useState<LoadState>({ status: "loading" });
+  // Cached copy shows at once; the background refetch replaces it only when
+  // the server's version differs.
+  const { raw, loading, failed, retry } = useCachedJson(
+    projectName ? `/api/getProject?name=${encodeURIComponent(projectName)}` : null,
+    { isUsable: hasEntry },
+  );
+  const project = useMemo(() => parseEntry(raw), [raw]);
+  const waiting = !router.isReady || loading;
+
   const [authenticated, setAuthenticated] = useState(false);
-  const [attempt, setAttempt] = useState(0);
 
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -102,48 +116,10 @@ const ProjectPage = () => {
     };
   }, []);
 
-  // Load the project. Re-runs when the name changes or the reader retries; the
-  // AbortController drops any response that belongs to a previous name.
   useEffect(() => {
-    if (!router.isReady) return;
-
     setConfirmingDelete(false);
     setDeleteError("");
-
-    if (!projectName) {
-      setState({ status: "notfound" });
-      return;
-    }
-
-    const controller = new AbortController();
-    setState({ status: "loading" });
-
-    (async () => {
-      try {
-        const res = await fetch(
-          `/api/getProject?name=${encodeURIComponent(projectName)}`,
-          { signal: controller.signal }
-        );
-        if (res.status === 404) {
-          if (!controller.signal.aborted) setState({ status: "notfound" });
-          return;
-        }
-        if (!res.ok) throw new Error(`Request failed: ${res.status}`);
-        const data = await res.json();
-        if (controller.signal.aborted) return;
-        if (data.fail || !data.project) {
-          setState({ status: "notfound" });
-        } else {
-          setState({ status: "found", project: data.project as Project });
-        }
-      } catch {
-        if (controller.signal.aborted) return;
-        setState({ status: "error" });
-      }
-    })();
-
-    return () => controller.abort();
-  }, [router.isReady, projectName, attempt]);
+  }, [projectName]);
 
   // Admin check runs alongside the project fetch and never blocks the page.
   useEffect(() => {
@@ -206,7 +182,6 @@ const ProjectPage = () => {
     setDeleting(false);
   }, [projectName, confirmingDelete, deleting, router]);
 
-  const project = state.status === "found" ? state.project : null;
   const title = project ? displayName(project.name) : "";
   const dated = project ? formatDate(project.projectDate) : "";
   const links = project ? parseLinks(project) : [];
@@ -234,7 +209,7 @@ const ProjectPage = () => {
       <ReadingSidebar section="projects" activeId={projectName} />
 
       <main className="mx-auto w-full max-w-[700px] px-6 pt-28 md:pt-32 pb-24 font-montserrat">
-        {state.status === "loading" && <ArticleSkeleton />}
+        {waiting && <ArticleSkeleton />}
 
         {project && (
           <article>
@@ -309,7 +284,7 @@ const ProjectPage = () => {
           </article>
         )}
 
-        {state.status === "notfound" && (
+        {!waiting && !project && !failed && (
           <div>
             <p className="text-[0.7rem] uppercase tracking-[0.18em] text-white/60">
               Nothing here
@@ -323,7 +298,7 @@ const ProjectPage = () => {
           </div>
         )}
 
-        {state.status === "error" && (
+        {!waiting && !project && failed && (
           <div role="alert">
             <p className="text-[0.7rem] uppercase tracking-[0.18em] text-white/60">
               Something went wrong
@@ -335,7 +310,7 @@ const ProjectPage = () => {
               The connection may have dropped.{" "}
               <button
                 type="button"
-                onClick={() => setAttempt((n) => n + 1)}
+                onClick={retry}
                 className="text-blue-300/80 underline underline-offset-4 decoration-blue-300/30 transition-colors duration-300 hover:text-blue-300"
               >
                 Try again
@@ -344,7 +319,7 @@ const ProjectPage = () => {
           </div>
         )}
 
-        {state.status !== "loading" && (
+        {!waiting && (
           <footer className="mt-16 border-t border-white/10 pt-8">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <Link

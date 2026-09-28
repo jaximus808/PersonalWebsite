@@ -173,7 +173,10 @@ const ReadingSidebar: React.FC<{ section?: Section; activeId?: string }> = ({
   // Cached copy shows at once; the background refetch swaps it only if the
   // list changed. The rail is optional, so a failed request just leaves the
   // heading and the index link.
-  const { raw, loading } = useCachedJson<any>(config.endpoint, succeeded);
+  const { raw, loading } = useCachedJson(config.endpoint, {
+    isUsable: succeeded,
+    eager: true,
+  });
 
   // The router has no id yet while hydrating; the address bar does.
   const active =
