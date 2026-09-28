@@ -53,3 +53,13 @@ Personal website + portfolio. **Next.js 16 (Pages Router)** · TypeScript · Tai
 **Conventions:** Pages Router (not App Router). Prettier + ESLint configured — match surrounding style. Branch off `main`; confirm before pushing or deploying.
 
 **Verifying the landing page (`/`):** The Three.js `<Canvas>` in `components/backgroundThree.tsx` can't get a WebGL context under **headless** Chromium (SwiftShader → `WebGLRenderer: A WebGL context could not be created`). In Next dev, that error bubbles to the dev-overlay error boundary and unmounts the **whole** page tree, so anything below the Canvas (MyPath, TechStack, etc.) never renders — a headless `/gstack browse` or screenshot of `/` will look blank/broken even when the code is fine. This is an environment limit, not a bug. To verify `/` visually, use **headed** mode (`browse --headed`, needs a real GPU; on this Mac start it clean: `browse stop` → `browse --headed status` → `goto`) or just ask the user to review in their own browser. Pages without the 3D stage verify fine headless. Also note: `npm run lint` is currently misconfigured (passes `lint` as a dir and errors) — use `npx tsc --noEmit` to type-check instead.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

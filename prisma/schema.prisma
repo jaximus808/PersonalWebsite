@@ -38,4 +38,5 @@ model Blog {
   content String @unique
   mediaPic String @unique
   datePosted DateTime @default(now())
+  format String?
 }
