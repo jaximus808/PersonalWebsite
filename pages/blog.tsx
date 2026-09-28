@@ -64,7 +64,7 @@ const BlogPage: NextPage = () => {
     const ticket = ++loadTicket.current;
     setStatus("loading");
     try {
-      const res = await fetch("/api/getBlogs/");
+      const res = await fetch("/api/getBlogs");
       if (!res.ok) throw new Error(`Request failed: ${res.status}`);
       const data = await res.json();
       if (ticket !== loadTicket.current) return;

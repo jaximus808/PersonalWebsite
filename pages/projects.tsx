@@ -4,9 +4,8 @@ import Image from "next/image";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import Background from "../components/backgroundThree";
-import { PrismaClient, Prisma, Projects } from "@prisma/client";
+import type { Projects } from "@prisma/client";
 import { useState, useEffect, useRef } from "react";
-import * as cookies from "cookie";
 import Link from "next/link";
 import {
   Calendar,
@@ -17,53 +16,32 @@ import {
   ExternalLink,
 } from "lucide-react";
 
-import jsonwebtoken from "jsonwebtoken";
-
-import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
 import UnderConstruction from "../components/UnderConstruction";
 import GradientBG from "../components/gradientbg";
 
 const PROJECTS_PER_PAGE = 6;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const parsedCookies = cookies.parse(
-    context.req.headers.cookie ? context.req.headers.cookie : ""
-  );
+const ProjectsPage: React.FC = () => {
+  // Admin check runs on the client so the page itself stays static.
+  const [auth, setAuth] = useState(false);
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/admin/me", { signal: controller.signal })
+      .then((res) => (res.ok ? res.json() : { authenticated: false }))
+      .then((data) => {
+        if (!controller.signal.aborted) setAuth(Boolean(data?.authenticated));
+      })
+      .catch(() => {});
+    return () => controller.abort();
+  }, []);
 
-  const token = parsedCookies.token;
-
-  let authenticated = false;
-  if (!token) {
-    authenticated = false;
-  } else {
-    try {
-      jsonwebtoken.verify(token, process.env.ADMIN_PASS!);
-      authenticated = true;
-    } catch {
-      authenticated = false;
-    }
-  }
-
-  console.log(authenticated);
-  return {
-    props: {
-      auth: authenticated,
-    },
-  };
-};
-
-interface ProjectsPageProps {
-  auth: boolean;
-}
-
-const ProjectsPage: React.FC<ProjectsPageProps> = ({ auth }) => {
   const [loading, isLoading] = useState(true);
   const [projects, setProjects] = useState<Projects[]>([]);
   const [showAdminPanel, setShowAdminPanel] = useState<boolean>(false);
 
   async function getInitialData() {
     try {
-      const res = await fetch("/api/getProjects/", {
+      const res = await fetch("/api/getProjects", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
