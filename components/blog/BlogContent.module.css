@@ -1,0 +1,470 @@
+/*
+ * Article typography for blog posts (markdown + legacy share this).
+ * Fills its parent; the page constrains it to a ~680-720px reading column.
+ * See CLAUDE.md "Design Language".
+ */
+
+.article {
+  --ink: rgba(255, 255, 255, 0.8);
+  --ink-strong: rgba(255, 255, 255, 0.96);
+  --ink-quiet: rgba(255, 255, 255, 0.6);
+  --ink-faint: rgba(255, 255, 255, 0.4);
+  --rule: rgba(255, 255, 255, 0.1);
+  --surface: rgba(255, 255, 255, 0.035);
+  --accent: #a3cbff;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", monospace;
+
+  width: 100%;
+  min-width: 0;
+  font-family: var(--font-montserrat), system-ui, sans-serif;
+  font-weight: 300;
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  color: var(--ink);
+  overflow-wrap: break-word;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+@media (min-width: 768px) {
+  .article {
+    font-size: 1.1875rem;
+  }
+}
+
+.article > :first-child {
+  margin-top: 0;
+}
+
+.article > :last-child {
+  margin-bottom: 0;
+}
+
+/* ---------- Text ---------- */
+
+.article p {
+  margin: 0 0 1.5em;
+}
+
+.preserve {
+  white-space: pre-wrap;
+}
+
+.spacer {
+  height: 1.5rem;
+}
+
+.article strong {
+  font-weight: 500;
+  color: var(--ink-strong);
+}
+
+.article em {
+  font-style: italic;
+}
+
+.article del {
+  color: var(--ink-quiet);
+}
+
+.article a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: rgba(163, 203, 255, 0.35);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  transition: color 300ms ease-out, text-decoration-color 300ms ease-out;
+}
+
+.article a:hover,
+.article a:focus-visible {
+  color: #c6dfff;
+  text-decoration-color: currentColor;
+}
+
+/* ---------- Headings: more air above than below ---------- */
+
+.article h1,
+.article h2,
+.article h3,
+.article h4 {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-weight: 300;
+  color: #fff;
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+}
+
+.article h1 {
+  font-size: 2.125em;
+  line-height: 1.15;
+  margin: 2em 0 0.6em;
+}
+
+.article h2 {
+  font-size: 1.75em;
+  line-height: 1.2;
+  margin: 2em 0 0.55em;
+}
+
+.article h3 {
+  font-size: 1.4em;
+  line-height: 1.3;
+  margin: 1.8em 0 0.5em;
+}
+
+.article h4 {
+  font-size: 1.2em;
+  line-height: 1.35;
+  font-weight: 400;
+  margin: 1.7em 0 0.45em;
+}
+
+.article h5,
+.article h6 {
+  font-size: 0.7em;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ink-quiet);
+  margin: 2.4em 0 0.8em;
+}
+
+.article h1 a,
+.article h2 a,
+.article h3 a,
+.article h4 a {
+  color: inherit;
+}
+
+/* ---------- Lists ---------- */
+
+.article ul,
+.article ol {
+  margin: 0 0 1.5em;
+  padding-left: 1.4em;
+}
+
+.article ul {
+  list-style: disc;
+}
+
+.article ol {
+  list-style: decimal;
+}
+
+.article ul ul {
+  list-style: circle;
+}
+
+.article li {
+  margin: 0.45em 0 0;
+  padding-left: 0.25em;
+}
+
+.article li::marker {
+  color: var(--ink-faint);
+}
+
+.article li > p {
+  margin-bottom: 0.6em;
+}
+
+.article li > ul,
+.article li > ol {
+  margin: 0.2em 0 0;
+}
+
+.article :global(.task-list-item) {
+  list-style: none;
+  margin-left: -1.2em;
+  padding-left: 0;
+}
+
+.article :global(.task-list-item) input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 0.95em;
+  height: 0.95em;
+  margin: 0 0.7em 0 0;
+  vertical-align: -0.1em;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  background: transparent center / 70% no-repeat;
+}
+
+.article :global(.task-list-item) input[type="checkbox"]:checked {
+  border-color: rgba(163, 203, 255, 0.6);
+  background-color: rgba(163, 203, 255, 0.12);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%23a3cbff' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.5 6.5l2.3 2.3 4.7-5.3'/%3E%3C/svg%3E");
+}
+
+/* ---------- Blockquote ---------- */
+
+.article blockquote {
+  margin: 2em 0;
+  padding: 0.1em 0 0.1em 1.4em;
+  border-left: 1px solid rgba(255, 255, 255, 0.28);
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 1.22em;
+  font-style: italic;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.article blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+.article blockquote code {
+  font-style: normal;
+  font-size: 0.7em;
+}
+
+/* ---------- Rule ---------- */
+
+.article hr {
+  width: 4rem;
+  height: 1px;
+  margin: 3.5em auto;
+  border: 0;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* ---------- Images ---------- */
+
+.figure {
+  display: block;
+  margin: 2.5em 0;
+}
+
+.figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+}
+
+.figure figcaption,
+.caption {
+  display: block;
+  margin-top: 0.9em;
+  font-size: 0.78em;
+  line-height: 1.55;
+  text-align: center;
+  color: var(--ink-quiet);
+}
+
+/* ---------- Code ---------- */
+
+.article code {
+  font-family: var(--mono);
+  font-size: 0.84em;
+  font-weight: 400;
+  padding: 0.16em 0.4em;
+  border: 1px solid var(--rule);
+  border-radius: 0.3rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.9);
+  overflow-wrap: anywhere;
+}
+
+.codeBlock {
+  position: relative;
+  max-width: 100%;
+  margin: 2em 0;
+  border: 1px solid var(--rule);
+  border-radius: 0.75rem;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.codeLabel {
+  display: block;
+  padding: 0.9rem 1.25rem 0;
+  font-size: 0.65rem;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ink-faint);
+  user-select: none;
+}
+
+.codeBlock pre {
+  margin: 0;
+  padding: 1.1rem 1.25rem 1.2rem;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  tab-size: 2;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+@media (min-width: 768px) {
+  .codeBlock pre {
+    font-size: 0.9rem;
+  }
+}
+
+.codeBlock pre code {
+  display: block;
+  width: max-content;
+  min-width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font-size: inherit;
+  color: rgba(255, 255, 255, 0.82);
+  white-space: pre;
+  overflow-wrap: normal;
+}
+
+/* Syntax theme: a few quiet tints around the site's single blue accent. */
+
+.article :global(.hljs-comment),
+.article :global(.hljs-quote),
+.article :global(.hljs-meta) {
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+}
+
+.article :global(.hljs-keyword),
+.article :global(.hljs-selector-tag),
+.article :global(.hljs-doctag),
+.article :global(.hljs-section),
+.article :global(.hljs-name) {
+  color: #a3cbff;
+}
+
+.article :global(.hljs-title),
+.article :global(.hljs-title.function_),
+.article :global(.hljs-title.class_),
+.article :global(.hljs-selector-id),
+.article :global(.hljs-selector-class) {
+  color: #d5e6ff;
+}
+
+.article :global(.hljs-string),
+.article :global(.hljs-regexp),
+.article :global(.hljs-addition),
+.article :global(.hljs-template-tag) {
+  color: #b9d3c6;
+}
+
+.article :global(.hljs-number),
+.article :global(.hljs-literal),
+.article :global(.hljs-symbol),
+.article :global(.hljs-bullet) {
+  color: #dccfb4;
+}
+
+.article :global(.hljs-type),
+.article :global(.hljs-built_in),
+.article :global(.hljs-attr),
+.article :global(.hljs-attribute),
+.article :global(.hljs-property),
+.article :global(.hljs-variable),
+.article :global(.hljs-template-variable),
+.article :global(.hljs-selector-attr),
+.article :global(.hljs-selector-pseudo) {
+  color: #bcc6dc;
+}
+
+.article :global(.hljs-params),
+.article :global(.hljs-punctuation),
+.article :global(.hljs-operator),
+.article :global(.hljs-subst) {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.article :global(.hljs-deletion) {
+  color: #d9b0b0;
+}
+
+.article :global(.hljs-link) {
+  color: #a3cbff;
+  text-decoration: underline;
+}
+
+.article :global(.hljs-emphasis) {
+  font-style: italic;
+}
+
+.article :global(.hljs-strong) {
+  font-weight: 500;
+}
+
+/* ---------- Tables ---------- */
+
+.tableWrap {
+  max-width: 100%;
+  margin: 2em 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+.tableWrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86em;
+  line-height: 1.6;
+}
+
+.tableWrap th,
+.tableWrap td {
+  padding: 0.8em 1.1em 0.8em 0;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+}
+
+.tableWrap th:last-child,
+.tableWrap td:last-child {
+  padding-right: 0;
+}
+
+.tableWrap th {
+  font-size: 0.78em;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ink-quiet);
+  white-space: nowrap;
+  border-bottom-color: rgba(255, 255, 255, 0.22);
+}
+
+.tableWrap tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* ---------- Footnotes (GFM) ---------- */
+
+.article :global(.footnotes) {
+  margin-top: 3.5em;
+  padding-top: 1.5em;
+  border-top: 1px solid var(--rule);
+  font-size: 0.85em;
+  color: var(--ink-quiet);
+}
+
+.article :global(.sr-only) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .article a {
+    transition: none;
+  }
+}

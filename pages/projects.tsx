@@ -4,9 +4,9 @@ import Image from "next/image";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import Background from "../components/backgroundThree";
-import { PrismaClient, Prisma, Projects } from "@prisma/client";
-import { useState, useEffect, useRef } from "react";
-import * as cookies from "cookie";
+import type { Projects } from "@prisma/client";
+import { useState, useEffect, useMemo } from "react";
+import { useCachedJson } from "../lib/useCachedJson";
 import Link from "next/link";
 import {
   Calendar,
@@ -17,73 +17,46 @@ import {
   ExternalLink,
 } from "lucide-react";
 
-import jsonwebtoken from "jsonwebtoken";
-
-import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
 import UnderConstruction from "../components/UnderConstruction";
 import GradientBG from "../components/gradientbg";
 
 const PROJECTS_PER_PAGE = 6;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const parsedCookies = cookies.parse(
-    context.req.headers.cookie ? context.req.headers.cookie : ""
-  );
+// A failed lookup must not replace a good cached list.
+const hasList = (data: any) =>
+  data?.fail !== true && Array.isArray(data?.projects);
 
-  const token = parsedCookies.token;
-
-  let authenticated = false;
-  if (!token) {
-    authenticated = false;
-  } else {
-    try {
-      jsonwebtoken.verify(token, process.env.ADMIN_PASS!);
-      authenticated = true;
-    } catch {
-      authenticated = false;
-    }
+function parseList(raw: string | null): Projects[] {
+  if (!raw) return [];
+  try {
+    const projects = JSON.parse(raw)?.projects;
+    return Array.isArray(projects) ? projects : [];
+  } catch {
+    return [];
   }
-
-  console.log(authenticated);
-  return {
-    props: {
-      auth: authenticated,
-    },
-  };
-};
-
-interface ProjectsPageProps {
-  auth: boolean;
 }
 
-const ProjectsPage: React.FC<ProjectsPageProps> = ({ auth }) => {
-  const [loading, isLoading] = useState(true);
-  const [projects, setProjects] = useState<Projects[]>([]);
-  const [showAdminPanel, setShowAdminPanel] = useState<boolean>(false);
-
-  async function getInitialData() {
-    try {
-      const res = await fetch("/api/getProjects/", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await res.json();
-      console.log(data);
-
-      setProjects(data.projects ?? []);
-      setShowForwardButton(data.projects.length > PROJECTS_PER_PAGE);
-      isLoading(false);
-      console.log(data);
-    } catch (e) {
-      return { fail: true, projects: [] };
-    }
-  }
-
+const ProjectsPage: React.FC = () => {
+  // Admin check runs on the client so the page itself stays static.
+  const [auth, setAuth] = useState(false);
   useEffect(() => {
-    getInitialData();
+    const controller = new AbortController();
+    fetch("/api/admin/me", { signal: controller.signal })
+      .then((res) => (res.ok ? res.json() : { authenticated: false }))
+      .then((data) => {
+        if (!controller.signal.aborted) setAuth(Boolean(data?.authenticated));
+      })
+      .catch(() => {});
+    return () => controller.abort();
   }, []);
+
+  // Cached list shows at once; the background refetch replaces it only when
+  // the server's list differs.
+  const { raw, loading, failed, retry } = useCachedJson("/api/getProjects", {
+    isUsable: hasList,
+  });
+  const projects = useMemo(() => parseList(raw), [raw]);
+  const [showAdminPanel, setShowAdminPanel] = useState<boolean>(false);
 
   const AddProject = async (e: any) => {
     e.preventDefault();
@@ -134,11 +107,6 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ auth }) => {
   };
 
   const [projectPage, setProjectPage] = useState(0);
-  const [showForwardButton, setShowForwardButton] = useState(
-    projects.length > PROJECTS_PER_PAGE
-  );
-  const [showBackButton, setShowBackButton] = useState(false);
-
   const [projectName, setProjectName] = useState("");
   const [mediaInput, setMediaInput] = useState("");
   const [isYoutube, setIsYoutube] = useState(false);
@@ -151,27 +119,22 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ auth }) => {
   const [responseText, setResponse] = useState("");
   const [customDate, setCustomDate] = useState("false");
 
+  // Pagination is derived from the page index and the list, never stored, so
+  // it stays right when the list changes underneath it.
+  const totalPages = Math.max(
+    1,
+    Math.ceil(projects.length / PROJECTS_PER_PAGE)
+  );
+  const currentPage = Math.min(projectPage, totalPages - 1);
+  const showBackButton = currentPage > 0;
+  const showForwardButton = currentPage < totalPages - 1;
+
   const movePageForward = (): void => {
-    if (projects.length > (projectPage + 1) * PROJECTS_PER_PAGE) {
-      setProjectPage(projectPage + 1);
-      if (
-        (projectPage + 1) * PROJECTS_PER_PAGE >=
-        projects.length - PROJECTS_PER_PAGE
-      ) {
-        setShowForwardButton(false);
-      }
-    }
-    setShowBackButton(true);
+    if (showForwardButton) setProjectPage(currentPage + 1);
   };
 
   const movePageBackward = (): void => {
-    if (projectPage > 0) {
-      setProjectPage(projectPage - 1);
-      if ((projectPage - 1) * PROJECTS_PER_PAGE <= 0) {
-        setShowBackButton(false);
-      }
-    }
-    setShowForwardButton(true);
+    if (showBackButton) setProjectPage(currentPage - 1);
   };
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>): void => {
@@ -377,14 +340,30 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ auth }) => {
           <div className="min-h-screen flex items-center justify-center">
             <div className="text-white text-2xl">Projects Loading...</div>
           </div>
+        ) : failed ? (
+          <div
+            role="alert"
+            className="min-h-[40vh] mt-16 text-center font-montserrat"
+          >
+            <p className="font-light text-white/60">
+              The projects did not load. The connection may have dropped.
+            </p>
+            <button
+              type="button"
+              onClick={retry}
+              className="mt-5 text-xs uppercase tracking-[0.18em] text-blue-300/80 transition-colors duration-300 hover:text-blue-300"
+            >
+              Try again
+            </button>
+          </div>
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12 py-4 px-12">
               {projects
                 .slice(
-                  projectPage * PROJECTS_PER_PAGE,
+                  currentPage * PROJECTS_PER_PAGE,
                   Math.min(
-                    (projectPage + 1) * PROJECTS_PER_PAGE,
+                    (currentPage + 1) * PROJECTS_PER_PAGE,
                     projects.length
                   )
                 )
@@ -516,8 +495,7 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({ auth }) => {
                 </button>
 
                 <span className="text-white bg-white/10 backdrop-blur-md px-6 py-3 rounded-lg border border-white/20">
-                  Page {projectPage + 1} of{" "}
-                  {Math.ceil(projects.length / PROJECTS_PER_PAGE)}
+                  Page {currentPage + 1} of {totalPages}
                 </span>
 
                 <button

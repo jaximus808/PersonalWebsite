@@ -148,7 +148,7 @@ const Index = (props: props) => {
 
     async function getInitialData() {
       try {
-        const res = await fetch("/api/getFrontPageData/", {
+        const res = await fetch("/api/getFrontPageData", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

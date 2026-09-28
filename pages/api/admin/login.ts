@@ -10,17 +10,13 @@ const prisma = new PrismaClient();
 
 export default async (req: NextApiRequest, res: NextApiResponse) =>
 {
-    console.log("L");
     try
     {
         if(req.method != "POST")
         {
             return res.status(400).json({message: "HM?"});
         }
-
-        console.log(req.body);
         const attemptDetails = req.body;
-        console.log(attemptDetails)
         const username:string = req.body.username;
 
         const users = await prisma.admin.findUnique({
@@ -36,23 +32,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) =>
             });
             return; 
         }
-        console.log(users)
-        console.log(attemptDetails.username)
         const userPass:string = users?.password!;
-
-        console.log(userPass)
         const result:boolean = await bcrypt.compare(attemptDetails.pass, userPass);
         if(!result)
         {
-            console.log("L");
             res.json({
                 authenticated: false,
                 msg: "Wrong Username or Password"
             });
             return; 
         }
-
-        console.log("L");
     const token = jsonwebtoken.sign({_id:users?.id!},process.env.ADMIN_PASS!);
     // Make the login cookie last a long time for convenience (2 years)
     const TWO_YEARS = 60 * 60 * 24 * 365 * 2; // seconds

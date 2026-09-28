@@ -1,42 +1,31 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from "next";
 
-import {PrismaClient, Prisma} from "@prisma/client"
-import { getCookies, getCookie } from 'cookies-next';
+import prisma from "../../lib/prisma";
 
-import * as bcrypt from "bcryptjs";
-import * as jsonwebtoken from "jsonwebtoken";
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  // ?summary=1 returns only what a navigation list needs.
+  const summary = Boolean(req.query.summary);
 
+  try {
+    const projects = await prisma.projects.findMany({
+      orderBy: {
+        projectDate: "desc",
+      },
+      ...(summary
+        ? { select: { id: true, name: true, projectDate: true } }
+        : {}),
+    });
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse)
-{
-    const prisma = new PrismaClient();
-    let projects:any;
-    try  
-    {
-        projects = await prisma.projects.findMany(
-            {
-                orderBy: {
-                    projectDate: 'desc'
-                }
-            }
-        )
-    }
-    catch
-    {
-        projects = []; 
-    }
-
-    try
-    {
-        return res.json({fail:false, 
-            projects: JSON.parse(JSON.stringify(projects))})
-    }
-    catch
-    {
-        res.json({fail:true, projects:[]});
-    }
-
-
-    
-    
+    res.setHeader(
+      "Cache-Control",
+      "public, s-maxage=60, stale-while-revalidate=600"
+    );
+    return res.json({ fail: false, projects });
+  } catch (e: Error | any) {
+    console.log(e?.message);
+    return res.json({ fail: true, projects: [] });
+  }
 }
