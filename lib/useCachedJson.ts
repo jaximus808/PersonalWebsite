@@ -6,14 +6,20 @@ import { useEffect, useState } from "react";
 
 const PREFIX = "jp-cache:v1:";
 
+/** localStorage key for a cached endpoint, for code that reads it directly. */
+export function cacheKey(url: string): string {
+  return PREFIX + url;
+}
+
 // Survives client-side navigations; localStorage survives reloads.
 const memory = new Map<string, string>();
 
 function readStored(url: string): string | null {
+  if (typeof window === "undefined") return null;
   const held = memory.get(url);
   if (held !== undefined) return held;
   try {
-    const stored = window.localStorage.getItem(PREFIX + url);
+    const stored = window.localStorage.getItem(cacheKey(url));
     if (stored !== null) memory.set(url, stored);
     return stored;
   } catch {
@@ -25,7 +31,7 @@ function readStored(url: string): string | null {
 function writeStored(url: string, raw: string) {
   memory.set(url, raw);
   try {
-    window.localStorage.setItem(PREFIX + url, raw);
+    window.localStorage.setItem(cacheKey(url), raw);
   } catch {
     // Storage full or unavailable; the memory copy still serves this visit.
   }
@@ -40,13 +46,19 @@ function parse<T>(raw: string | null | undefined): T | null {
   }
 }
 
-type Result<T> = {
-  data: T | null;
+type Result = {
+  /** The JSON text as the server sent it, or null when nothing is known. */
+  raw: string | null;
   /** True until there is something to show or the request has settled. */
   loading: boolean;
 };
 
 /**
+ * The cached copy is read during the first client render, so that render can
+ * differ from the server's HTML. Callers must render the result in a subtree
+ * that tolerates that (see ReadingSidebar, which fills the same markup from an
+ * inline script before hydration).
+ *
  * @param url      endpoint returning JSON; also the cache key
  * @param isUsable rejects answers that should not replace a good cached copy
  *                 (for example `{ fail: true }` from a database hiccup)
@@ -54,10 +66,8 @@ type Result<T> = {
 export function useCachedJson<T>(
   url: string,
   isUsable: (data: T) => boolean = () => true,
-): Result<T> {
-  // The memory copy is safe to read during render: it is empty on the server
-  // and on first load, so hydration always matches.
-  const [raw, setRaw] = useState<string | null>(() => memory.get(url) ?? null);
+): Result {
+  const [raw, setRaw] = useState<string | null>(() => readStored(url));
   const [settled, setSettled] = useState(false);
 
   useEffect(() => {
@@ -88,6 +98,5 @@ export function useCachedJson<T>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
 
-  const data = parse<T>(raw);
-  return { data, loading: data === null && !settled };
+  return { raw, loading: raw === null && !settled };
 }
