@@ -23,6 +23,15 @@ const timeline: YearGroup[] = [
     year: "2026",
     entries: [
       {
+        org: "Northstar Robotics",
+        role: "Robotics Software Engineer",
+        location: "Remote · SF",
+        dates: "09/2026 — Present",
+        logo: "/northstar_logo.jpg",
+        logoLight: true,
+        blurb: "Teleoperation, Data Pipelines, and Policy Fine-Tuning.",
+      },
+      {
         org: "Capital One",
         role: "Software Engineer Intern",
         dates: "06/2026 — 08/2026",

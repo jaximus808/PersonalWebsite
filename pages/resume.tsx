@@ -5,88 +5,91 @@ import Seo from "../components/Seo"
 const resume = {
   name: "Jaxon Poentis",
   contacts: [
-    { label: "j.k.poentis@wustl.edu", href: "mailto:j.k.poentis@wustl.edu" },
+    { label: "jaxonp808@gmail.com", href: "mailto:jaxonp808@gmail.com" },
     { label: "linkedin.com/in/jaxon-poentis", href: "https://linkedin.com/in/jaxon-poentis/" },
     { label: "github.com/jaximus808", href: "https://github.com/jaximus808" },
     { label: "jaxonp.com", href: "https://jaxonp.com" },
   ],
   education: {
     school: "Washington University in St. Louis",
-    degree: "Bachelor of Science in Computer Science + Math",
+    degree: "Bachelor of Science in Computer Science and Mathematics | GPA: 3.75/4.0",
     location: "St. Louis, MO",
     date: "May 2027",
     bullets: [
-      "Awards: Eagle Scout, Anheuser-Busch Scholar, Dean's List",
-      "Coursework: Parallel Programming, Cloud Computing, System Software, OOP, Rapid Prototyping",
+      "Honors: ISEF Finalist (2022); Dean's List; Eagle Scout | YC Startup School 2026 (SF)",
+      "Coursework: Intro to AI, Cloud Computing with Big Data Applications, Systems Software, Analysis of Algorithms, Concurrency & Memory-Safe Systems (Grad), Theory of Parallel Systems (Grad)",
     ],
   },
   experience: [
     {
-      org: "Capital One",
-      role: "Software Engineering Intern",
-      location: "McLean, VA",
-      date: "June 2026 – Present",
+      org: "Northstar Robotics",
+      role: "Robotics Software Engineer",
+      location: "Remote, SF",
+      date: "Sept. 2026 – Present",
       bullets: [
-        "Built a self-serve FastAPI web app with a team of 5, enabling enterprise teams to search across security groups by CIDR and rule, replacing slow manual lookups across the cloud network environment.",
-        "Implemented PostgreSQL query optimization using GiST indexes to search 1.5M+ security groups and rules in under a second, delivering near-instant self-serve results at scale.",
+        "Shipped a multi-relay supervisor for robot teleoperation and data collection; built reusable installers, configuration tools, and hardware diagnostics to support partner deployments.",
+        "Built a reliable recording pipeline that raised three-camera capture from 7.5–11.6 to 30 fps; all 29 test recordings reached Azure within 9–36 seconds of stopping, with synchronized video, joints, and actions.",
+        "Resolved production camera-session leaks and network dropouts; added automatic reconnection and recording-upload recovery after restarts to support remote operators.",
+        "Built a Python/Modal pipeline to prepare robot demonstrations for policy fine-tuning on A100 GPUs, synchronizing video and actions, rejecting incomplete episodes, and holding out sessions for validation.",
+      ],
+    },
+    {
+      org: "Capital One",
+      role: "Software Engineer Intern",
+      location: "McLean, VA",
+      date: "June 2026 – Aug. 2026",
+      bullets: [
+        "Built a FastAPI app on a 5-person team to replace manual CIDR and rule lookups, using PostgreSQL GiST indexes for subsecond searches across 1.5M+ security groups and rules.",
+        "Built an in-app chat integration to eliminate separate API token provisioning by wrapping Claude Code in a driver; adopted by the team with expanding use across the organization.",
       ],
     },
     {
       org: "Tesla",
-      role: "Software Engineering Intern",
+      role: "Software Engineer Intern",
       location: "Fremont, CA",
       date: "Jan. 2026 – May 2026",
       bullets: [
-        "Created, led, and deployed an AI agent platform (Python, FastAPI, LangGraph, MongoDB, WebSockets) that automates data retrieval and workflow execution across internal microservices via 12+ tool interfaces, adopted by billing, support, and application teams.",
-        "Engineered asynchronous, event-driven workflows across 10+ distributed .NET microservices to orchestrate energy lease transfers and propagate account data to production, serving Tesla's entire U.S. energy customer base.",
-        "Led a cross-team effort to ship account-based authentication across the microservice fleet, integrating Cerberus with on-behalf-of identity propagation and account passthrough for secure, scoped tool execution.",
-        "Profiled and tuned service latency with distributed tracing, APM, and load testing against production SLAs; deployed and managed services across Kubernetes pods with Jenkins CI/CD pipelines.",
+        "Led development of an AI agent platform for internal data retrieval and workflows using Python, FastAPI, LangGraph, and 12+ tools; adopted by billing, support, and application teams.",
+        "Automated energy lease transfers and account updates for Tesla's entire U.S. energy customer base through asynchronous, event-driven workflows across 10+ .NET microservices.",
+        "Led a cross-team authentication rollout to scope AI tool access to user accounts using Cerberus.",
+        "Tuned latency against SLA targets with tracing, APM, and load tests; deployed to Kubernetes via Jenkins.",
       ],
     },
     {
       org: "Spectrum",
-      role: "Software Engineering Intern",
+      role: "Software Engineer Intern",
       location: "St. Louis, MO",
       date: "May 2025 – Aug. 2025",
       bullets: [
-        "Built a Python coupling analysis tool with custom search algorithms and AST parsing to map nested Java class dependencies, reducing refactoring errors and saving 2–4 days of manual validation per development cycle.",
-        "Developed backend controller logic and fulfillment workflow integrations to trigger automated email notifications on status changes, enabling faster cross-team collaboration and response times.",
+        "Built a Python/AST dependency analyzer, saving 2–4 validation days per refactoring cycle.",
       ],
     },
   ],
   projects: [
     {
-      org: "Tandem – Canvas for Humans & Agents",
-      role: "Go, TypeScript, WebSockets, MCP",
+      org: "Tandem – AI Agent Orchestration",
+      role: "Go, TypeScript, MCP, SQLite",
       date: "May 2026 – Present",
       bullets: [
-        "Built and shipped a real-time collaborative canvas (tandemcanvas.com) where humans and AI agents co-edit shared maps, docs, sheets, and roadmaps; engineered a Go WebSocket hub for low-latency multi-client sync and a Node MCP server exposing the canvas as agent-callable tools, backed by Postgres and deployed on GCP via Docker and GitHub Actions.",
+        "Built an agent-orchestration platform with MCP integration, a durable task queue, and a live web interface where users review plans, approve work, and track execution across parallel agent sessions.",
+        "Implemented atomic task claims to prevent duplicate assignments, heartbeat-based claim expiry to recover stalled work, and WebSocket updates that expose agent progress and results to users.",
+        "Packaged the platform as a single binary with an embedded UI and SQLite; automated installation, MCP registration, and startup so new projects can reuse the same orchestration infrastructure.",
       ],
     },
     {
-      org: "ANDR – Robotics Agent Framework",
-      role: "C++, Python, ROS 2, LangGraph",
-      date: "Feb. 2026 – Present",
-      bullets: [
-        "Built an open-source ROS 2 framework where an LLM controls a robot through strictly decoupled layers; wrote a C++ tool-manager that dynamically discovers and dispatches skill calls to independent action servers, a C++ behavior-tree brain, and a Python ReAct agent, with Gazebo simulation and a FastAPI/WebSocket UI.",
-      ],
-    },
-  ],
-  leadership: [
-    {
-      org: "Google Developer Group – WashU",
-      role: "Core Team Lead",
-      location: "St. Louis, MO",
+      org: "Delivery Robot Platform",
+      role: "Go, Kafka, gRPC, WebSockets",
       date: "Aug. 2025 – Present",
       bullets: [
-        "Led a team of 8 students through a semester-long project, mentoring on system design and engineering practices while organizing workshops and tech events for the broader WashU CS community.",
+        "Lead a 20-person team building a campus delivery platform; developed Go microservices for fleet coordination, a JWT authentication service, and robot command interfaces, with Docker and GCP deployment.",
       ],
     },
   ],
   skills: [
-    { label: "Languages", items: "Java, Python, C++, C, C#, Go, SQL (Postgres), JavaScript, TypeScript, HTML/CSS" },
-    { label: "Frameworks", items: "Node.js, .NET, React.js, Phaser.js, Express.js, Gin, FastAPI, ROS2, OpenCV, Unity" },
-    { label: "Technologies", items: "Docker, Kubernetes, Jenkins, Supabase, Firebase, Vultr, MongoDB, PostgreSQL, UDP/TCP, Git, Linux, OAuth" },
+    { label: "Languages", items: "Python, TypeScript, Go, SQL, C#, C++, Java, JavaScript" },
+    { label: "AI & Applications", items: "LangGraph, MCP, FastAPI, React, Next.js, Node.js, PyTorch" },
+    { label: "Data & Integrations", items: "PostgreSQL, MongoDB, SQLite, WebSockets, Kafka, gRPC, .NET" },
+    { label: "Deployment", items: "Linux, Docker, Kubernetes, Azure, GCP, Modal, Jenkins, GitHub Actions" },
   ],
 }
 
@@ -125,7 +128,7 @@ export default function ResumePage() {
     <div className="bg-[#121212] text-white">
       <Seo
         title="Resume — Jaxon Poentis · Software Engineer"
-        description="Resume of Jaxon Poentis: Software Engineering Intern at Capital One (2026) and Tesla (2026), previously Spectrum. CS + Math at Washington University in St. Louis, expected 2027."
+        description="Resume of Jaxon Poentis: Robotics Software Engineer at Northstar Robotics, previously Software Engineer Intern at Capital One, Tesla, and Spectrum. CS + Math at Washington University in St. Louis, expected 2027."
         path="/resume"
       />
       {/* Full-viewport PDF first */}
@@ -182,13 +185,6 @@ export default function ResumePage() {
         <div className="mb-16">
           <SectionLabel>Projects</SectionLabel>
           {resume.projects.map((entry) => (
-            <Entry key={entry.org} entry={entry} />
-          ))}
-        </div>
-
-        <div className="mb-16">
-          <SectionLabel>Leadership</SectionLabel>
-          {resume.leadership.map((entry) => (
             <Entry key={entry.org} entry={entry} />
           ))}
         </div>
