@@ -1,10 +1,10 @@
 {
-  "_comment": "Config for the geo-aware hero on the landing page. FLOW: one of 'welcome' types in, erases, then the location line (a matching 'rule' or a 'default') types in as the big opener, then an 'invite' fades in. Rules are checked top-to-bottom, FIRST match wins — put specific rules (a city) above broad ones. Only speak about location in a 'rule' where you have a SPECIFIC, personal story (never pin the exact detected city — IP geo is often wrong/off). When no rule matches, a random 'generic' line shows instead, which says NOTHING about location so it reads fine to anyone. Go easy on em dashes; prefer periods/commas. Placeholders: {city}, {region}, {country}. Match fields: cities[] (case-insensitive), regionCodes[] (state code like HI/MO, assumed US unless you add \"country\":\"XX\"), countryCodes[] (US, GB...). Loaded by lib/greetingConfig.ts.",
+  "_comment": "Copy for the landing-page greeting. A random 'welcome' types in and erases, then a matching 'rule' or random 'generic' line types in and stays. The fixed 'identity' appears below. 'invites' are available but not currently displayed. Rules are checked top-to-bottom; first match wins. Put specific cities above broad regions. Keep location references tentative because IP geolocation can be wrong. Generic lines must work without location context. Keep the tone casual, with occasional dry humor. Placeholders: {city}, {region}, {country}. Match fields: cities[] (case-insensitive), regionCodes[] (US unless scoped with country), countryCodes[]. Loaded by lib/greetingConfig.ts.",
 
   "welcome": [
-    "Welcome. I’m glad you found your way here.",
-    "There you are. Come in.",
-    "Come in. You caught me mid-thought."
+    "Hey, I'm Jaxon.",
+    "Oh hey. Welcome.",
+    "Hey. Have a look around."
   ],
 
   "identity": "CS + Math @ WashU, focused on distributed systems and robotics. prev SWE @ Tesla, Capital One, and Spectrum.",
@@ -14,7 +14,7 @@
     {
       "id": "hawaii",
       "match": { "regionCodes": ["HI"] },
-      "say": "Hawaii? So am I. O’ahu, Roosevelt High, Rough Rider through and through."
+      "say": "Yo I'm from Roosevelt High School, Class of 2023. Go Rough Riders!"
     },
     {
       "id": "missouri",
@@ -22,7 +22,7 @@
         "cities": ["St. Louis", "Saint Louis", "Clayton", "University City"],
         "regionCodes": ["MO"]
       },
-      "say": "Looks like you’re near my current corner of the world. These days you’ll find me around WashU."
+      "say": "Hey I went to WashU in St. Louis, Missouri."
     },
     {
       "id": "bay-area",
@@ -36,29 +36,24 @@
           "San Jose"
         ]
       },
-      "say": "The Bay, maybe? I pass through more than you’d think. Coffee’s on me sometime."
+      "say": "Welcome, I come to the bay pretty often. Would love to grab some coffee."
     },
     {
       "id": "nyc",
       "match": { "cities": ["New York", "Brooklyn", "Manhattan"] },
-      "say": "New York. One of my favorite places to lose a whole weekend."
-    },
-    {
-      "id": "seattle",
-      "match": { "cities": ["Seattle", "Bellevue", "Redmond"] },
-      "say": "Pacific Northwest, if I had to guess. Good coffee, good code."
+      "say": "NYC is so cool, I've only been there once :("
     }
   ],
 
   "generic": [
-    "You’ve wandered into a quiet corner of my mind.",
-    "Everything here is something I couldn’t stop thinking about.",
-    "However you found this place, welcome to the inside of my head."
+    "Here's what I've been working on.",
+    "A few projects and things I'm into.",
+    "I made a website. You're looking at it."
   ],
 
   "invites": [
-    "Wander as far in as you’d like.",
-    "Stay a while. It opens up the deeper you go.",
-    "Take your time. I built it to be explored."
+    "Have a look around.",
+    "There's more below.",
+    "Scroll to learn more."
   ]
 }
