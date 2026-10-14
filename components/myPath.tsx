@@ -29,7 +29,7 @@ const timeline: YearGroup[] = [
         dates: "09/2026 — Present",
         logo: "/northstar_logo.jpg",
         logoLight: true,
-        blurb: "Teleoperation, Data Pipelines, and Policy Fine-Tuning.",
+        blurb: "Building Teleoperation, Data Pipelines, and Policy Fine-Tuning.",
       },
       {
         org: "Capital One",
