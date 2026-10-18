@@ -5,9 +5,7 @@ import styles from '../styles/Home.module.css'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import Background from '../components/backgroundThree'
-import { PrismaClient , Prisma} from '@prisma/client'
 import { useState,useEffect, useRef  } from 'react'
-import prisma from '../lib/prisma'
 
 import Link from 'next/link'
 

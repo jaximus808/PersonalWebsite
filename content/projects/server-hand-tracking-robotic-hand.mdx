@@ -1,0 +1,15 @@
+---
+title: "Server Hand Tracking Robotic Hand"
+date: 2023-05-13
+summary: "This project was created for the 2021-2022 science and won first place in my district fair and made me an ISEF finalist. This project allows people to use the internet to control a physical representation of themselves, allowing them to interact more with their hands compared to a virtual zoom meeting."
+cover: "/projects/server-hand-tracking-robotic-hand/cover.jpg"
+youtube: "0vqllX1Z4KQ"
+featured: true
+links:
+  - label: "GitHub"
+    href: "https://github.com/jaximus808/SHTRM"
+  - label: "ISEF project board"
+    href: "https://projectboard.world/isef/project/robo012---network-robotic-tracking-hand"
+legacyName: "Server_Hand_Tracking_Robotic_Hand"
+---
+This project uses 4 main parts: the Master Server, the Fleet Server, the robotic client, and the user client. The Master client is an HTTP server that uses nodejs as its backend to authenticate users connecting to fleet servers and so forth. It acts as a manager to everything in the project. The fleet server's job is to be the employee of this operation. When it comes online it talks and authenticates itself with the Master server to basically confirm its existence. In technical terms, the fleet server will give a password to the master server which the master server will then verify. After verification the master server will store in its database the IP of that Fleet server (if it already doesn't exist) and that it is active. Once active, the fleet server's job is to handle the real-time calculations and streaming of data using UDP, a socket internet protocol. The robotic and user clients are similar to each other. When the robotic client is turned on it will authenticate itself with the master server. Once that happens the master server will send an IP of a fleet server for the robotic client to connect to. The robotic client will then connect and wait for the user to connect. The user client will log in to their account using a username and password. Then the user will have to log in to their robotic arm with the arm's id and a password assigned to it. All this is stored in the database and the master server will verify everything. If everything is good then the Master server will send the IP of the fleet server to the robotic client is connected to. Once both are connected the client will begin tracking the user's hands and sending that to the fleet server using UDP. The data is in the form of 21 vectors pointing to vertices in the hand's position. The robotic client will convert this to the rotation of joints using trigonometry (law of cosine to be specific haha) and will then send this to the robotic client. The robotic client will use boards called Nodemcu and the Arduino Uno to listen to the data and will then move the servos on the hand to match the rotation of the user. This all works together to create the final product of controlling a robotic hand using the internet, allowing users to be able to be physically in two places at once.

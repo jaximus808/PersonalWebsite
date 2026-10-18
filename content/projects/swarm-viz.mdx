@@ -1,0 +1,18 @@
+---
+title: "Swarm Viz"
+date: 2023-11-01
+summary: "A custom computer vision model to detect target rubber balls for the WashU robotics swarm project. The model would be used to detect the rubber balls and then pinpoint its location relative to the input stream."
+cover: "/projects/swarm-viz/cover.gif"
+featured: false
+links:
+  - label: "GitHub"
+    href: "https://github.com/swarm-wustl/objectRec_Training"
+legacyName: "Swarm_Viz"
+---
+This is a custom computer vision model to detect target rubber balls in a video stream. The model's purpose was to be used to detect target rubber balls in the WashU swarm robotics project and be able pinpoint and collect said balls.
+
+The dataset was created by shooting a video with different angles of the target balls. Then each frame was labeled and given to the yolov5 model to train. 
+
+The model took multiple iterations and I went with the second smallest model, yolov5 small. Nano would have a smaller model size, but its performance was unable to successfully learn to detect the target balls reliably. 
+
+Against a validation dataset, the ball had an 88% precision rate and was able to detect the rubber balls against other similar "ball shaped" objects.

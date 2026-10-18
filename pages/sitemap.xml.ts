@@ -1,9 +1,9 @@
 import { GetServerSideProps } from "next";
-import prisma from "../lib/prisma";
+import { listPosts, listProjects } from "../lib/content";
 import { SITE_URL } from "../components/Seo";
 
-// Serves /sitemap.xml — static routes plus every project and blog post from
-// the database, so Google can discover and index all public pages.
+// Serves /sitemap.xml — static routes plus every project and blog post in
+// content/, so Google can discover and index all public pages.
 
 const STATIC_PATHS = ["/", "/projects", "/blog", "/chess", "/resume", "/contact"];
 
@@ -18,19 +18,10 @@ function buildXml(paths: string[]): string {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
-  let dynamicPaths: string[] = [];
-  try {
-    const [projects, blogs] = await Promise.all([
-      prisma.projects.findMany({ select: { name: true } }),
-      prisma.blog.findMany({ select: { id: true } }),
-    ]);
-    dynamicPaths = [
-      ...projects.map((p) => `/projects/${encodeURIComponent(p.name)}`),
-      ...blogs.map((b) => `/blogs/${b.id}`),
-    ];
-  } catch {
-    // Database unavailable — still serve the static routes.
-  }
+  const dynamicPaths = [
+    ...listProjects().map((project) => `/projects/${project.slug}`),
+    ...listPosts().map((post) => `/blog/${post.slug}`),
+  ];
 
   res.setHeader("Content-Type", "application/xml");
   res.setHeader(

@@ -1,0 +1,39 @@
+---
+title: "New Website Update!!"
+date: 2025-10-28
+cover: "/blog/new-website-update/cover.gif"
+legacyId: "6900e645c6f63619a974c076"
+---
+As you can tell by the new design, the website has been massively overhauled, I hope you guys like it better now :)
+
+I kinda wanted to go over the main parts I changed, why, and my thoughts about each part
+
+## The New Background
+
+Imo my favorite change is by far the new background. With my previous background, being the Einstein Rosen gate, I somewhat cheated my approach by just using multiple for loops to generate circles at different z positions.
+
+Now, my background is fully rendering a parametric equation z(x, y), creating beautiful shapes. I also designed the equation to output multiple z positions if the function does so, like +/- in a sqrt method. For the animation transition, I have multiple parametric equations stored, and after 4 seconds I have points of the current shape lerp to the next shape over a period of time, creating the effect.
+
+## Optimizations
+
+I also optimized creating the star mesh, where now instead of making each star a separate mesh, these meshes now form one mesh using an instance mesh. I can now add more stars to be rendered and not heavily drain performance. I also created a nodejs javascript tool to precalculate the points, where now my react page just loads that file. This avoids the client making the calculations on their end since the points don't change in real time. And for the rotation effect, we just move the camera lol.
+
+## The New Path
+
+My new path section is cleaner now, and now cuts fluff that I had on it before. Now I don’t really think it's fluff, but I think it is overshadowed by my current experiences. I also made the date section way more clear.
+
+## Tech Stack Sections
+
+I added a few new sections, such as tech skills, to make it clear what area and languages I’ve touched on.
+
+## Project and Blogs
+
+I have updated these sections to make them way more viewable, before it felt like jank and not like the “reading a newspaper” feeling I get when viewing other blogs. I modified this heavily and now I believe it feels better to read.
+
+## Next Steps
+
+These will most likely be the last changes for a bit, as I’m pretty preoccupied with other projects. But I think this was a good change, as it was fun to work on a project that felt like an expression of myself and my work. Also my highschool self had such massive tech debt it was unreal haha, so I’ve fixed those issues. I will be continuing to post blogs and I need to post more of the projects I’ve worked on, such as my MilePM bot.
+
+My new few blogs will focus on my internship/career experiences, some of my thoughts on tech, and maybe an educational piece on how to implement some type of project.
+
+See you then :)

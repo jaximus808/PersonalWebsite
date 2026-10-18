@@ -6,68 +6,25 @@ import styles from "../styles/Home.module.css";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import Background from "../components/backgroundThree";
-import { PrismaClient, Prisma } from "@prisma/client";
-import { useState, useEffect, useRef, Suspense } from "react";
-import prisma from "../lib/prisma";
+import { useEffect, useRef } from "react";
 
-import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
+import type { GetStaticProps } from "next";
 
 import {
   PopInBlock,
   ScrollObserverProvider,
 } from "../components/popinBlockContext";
-import Youtube from "react-youtube";
 import GradientBG from "../components/gradientbg";
 import MyPath from "../components/myPath";
 import TechStack from "../components/techStack";
 import LivingGreeting from "../components/LivingGreeting";
+import { FramedImage } from "../components/content/Frame";
+import { listPosts, listProjects, type PostMeta, type ProjectMeta } from "../lib/content";
+import { formatDate } from "../lib/contentText";
 
-// Distill a blog's markup-lite content into a quiet plain-text preview:
-// drop image markers (*<i>...*), unwrap bold headings (*<b>...*), keep prose.
-function blogPreview(content: string): string {
-  return content
-    .split("*")
-    .map((segment) => segment.trim())
-    .filter(
-      (segment) => segment.length > 0 && segment.substring(0, 3) !== "<i>"
-    )
-    .map((segment) =>
-      segment.substring(0, 3) === "<b>" ? segment.substring(3) : segment
-    )
-    .join(" ");
-}
-
-function YoutubeVideo(props: any) {
-  const opts = {
-    height: "100%",
-    width: "95%",
-    playerVars: {
-      autoplay: 0,
-    },
-  };
-
-  return (
-    <div className={`${styles.centerRelX} ${props.className}`}>
-      <Youtube
-        className="relative flex iterms-center justify-center"
-        style={{ width: "100%", height: "100%" }}
-        videoId={props.vId}
-        opts={opts}
-      />
-    </div>
-  );
-}
-
-type props = {
-  fail: boolean;
-  pastProjFav: any;
-  recentBlogs: any;
-};
-
-type frontData = {
-  fail: boolean;
-  pastProjFav: any;
-  recentBlogs: any;
+type Props = {
+  projects: ProjectMeta[];
+  latestPost: PostMeta | null;
 };
 
 function ScrollDown(props: any) {
@@ -142,42 +99,7 @@ function ScrollDown(props: any) {
   );
 }
 
-const Index = (props: props) => {
-  useEffect(() => {
-    let isMounted = true; // Prevent setting state if unmounted
-
-    async function getInitialData() {
-      try {
-        const res = await fetch("/api/getFrontPageData", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await res.json();
-        if (isMounted) {
-          setFrontData({
-            ...data,
-            pastProjFav: data.pastProjFav
-              ? [...data.pastProjFav].reverse()
-              : undefined,
-          });
-        }
-      } catch (e) {
-        if (isMounted) {
-          setFrontData({ fail: true, pastProjFav: [], recentBlogs: [] });
-        }
-      }
-    }
-    getInitialData();
-  }, []);
-
-  const [frontData, setFrontData] = useState<frontData>({
-    pastProjFav: undefined,
-    recentBlogs: undefined,
-    fail: false,
-  });
-
+const Index = ({ projects, latestPost }: Props) => {
   return (
     <ScrollObserverProvider>
       <div className="text-caviar ">
@@ -371,75 +293,38 @@ const Index = (props: props) => {
               </div>
 
               <div className="mt-14 flex items-center justify-center">
-                {frontData.pastProjFav ? (
-                  frontData.pastProjFav.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-6 px-8 w-full max-w-6xl">
-                      {frontData.pastProjFav.map((data: any) => {
-                        return (
-                          <PopInBlock key={data.id} variant="materialize">
-                            <div
-                              onClick={() => {
-                                window.location.href = `/projects/${data.name}`;
-                              }}
-                              className={`${styles.stagePanel} group h-full overflow-hidden rounded-2xl cursor-pointer`}
-                            >
-                              {data.youtube ? (
-                                <div className="relative aspect-video w-full overflow-hidden bg-white/5">
-                                  <Suspense
-                                    fallback={
-                                      <div className="flex h-full w-full items-center justify-center text-xs uppercase tracking-[0.18em] text-white/40">
-                                        Loading…
-                                      </div>
-                                    }
-                                  >
-                                    <YoutubeVideo
-                                      className={"h-full w-full"}
-                                      vId={data.mediaLink}
-                                    />
-                                  </Suspense>
-                                </div>
-                              ) : (
-                                <div className="relative aspect-video w-full overflow-hidden bg-white/5">
-                                  <Image
-                                    alt={data.name.replace(/_/g, " ")}
-                                    src={data.mediaLink}
-                                    fill
-                                    className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-                                  />
-                                </div>
-                              )}
-                              <div className="p-6">
-                                <h2 className="font-cormorant font-light text-2xl md:text-3xl text-white leading-tight transition-colors duration-300 group-hover:text-blue-300">
-                                  {data.name.replace(/_/g, " ")}
-                                </h2>
-                                {data.projectDate ? (
-                                  <p className="mt-2 text-[0.7rem] uppercase tracking-[0.16em] text-white/45 font-montserrat">
-                                    {data.projectDate}
-                                  </p>
-                                ) : null}
-                                <p className="mt-3 text-sm text-white/65 font-light leading-relaxed line-clamp-3">
-                                  {data.shortDescription}
-                                </p>
-                              </div>
-                            </div>
-                          </PopInBlock>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    <PopInBlock>
-                      <p className="text-center text-sm uppercase tracking-[0.18em] text-white/50 font-montserrat">
-                        Sorry, projects could not be loaded — try again.
-                      </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-6 px-8 w-full max-w-6xl">
+                  {projects.map((project) => (
+                    <PopInBlock key={project.slug} variant="materialize">
+                      <Link
+                        href={`/projects/${project.slug}`}
+                        className={`${styles.stagePanel} group block h-full overflow-hidden rounded-2xl`}
+                      >
+                        {project.cover ? (
+                          <FramedImage
+                            src={project.cover}
+                            alt=""
+                            ratio="wide"
+                            fit="cover"
+                            bare
+                            imgClassName="transition-transform duration-500 ease-out group-hover:scale-105"
+                          />
+                        ) : null}
+                        <div className="p-6">
+                          <h2 className="font-cormorant font-light text-2xl md:text-3xl text-white leading-tight transition-colors duration-300 group-hover:text-blue-300">
+                            {project.title}
+                          </h2>
+                          <p className="mt-2 text-[0.7rem] uppercase tracking-[0.16em] text-white/45 font-montserrat">
+                            {formatDate(project.date)}
+                          </p>
+                          <p className="mt-3 text-sm text-white/65 font-light leading-relaxed line-clamp-3">
+                            {project.summary}
+                          </p>
+                        </div>
+                      </Link>
                     </PopInBlock>
-                  )
-                ) : (
-                  <PopInBlock>
-                    <p className="text-center text-sm uppercase tracking-[0.18em] text-white/50 font-montserrat">
-                      Loading…
-                    </p>
-                  </PopInBlock>
-                )}
+                  ))}
+                </div>
               </div>
 
               {/* Connective cue → the full projects page */}
@@ -468,92 +353,64 @@ const Index = (props: props) => {
               <div className="mt-5 mx-auto h-px w-16 bg-white/25" />
             </div>
 
-            {frontData.recentBlogs ? (
-              frontData.recentBlogs.length == 0 ? (
-                <PopInBlock>
-                  <p className="mt-12 text-center text-sm uppercase tracking-[0.18em] text-white/50 font-montserrat">
-                    Sorry, blogs could not be loaded — try again.
-                  </p>
-                </PopInBlock>
-              ) : (
-                <div className="mx-auto w-[90%] max-w-3xl mt-14">
-                  {/* Editorial list — mirrors the /blog page */}
-                  <div className="border-t border-white/10 text-left">
-                    {frontData.recentBlogs.map((data: any) => (
-                      <PopInBlock key={data.id} variant="materialize">
-                        <div
-                          onClick={() => {
-                            window.location.href = `/blogs/${data.id}`;
-                          }}
-                          className="group block cursor-pointer"
-                        >
-                          <article className="grid grid-cols-1 md:grid-cols-[1fr_auto] items-start gap-6 md:gap-10 py-9 border-b border-white/10 transition-colors duration-500 group-hover:border-white/20">
-                            <div className="min-w-0">
-                              <p className="flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.18em] text-white/45 font-montserrat">
-                                {data.datePosted
-                                  ? new Date(
-                                      data.datePosted
-                                    ).toLocaleDateString("en-US", {
-                                      year: "numeric",
-                                      month: "long",
-                                      day: "numeric",
-                                    })
-                                  : ""}
-                              </p>
+            {latestPost && (
+              <div className="mx-auto w-[90%] max-w-3xl mt-14">
+                {/* Editorial list — mirrors the /blog page */}
+                <div className="border-t border-white/10 text-left">
+                  <PopInBlock variant="materialize">
+                    <Link href={`/blog/${latestPost.slug}`} className="group block">
+                      <article className="grid grid-cols-1 md:grid-cols-[1fr_auto] items-start gap-6 md:gap-10 py-9 border-b border-white/10 transition-colors duration-500 group-hover:border-white/20">
+                        <div className="min-w-0">
+                          <p className="flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.18em] text-white/45 font-montserrat">
+                            {formatDate(latestPost.date)}
+                          </p>
 
-                              <h2 className="mt-3 font-cormorant font-light text-3xl md:text-4xl text-white leading-tight transition-colors duration-300 group-hover:text-blue-300">
-                                {data.title}
-                              </h2>
+                          <h2 className="mt-3 font-cormorant font-light text-3xl md:text-4xl text-white leading-tight transition-colors duration-300 group-hover:text-blue-300">
+                            {latestPost.title}
+                          </h2>
 
-                              <p className="mt-3 text-sm md:text-base text-white/60 font-light leading-relaxed line-clamp-2">
-                                {blogPreview(data.content)}
-                              </p>
+                          <p className="mt-3 text-sm md:text-base text-white/60 font-light leading-relaxed line-clamp-2">
+                            {latestPost.excerpt}
+                          </p>
 
-                              <span className="mt-5 inline-flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.18em] text-blue-300/80 transition-colors duration-300 group-hover:text-blue-300">
-                                Read
-                                <span
-                                  aria-hidden="true"
-                                  className="transition-transform duration-300 group-hover:translate-x-1"
-                                >
-                                  →
-                                </span>
-                              </span>
-                            </div>
-
-                            {data.mediaPic && (
-                              <div className="hidden md:block relative h-28 w-44 flex-none overflow-hidden rounded-xl ring-1 ring-white/10">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                  src={data.mediaPic}
-                                  alt={data.title}
-                                  className="h-full w-full object-cover opacity-80 transition-opacity duration-500 group-hover:opacity-100"
-                                />
-                              </div>
-                            )}
-                          </article>
+                          <span className="mt-5 inline-flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.18em] text-blue-300/80 transition-colors duration-300 group-hover:text-blue-300">
+                            Read
+                            <span
+                              aria-hidden="true"
+                              className="transition-transform duration-300 group-hover:translate-x-1"
+                            >
+                              →
+                            </span>
+                          </span>
                         </div>
-                      </PopInBlock>
-                    ))}
-                  </div>
 
-                  {/* Connective cue → the full blog */}
-                  <div className="mt-10 text-center">
-                    <Link
-                      href={"/blog"}
-                      className="inline-flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.18em] text-blue-300/80 hover:text-blue-300 transition-colors duration-300 font-montserrat"
-                    >
-                      Read the blog
-                      <span aria-hidden="true">→</span>
+                        {latestPost.cover && (
+                          <div className="hidden md:block relative h-28 w-44 flex-none overflow-hidden rounded-xl ring-1 ring-white/10">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={latestPost.cover}
+                              alt=""
+                              loading="lazy"
+                              className="h-full w-full object-cover opacity-80 transition-opacity duration-500 group-hover:opacity-100"
+                            />
+                          </div>
+                        )}
+                      </article>
                     </Link>
-                  </div>
+                  </PopInBlock>
                 </div>
-              )
-            ) : (
-              <PopInBlock>
-                <p className="mt-12 text-center text-sm uppercase tracking-[0.18em] text-white/50 font-montserrat">
-                  Loading…
-                </p>
-              </PopInBlock>
+
+                {/* Connective cue → the full blog */}
+                <div className="mt-10 text-center">
+                  <Link
+                    href={"/blog"}
+                    className="inline-flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.18em] text-blue-300/80 hover:text-blue-300 transition-colors duration-300 font-montserrat"
+                  >
+                    Read the blog
+                    <span aria-hidden="true">→</span>
+                  </Link>
+                </div>
+              </div>
             )}
           </div>
 
@@ -563,5 +420,12 @@ const Index = (props: props) => {
     </ScrollObserverProvider>
   );
 };
+
+export const getStaticProps: GetStaticProps<Props> = async () => ({
+  props: {
+    projects: listProjects().slice(0, 3),
+    latestPost: listPosts()[0] ?? null,
+  },
+});
 
 export default Index;

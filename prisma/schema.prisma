@@ -11,32 +11,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Projects {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  name String @unique
-  mediaLink String
-  youtube Boolean @default(false)
-  description String
-  shortDescription String
-  linkName String
-  projectDate String 
-  favorite Boolean
-  projectLinks String
-  createdDate DateTime @default(now())
-
-}
-
+// Blog posts and projects live in content/ as MDX files. Only the admin login
+// (pages/api/admin/login.ts) still reads from the database.
 model Admin {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   username String @unique
   password String
-}
-
-model Blog {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  title String @unique
-  content String @unique
-  mediaPic String @unique
-  datePosted DateTime @default(now())
-  format String?
 }

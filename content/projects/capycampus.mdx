@@ -1,0 +1,21 @@
+---
+title: "CapyCampus"
+date: 2025-03-14
+summary: "A WIP club penguin inspired MMO social game that allows college students to meet others online through capybaras and a college themed map."
+cover: "/projects/capycampus/cover.jpg"
+youtube: "4QqvXlhB2GE"
+featured: true
+links:
+  - label: "GitHub"
+    href: "https://github.com/jaximus808/capy_fleet"
+legacyName: "CapyCampus"
+---
+A WIP club penguin inspired MMO social game that allows college students to meet others online through capybaras and a college themed map. 
+
+The project's backend is built with Go, where I use gin and gorilla websockets to handle real time data. For data parsing, I created a custom packet class that takes a byte array and parses data based on a custom protocol.  
+
+I also implemented a bridge and event queue to allow the game manager and socket manager to have their own thread and communicate safety. For the game manager I also implemented a really basic game engine, like really basic, but it works.
+
+I used a phaser and react template to create a "nice" UI along with the gameplay functionality of phaser. 
+
+The project is meant to be a youtube series with Code with Me, where I walk an audience through building the app. Currently working on that haha.

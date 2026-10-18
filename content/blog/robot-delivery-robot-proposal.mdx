@@ -1,0 +1,59 @@
+---
+title: "Robot Delivery Robot Proposal"
+date: 2024-11-30
+cover: "/blog/robot-delivery-robot-proposal/cover.gif"
+legacyId: "674beb4cf9b43dad60756c38"
+---
+So this is gonna be my next project that I'm ACTUALLY committing to.  Solely software projects are just kinda boring imo, unless its realtime stuff.
+
+Anyways the project is going to be a DELIVERY CAR ROBOT!!!!
+
+<Figure src="/blog/robot-delivery-robot-proposal/1.jpg" />
+
+## So what is this?
+
+This project essentially is going to be a robot that can carry stuff. I'm aiming to make it a maximum of 20lbs of luggage but my main go for now is to make it carry food.
+
+## Okay but why?
+
+First, I think it's cool.
+
+Two, WashU is large af, and I think this could be a great way to reduce back pain in carry backpacks, and even carrying my food while i go somewhere.
+
+## Okay So what's the plan?
+
+First, I'm gonna use the home depot storage bin that looks like this:
+
+<Figure src="/blog/robot-delivery-robot-proposal/2.jpg" />
+
+mechanical design i still want to learn, but I think this is a good starting point especially since 3D printing a big robot of the same size is hard from a printing standpoint.
+
+## Okay so what about the movement and planning?
+
+I'm going to be following articulated robots tutorial essentially for designing the circuits, but changing certain parts that would be better for budget and my robot.
+
+First I had a nightmare trying to deduce what type of dc motor i actually need, since the baby motor would not work for this large of a robot. Luckily, after consulting chatgpt-4 I picked out some pretty good motors that have a stall-torque of 2.47N (which is basically the torque before it dies). Then I'm using a 30amp speed controller so i can control the motors when path planning.
+
+I'm also going to use two 5200mAH 11.1V lipo batteries in parallel to power this bulky af robot. Im then using a voltage regulator to turn the 12V -> 5V for the controllers
+
+## So what about the brain?
+
+So for actually being smart, I'm going to use a camera and raspi. This will then perform vslam using, atleast initially, monocular vslam. I do eventually wanna create a custom binocular camera using two cameras, but that'll be a later job.
+
+Then for actually moving, I'm going to use two parts that's essentially how slam and Nav2 work. First I'm going to map out WashU first to get a topdown map (and imma modify it too), so the robot can make long term paths. Then the camera will create a bottom down map of a close proximity so in the moment path planning, such as avoiding obstacles etc. I'm hoping to god the PI can handle this, and i'll look to do optimizations to VSLAM where I can.
+
+Oh and for motor control i'll be using an arduino nano for its future potential to be used a pcb.
+
+I'm also going to use a rear drive and front steering with servos in the front. This will 100% be better than a caster design, especially since i'll be outside.
+
+## What have you done so far?
+
+Essentially planning and shopping.
+
+I've spent like $220 on all the initial parts, but this should pretty much be the end of spending unless I need to swap out stuff. I'll be reusing a PI and other stuff I have on hand, but wires and fuses I need to buy. Thank god for black friday cutting down some prices.
+
+## Ok so whats ur plan?
+
+I want to eventually get maybe a food place on campus to use this to delivery food to certain parts of campus. Luckily Washu is pretty accessible so the robot should be able to travel most of campus with wheels. I'm also hoping to revive the youtube channel to document my journey and make this stuff way less confusing for future generations.
+
+TLDR I'm pretty excited, and if i can get this to work I have big plans beyond this! Will keep posted :)

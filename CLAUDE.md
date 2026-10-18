@@ -1,24 +1,5 @@
 # CLAUDE.md
 
-## Tandem canvas — read this first, every session
-
-This project is planned and tracked on a **Tandem canvas**. At the **start of every session**, before doing website work, connect to it and pull the current roadmap + context:
-
-- **Canvas:** Personal Website — Roadmap & Context
-- **Code:** `KB5J7FQL`
-- **URL:** https://tandemcanvas.com/c/KB5J7FQL
-
-**How to connect:**
-1. Load the Tandem tool schemas via ToolSearch (`select:mcp__claude_ai_tandem__canvas_connect,mcp__claude_ai_tandem__canvas_state_read,mcp__claude_ai_tandem__agent_register,mcp__claude_ai_tandem__canvas_roadmap_task_list`).
-2. `canvas_connect` with code `KB5J7FQL`. Keep the returned `session` handle and pass it on every later `canvas_*` call.
-3. `agent_register` as `executor` (this doc's author registered as `planner`).
-4. Read state: `canvas_state_read` for the **Project Context** notes doc, and `canvas_roadmap_task_list` for agent-assigned tasks.
-
-**During work:**
-- Treat the **Project Context** notes doc and the roadmap as the source of truth for what to build and how.
-- Update roadmap item `status` (`todo` → `in_progress` → `done`) as you progress.
-- Keep the **Project Context** doc current when the project changes.
-
 ## Design Language (redesign — source of truth)
 
 **North star:** elegant, spacious, full of wonder & curiosity — "a look into my mind." Restrained like Cursor's aesthetic. **Never** vibecoded / generic-template. Study the *UX* of https://andrewvu.me/ (flow, pacing) but explicitly reject its visual look.
@@ -42,9 +23,11 @@ This project is planned and tracked on a **Tandem canvas**. At the **start of ev
 
 ## Project quick reference
 
-Personal website + portfolio. **Next.js 16 (Pages Router)** · TypeScript · Tailwind · Prisma + Supabase · Three.js. Deployed on Vercel.
+Personal website + portfolio. **Next.js 16 (Pages Router)** · TypeScript · Tailwind · MDX (next-mdx-remote) · Prisma (admin login only) + Supabase (finance) · Three.js. Deployed on Vercel.
 
-- `pages/` — routes: `index.tsx`, `projects.tsx`, `chess.tsx`, `blog.tsx`, `resume.tsx`, `contact.tsx`; `pages/api/`, `pages/admin/`.
+- `pages/` — routes: `index.tsx`, `blog/` (`index.tsx`, `[slug].tsx`), `projects/` (`index.tsx`, `[slug].tsx`), `chess.tsx`, `resume.tsx`, `contact.tsx`; `pages/api/`, `pages/admin/`.
+- `content/` — **every blog post and project is an MDX file here** (`content/blog/<slug>.mdx`, `content/projects/<slug>.mdx`), images in `public/blog/<slug>/` and `public/projects/<slug>/`. Read `content/README.md` before adding or editing one. Loaded by `lib/content.ts` at build time; no database.
+- `components/content/` — the shared MDX components (`Figure`, `Gallery`, `Video`, `Divider`, `PullQuote`, `Callout`, `Wide`) and one-off embeds in `embeds/`. Every image goes through the same `Frame` so pages stay consistent.
 - `components/` — `header.tsx`, `footer.tsx`, `backgroundThree.tsx`, `gradientbg.tsx`, `techStack.tsx`, `myPath.tsx`, `chess/`, `finance/`.
 - `lib/`, `prisma/`, `supabase/`, `styles/`, `public/`.
 
