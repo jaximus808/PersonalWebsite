@@ -47,7 +47,7 @@ export function PullQuote({ children, cite }: { children: React.ReactNode; cite?
  */
 export function Callout({ title, children }: { title?: string; children: React.ReactNode }) {
   return (
-    <aside className="my-10 rounded-xl border-l border-blue-300/50 bg-white/[0.035] px-6 py-5 text-[0.92em] [&>*:last-child]:mb-0">
+    <aside className="my-10 rounded border-l border-blue-300/50 bg-white/[0.035] px-6 py-5 text-[0.92em] [&>*:last-child]:mb-0">
       {title ? (
         <p className="!mb-2 text-[0.7rem] uppercase tracking-[0.18em] text-blue-300/80">{title}</p>
       ) : null}

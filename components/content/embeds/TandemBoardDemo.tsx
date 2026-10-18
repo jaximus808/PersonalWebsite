@@ -125,7 +125,7 @@ function TerminalPane({
   const typing = !!last && last.kind === "cmd" && !!last.dur && t < last.start + last.dur;
   return (
     <div
-      className={`overflow-hidden rounded-lg border bg-[#0c0c0e] transition-colors duration-500 ${
+      className={`overflow-hidden rounded border bg-[#0c0c0e] transition-colors duration-500 ${
         glow ? "border-amber-300/50 ring-1 ring-amber-300/20" : "border-white/10"
       }`}
     >
@@ -217,7 +217,7 @@ function BoardPane({ t, animate, contentOpacity }: { t: number; animate: boolean
   const working = states.filter((s) => s.state === "working").length;
   const activeSessions = SESSIONS.filter((s) => t >= s.activeAt);
   return (
-    <div className="flex h-full min-w-0 flex-col overflow-hidden rounded-lg border border-white/10 bg-white/[0.025] p-3">
+    <div className="flex h-full min-w-0 flex-col overflow-hidden rounded border border-white/10 bg-white/[0.025] p-3">
       <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
         <span className="shrink-0 text-[12px] font-medium text-white">Board</span>
         <span className="shrink-0 whitespace-nowrap font-mono text-[10px] text-white/40">4 tasks · 1 epic</span>
@@ -336,7 +336,7 @@ export default function TandemBoardDemo() {
       <div
         role="img"
         aria-label='Animated demo: two Claude Code sessions drain a shared Tandem task queue in parallel. Session B tries a task session A already claimed, gets "claimed: false, already claimed by session-A", and takes the next task instead. Finished tasks land on the board with commit hashes.'
-        className="select-none rounded-xl bg-white/[0.02] p-3 ring-1 ring-white/10 sm:p-4"
+        className="select-none rounded bg-white/[0.02] p-3 ring-1 ring-white/10 sm:p-4"
       >
         <div aria-hidden="true" className="grid gap-3 md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
           <div className="flex min-w-0 flex-col gap-3">

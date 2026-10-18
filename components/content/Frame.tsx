@@ -28,7 +28,7 @@ export function Frame({ ratio = "standard", bare = false, className = "", childr
   return (
     <div
       className={`relative w-full overflow-hidden bg-white/[0.03] ${
-        bare ? "" : "rounded-xl ring-1 ring-white/10"
+        bare ? "" : "rounded ring-1 ring-white/10"
       } ${className}`}
       style={{ aspectRatio: RATIOS[ratio] }}
     >

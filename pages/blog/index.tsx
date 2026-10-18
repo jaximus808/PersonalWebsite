@@ -88,7 +88,7 @@ export default function BlogPage({ posts }: Props) {
                       </div>
 
                       {post.cover && (
-                        <div className="hidden md:block relative h-28 w-44 flex-none overflow-hidden rounded-xl ring-1 ring-white/10">
+                        <div className="hidden md:block relative h-28 w-44 flex-none overflow-hidden rounded ring-1 ring-white/10">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={post.cover}

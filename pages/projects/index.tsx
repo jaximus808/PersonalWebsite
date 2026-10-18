@@ -56,7 +56,7 @@ export default function ProjectsPage({ projects }: Props) {
                     imgClassName="opacity-85 transition-[opacity,transform] duration-700 ease-out group-hover:scale-[1.03] group-hover:opacity-100"
                   />
                 ) : (
-                  <div className="aspect-video w-full rounded-xl bg-white/[0.03] ring-1 ring-white/10" />
+                  <div className="aspect-video w-full rounded bg-white/[0.03] ring-1 ring-white/10" />
                 )}
 
                 <p className="mt-5 flex items-center gap-3 text-[0.7rem] uppercase tracking-[0.18em] text-white/45">
