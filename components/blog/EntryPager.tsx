@@ -14,27 +14,35 @@ export type PagerEntry = {
 function PagerLink({ entry, align }: { entry: PagerEntry; align: "start" | "end" }) {
   const end = align === "end";
   return (
-    <Link href={entry.href} className={`group block min-w-0 ${end ? "text-right" : ""}`}>
+    <Link
+      href={entry.href}
+      className={`group flex min-w-0 items-center gap-4 ${end ? "flex-row-reverse text-right" : ""}`}
+    >
+      {/* A small thumbnail beside the title, not a card: the pager is a way
+          on, and should stay quieter than the page above it. */}
       {entry.image && (
-        <FramedImage
-          src={entry.image}
-          ratio="wide"
-          fit="cover"
-          className="mb-4"
-          imgClassName="opacity-70 transition-[opacity,transform] duration-700 ease-out group-hover:scale-[1.03] group-hover:opacity-100"
-        />
+        <div className="w-24 flex-none sm:w-28">
+          <FramedImage
+            src={entry.image}
+            ratio="wide"
+            fit="cover"
+            imgClassName="opacity-70 transition-opacity duration-500 ease-out group-hover:opacity-100"
+          />
+        </div>
       )}
-      <span
-        className={`flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.18em] text-white/45 transition-colors duration-300 group-hover:text-blue-300 ${
-          end ? "justify-end" : ""
-        }`}
-      >
-        {!end && <ArrowLeft className="h-3.5 w-3.5 transition-transform duration-300 group-hover:-translate-x-1" />}
-        {entry.eyebrow}
-        {end && <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />}
-      </span>
-      <span className="mt-2 block font-cormorant text-2xl font-light leading-tight text-white transition-colors duration-300 group-hover:text-blue-300">
-        {entry.label}
+      <span className="min-w-0">
+        <span
+          className={`flex items-center gap-2 text-[0.65rem] uppercase tracking-[0.18em] text-white/45 transition-colors duration-300 group-hover:text-blue-300 ${
+            end ? "justify-end" : ""
+          }`}
+        >
+          {!end && <ArrowLeft className="h-3 w-3 transition-transform duration-300 group-hover:-translate-x-1" />}
+          {entry.eyebrow}
+          {end && <ArrowRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1" />}
+        </span>
+        <span className="mt-1.5 block font-cormorant text-xl font-light leading-snug text-white line-clamp-2 transition-colors duration-300 group-hover:text-blue-300">
+          {entry.label}
+        </span>
       </span>
     </Link>
   );
