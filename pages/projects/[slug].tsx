@@ -124,7 +124,8 @@ export default function ProjectPage({ project, number, rail, older, newer }: Pro
           </div>
         </article>
 
-        <EntryPager previous={older} next={newer} />
+        {/* Same order as the lists: newer on the left, older on the right. */}
+        <EntryPager previous={newer} next={older} />
 
         <footer className="mt-16 border-t border-white/10 pt-8">
           <Link
