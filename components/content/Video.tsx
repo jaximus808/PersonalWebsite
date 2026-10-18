@@ -3,7 +3,6 @@ import { Play } from "lucide-react";
 
 import { Frame } from "./Frame";
 import { Caption } from "./Figure";
-import Wide from "./Wide";
 import { usePrefersReducedMotion } from "../../lib/usePrefersReducedMotion";
 
 type VideoProps = {
@@ -17,7 +16,6 @@ type VideoProps = {
   loop?: boolean;
   caption?: React.ReactNode;
   title?: string;
-  wide?: boolean;
   /** Load the poster at once (for the first media on a page). */
   priority?: boolean;
 };
@@ -37,7 +35,6 @@ export default function Video({
   loop = false,
   caption,
   title = "Video",
-  wide = false,
   priority = false,
 }: VideoProps) {
   const reduced = usePrefersReducedMotion();
@@ -93,11 +90,10 @@ export default function Video({
     );
   }
 
-  const figure = (
+  return (
     <figure className="my-10">
       <Frame ratio="wide">{body}</Frame>
       {caption ? <Caption>{caption}</Caption> : null}
     </figure>
   );
-  return wide ? <Wide>{figure}</Wide> : figure;
 }

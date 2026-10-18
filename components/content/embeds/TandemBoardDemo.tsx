@@ -293,7 +293,7 @@ function BoardPane({ t, animate, contentOpacity }: { t: number; animate: boolean
 /**
  * Live recreation of two agent sessions sharing one Tandem queue.
  *
- *   <Wide><TandemBoardDemo /></Wide>
+ *   <TandemBoardDemo />
  */
 export default function TandemBoardDemo() {
   const reduced = usePrefersReducedMotion();

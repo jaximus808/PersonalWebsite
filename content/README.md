@@ -67,8 +67,8 @@ database URLs (see `next.config.js`). Leave them alone; new files don't need the
 ## Components
 
 Use these instead of raw `<img>` or one-off markup. Each one keeps every image
-in the same framed box, so a page reads as one piece however the sources were
-sized. They are registered in `components/content/MdxContent.tsx`, so no import
+in the same framed box, and media is always exactly as wide as the text, so a
+page reads as one piece however the sources were sized. They are registered in `components/content/MdxContent.tsx`, so no import
 is needed.
 
 **`<Figure>`**: one image.
@@ -76,13 +76,12 @@ is needed.
 ```mdx
 <Figure src="/blog/x/1.jpg" />
 <Figure src="/blog/x/2.jpg" caption="The first prototype" />
-<Figure src="/projects/x/board.png" ratio="wide" fit="cover" wide />
+<Figure src="/projects/x/board.png" ratio="wide" fit="cover" />
 ```
 
 - `ratio`: `standard` 3:2 (default) · `wide` 16:9 · `square` · `tall` 4:5
 - `fit`: `contain` (default) shows the whole image over a soft blurred fill;
   `cover` crops to fill the frame
-- `wide`: runs wider than the text column on big screens
 - A markdown image `![caption](/path.jpg)` on its own line renders as a Figure too.
 
 **`<Gallery>`**: several images side by side, identical square frames.
@@ -96,7 +95,7 @@ is needed.
 
 ```mdx
 <Video youtube="ztsJ87zMOS0" />
-<Video src="/projects/x/demo.mp4" poster="/projects/x/demo.jpg" loop wide />
+<Video src="/projects/x/demo.mp4" poster="/projects/x/demo.jpg" loop />
 ```
 
 **`<Divider />`** / **`<Divider label="Part two" />`**: a section break.
@@ -104,8 +103,6 @@ is needed.
 **`<PullQuote cite="optional">`**: lifts one line out of the text.
 
 **`<Callout title="Update">`**: an aside or note.
-
-**`<Wide>`**: wraps anything (a demo, a diagram) to run wider than the column.
 
 ### Project-specific embeds
 

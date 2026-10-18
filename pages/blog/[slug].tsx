@@ -50,7 +50,7 @@ export default function BlogPostPage({ post, rail, older, newer }: Props) {
       </div>
       <ReadingSidebar section="blog" items={rail} activeHref={href} />
 
-      <main className="mx-auto w-full max-w-[700px] px-6 pt-28 md:pt-32 pb-24 font-montserrat">
+      <main className="mx-auto w-full max-w-[840px] px-6 pt-28 md:pt-32 pb-24 font-montserrat min-[1200px]:ml-[max(264px,calc(50vw-420px))]">
         <article>
           <header>
             <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.7rem] uppercase tracking-[0.18em] text-white/60">

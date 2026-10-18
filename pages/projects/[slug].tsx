@@ -9,7 +9,6 @@ import ReadingProgress from "../../components/blog/ReadingProgress";
 import EntryPager, { type PagerEntry } from "../../components/blog/EntryPager";
 import MdxContent from "../../components/content/MdxContent";
 import Video from "../../components/content/Video";
-import Wide from "../../components/content/Wide";
 import { FramedImage } from "../../components/content/Frame";
 import {
   getProject,
@@ -40,21 +39,19 @@ function monthYear(ymd: string): string {
 function HeroMedia({ meta }: { meta: ProjectMeta }) {
   if (meta.hideCover || (!meta.youtube && !meta.cover)) return null;
   return (
-    <Wide>
-      <div className="relative isolate mt-14">
-        {/* A faint pool of light under the media, so it sits on the stage
-            rather than on the page. */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -inset-x-16 -inset-y-12 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(163,203,255,0.09),transparent_68%)]"
-        />
-        {meta.youtube ? (
-          <Video youtube={meta.youtube} poster={meta.cover ?? undefined} title={meta.title} priority />
-        ) : (
-          <FramedImage src={meta.cover!} alt={meta.title} ratio="wide" priority />
-        )}
-      </div>
-    </Wide>
+    <div className="relative isolate mt-14">
+      {/* A faint pool of light under the media, so it sits on the stage
+          rather than on the page. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -inset-x-16 -inset-y-12 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(163,203,255,0.09),transparent_68%)]"
+      />
+      {meta.youtube ? (
+        <Video youtube={meta.youtube} poster={meta.cover ?? undefined} title={meta.title} priority />
+      ) : (
+        <FramedImage src={meta.cover!} alt={meta.title} ratio="wide" priority />
+      )}
+    </div>
   );
 }
 
@@ -77,7 +74,7 @@ export default function ProjectPage({ project, number, rail, older, newer }: Pro
       </div>
       <ReadingSidebar section="projects" items={rail} activeHref={href} />
 
-      <main className="mx-auto w-full max-w-[700px] px-6 pt-28 md:pt-32 pb-24 font-montserrat">
+      <main className="mx-auto w-full max-w-[840px] px-6 pt-28 md:pt-32 pb-24 font-montserrat min-[1200px]:ml-[max(264px,calc(50vw-420px))]">
         <article>
           <header>
             <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.7rem] uppercase tracking-[0.18em] text-white/60">

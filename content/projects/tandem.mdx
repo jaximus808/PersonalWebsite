@@ -12,9 +12,7 @@ links:
     href: "https://www.npmjs.com/package/@jaximus/tandem-mcp"
 legacyName: "Tandem"
 ---
-<Wide>
-  <TandemBoardDemo />
-</Wide>
+<TandemBoardDemo />
 
 Tandem is a real-time canvas where people and AI agents plan together instead of trading text in a chat window. Open one canvas, share one link, and any MCP-aware agent — Claude Code, Cursor, Codex, custom orchestrators — can read and write it live: dropping pins on a map, filling a spreadsheet, deriving charts from that data, laying out an itinerary or roadmap, all while you edit alongside it and watch the agent's cursor move. The core idea is that the artifact is the shared memory. A chat transcript scrolls away; a Tandem canvas is persistent, structured state both sides operate on. It's built around composable modes — Map, Sheets, Charts, Itinerary, Roadmap, Docs — that you add as tabs and that cross-link into one model: a sheet row points at its map pin, a pin ties to a timeline event, and charts derive live from the underlying data. Every agent edit streams over WebSockets with live presence — cursors, auto-follow, and an approval gate so nothing executes without an explicit human OK. The agent side runs entirely over MCP. The @jaximus/tandem-mcp gateway (published to npm) is a thin stdio server: an agent calls canvas.connect with a short code, gets scoped to that canvas, and from then on drives it through a clean tool surface — pin.add, sheet.row.add, chart.add, roadmap_item.update, and so on. The design keeps the MCP layer generic — canvas operations, not vertical opinions — so the same tools work whether an agent is planning a trip, a budget, or a product roadmap. Built as a Go monorepo: a Go API with an HTTP + WebSocket hub backed by Supabase/Postgres, a React + Vite + Tailwind frontend, and the Node MCP gateway. Auth is Google OAuth (no passwords); deploys are push-to-main via GitHub Actions to GCP. Live at tandemcanvas.com.
 
@@ -22,5 +20,4 @@ Tandem is a real-time canvas where people and AI agents plan together instead of
   src="/projects/tandem/queue-loop.mp4"
   poster="/projects/tandem/cover.jpg"
   title="Tandem queue loop"
-  wide
 />

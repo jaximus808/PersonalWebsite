@@ -4,7 +4,6 @@ import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import Figure from "./Figure";
 import Gallery from "./Gallery";
 import Video from "./Video";
-import Wide from "./Wide";
 import { Callout, Divider, PullQuote } from "./Accents";
 import TandemBoardDemo from "./embeds/TandemBoardDemo";
 import styles from "./prose.module.css";
@@ -29,7 +28,6 @@ const components = {
   Figure,
   Gallery,
   Video,
-  Wide,
   Divider,
   PullQuote,
   Callout,

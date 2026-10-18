@@ -27,7 +27,7 @@ Personal website + portfolio. **Next.js 16 (Pages Router)** · TypeScript · Tai
 
 - `pages/` — routes: `index.tsx`, `blog/` (`index.tsx`, `[slug].tsx`), `projects/` (`index.tsx`, `[slug].tsx`), `chess.tsx`, `resume.tsx`, `contact.tsx`; `pages/api/`, `pages/admin/`.
 - `content/` — **every blog post and project is an MDX file here** (`content/blog/<slug>.mdx`, `content/projects/<slug>.mdx`), images in `public/blog/<slug>/` and `public/projects/<slug>/`. Read `content/README.md` before adding or editing one. Loaded by `lib/content.ts` at build time; no database.
-- `components/content/` — the shared MDX components (`Figure`, `Gallery`, `Video`, `Divider`, `PullQuote`, `Callout`, `Wide`) and one-off embeds in `embeds/`. Every image goes through the same `Frame` so pages stay consistent.
+- `components/content/` — the shared MDX components (`Figure`, `Gallery`, `Video`, `Divider`, `PullQuote`, `Callout`) and one-off embeds in `embeds/`. Every image goes through the same `Frame` so pages stay consistent.
 - `components/` — `header.tsx`, `footer.tsx`, `backgroundThree.tsx`, `gradientbg.tsx`, `techStack.tsx`, `myPath.tsx`, `chess/`, `finance/`.
 - `lib/`, `prisma/`, `supabase/`, `styles/`, `public/`.
 
