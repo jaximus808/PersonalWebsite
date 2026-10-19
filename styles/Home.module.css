@@ -157,56 +157,7 @@
   height:120vh;
 }
 
-.navBarMini
-{
-  position: fixed;
-  width:100%;
 
-  min-height: 40px;
-  height:3rem;
-
-  font-size: calc(10px + 1vw);
-  top:0;
-
-  z-index: 50;
-
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-color: #121212 ;
-  transition: 1s;
-  
-}
-.navBar
-{
-  position: fixed;
-  width:100%;
-  min-height: 50px;
-  height:4rem;
-
-
-  font-size: calc(10px + 1vw);
-  top:0;
-  z-index: 50;
-  transition: 1s;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  /* background-image: linear-gradient(to top, #ce81d3,#2b2f77); */
-  
-}
-
-.navBarHolder
-{
-  width:100%;
-
-  height:3rem;
-
-
-  font-size: 2vw;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background: none;
-  
-}
 
 .textContainerContact
 {
@@ -570,34 +521,8 @@
 {
   background-color: rgba(255, 255, 255,0.8);
 } */
-.links
-{
-  
-  color:white;
-}
-.links>a:hover
-{
-  
-  color:rgb(189, 219, 237);
-}
 
 
-.homeLink
-{
-  color:white;
-}
-.homeLink:hover
-{
-  color:rgb(189, 219, 237);
-}
-.links>a
-{
-
-  float: right;
-  margin-left: 2vw;
-  margin-right: 2vw;
-
-}
 
 .mainTitleName
 {
