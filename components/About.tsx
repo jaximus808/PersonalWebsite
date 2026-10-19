@@ -5,7 +5,7 @@ import { PopInBlock } from "./popinBlockContext";
 import SectionHead, { HOME_COLUMN } from "./SectionHead";
 
 const FACTS = [
-  { label: "Right now", value: "Robotics SWE · Northstar Robotics" },
+  { label: "Right now", value: "Robotics Engineer · Northstar Robotics" },
   { label: "Studying", value: "CS + Math · WashU, class of '27" },
   { label: "Languages", value: "Go · C++ · Python" },
   { label: "Off the clock", value: "Hiking · Fishing · Gaming" },
@@ -60,7 +60,7 @@ export default function About() {
                 robotics.
               </p>
               <p>
-                Right now I&apos;m a robotics software engineer at Northstar
+                Right now I&apos;m a robotics engineer at Northstar
                 Robotics, working on teleoperation, data pipelines, and policy
                 fine-tuning. Before that I was at Tesla, Capital One, and
                 Spectrum.
