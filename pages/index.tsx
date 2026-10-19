@@ -56,7 +56,7 @@ const Index = ({ projects, latestPost }: Props) => {
 
             <div id="projects"></div>
             <div className={`pt-4 mt-32 ${styles.textContainer} text-white`}>
-              <SectionHead n={3} label="Projects" title="Recent Projects" />
+              <SectionHead n={3} label="Projects" />
 
               <div className={`${HOME_COLUMN} mt-12`}>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -108,12 +108,12 @@ const Index = ({ projects, latestPost }: Props) => {
 
           <div id="blogs"></div>
           <div className={`pt-4 mt-32 pb-4 ${styles.textContainer} text-white`}>
-            <SectionHead n={4} label="Writing" title="From the Blog" />
+            <SectionHead n={4} label="Writing" />
 
             {latestPost && (
               <div className={`${HOME_COLUMN} mt-12`}>
                 {/* Editorial list — mirrors the /blog page */}
-                <div className="border-t border-white/10 text-left">
+                <div className="text-left">
                   <PopInBlock variant="materialize">
                     <Link href={`/blog/${latestPost.slug}`} className="group block">
                       <article className="grid grid-cols-1 md:grid-cols-[1fr_auto] items-start gap-6 md:gap-10 py-9 border-b border-white/10 transition-colors duration-500 group-hover:border-white/20">
