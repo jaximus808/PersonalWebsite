@@ -1,4 +1,4 @@
-import Image from "next/image";
+// import Image from "next/image"; // with the hidden portrait below
 import Link from "next/link";
 
 import { PopInBlock } from "./popinBlockContext";
@@ -28,9 +28,12 @@ export default function About() {
     <section className="pt-24 md:pt-32 text-white">
       <SectionHead n={1} label="About" />
 
-      <div
-        className={`${HOME_COLUMN} mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-12 md:gap-16 lg:gap-24`}
-      >
+      {/* Portrait hidden for now (keeping it lowkey); this slot may get an
+          animation instead. To bring the photo back, restore the two-column
+          grid, md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-12 md:gap-16
+          lg:gap-24, and uncomment the block below. */}
+      <div className={`${HOME_COLUMN} mt-12 md:mt-16`}>
+        {/*
         <PopInBlock variant="materialize">
           <div className="relative mx-auto md:mx-0 aspect-[4/5] w-full max-w-[420px] overflow-hidden rounded ring-1 ring-white/10">
             <Image
@@ -42,9 +45,10 @@ export default function About() {
             />
           </div>
         </PopInBlock>
+        */}
 
         <PopInBlock variant="materialize" delay={100}>
-          <div className="font-montserrat">
+          <div className="font-montserrat max-w-3xl">
             <p className="font-cormorant font-light text-3xl md:text-4xl xl:text-[2.6rem] leading-[1.2] [text-wrap:balance]">
               Hey, I&apos;m Jaxon. I build robots, and the infrastructure
               underneath them.
