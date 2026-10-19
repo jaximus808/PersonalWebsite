@@ -35,7 +35,7 @@ export default function HeroIntro() {
           className="h-12 w-12 md:h-14 md:w-14 rounded-full object-cover ring-1 ring-white/15"
         />
 
-        <h1 className="mt-8 font-cormorant font-light leading-[0.95] tracking-[0.005em] text-[56px] sm:text-[72px] md:text-[7.2vw] xl:text-[104px]">
+        <h1 className="mt-8 font-cormorant font-light leading-[0.95] tracking-[0.005em] text-[clamp(52px,8vw,104px)]">
           Jaxon Poentis
         </h1>
 
