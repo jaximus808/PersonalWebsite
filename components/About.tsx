@@ -68,16 +68,17 @@ export default function About() {
         <PopInBlock variant="materialize" delay={100}>
           <div className="font-montserrat max-w-3xl">
             {/* Both lines share one grid cell, so swapping them never moves
-                the text below. */}
+                the text below. The old line fades out before the new one
+                fades in, so they never overlap. */}
             <p className="grid font-cormorant font-light text-4xl md:text-6xl leading-[1.1]">
               {(Object.keys(LEADS) as AboutScene[]).map((key) => (
                 <span
                   key={key}
                   aria-hidden={key !== scene}
-                  className={`[grid-area:1/1] transition-[opacity,transform] duration-700 ease-out ${
+                  className={`[grid-area:1/1] transition-[opacity,transform] ease-out ${
                     key === scene
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 translate-y-1"
+                      ? "opacity-100 translate-y-0 duration-700 delay-300"
+                      : "opacity-0 translate-y-1 duration-300"
                   }`}
                 >
                   {LEADS[key]}
