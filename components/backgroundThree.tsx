@@ -6,6 +6,8 @@ import React, { useState, useEffect, useRef, useMemo, Suspense } from 'react'
 import shapePositions from './shapePositions.json'
 import { useHeroFade } from '../lib/useHeroFade'
 import { buildArmCloud, makeLinkMatrices, poseArms, BENCH, CUBE_PART } from './yamArms'
+import { buildInfraCloud, placePackets, PACKET_COUNT, PACKET, HIDDEN } from './infraScene'
+import { getAboutScene } from '../lib/aboutScene'
 
 // Low-poly on purpose: these render as tiny dots, so high tessellation was
 // pure waste. 8x6 keeps them round while cutting ~1,400 tris/sphere down to
@@ -112,7 +114,7 @@ function OptimizedStars({
   isMobile: boolean
   reducedMotion: boolean
   fade: React.MutableRefObject<number>
-  /** 0 → 1: how far the dots have regrouped into the YAM arms. */
+  /** 0 → 1: how far the dots have regrouped beside About (arms or backend). */
   arms: React.MutableRefObject<number> | null
 }) {
   const meshRef = useRef<THREE.InstancedMesh>(null!)
@@ -160,6 +162,29 @@ function OptimizedStars({
   const linkMatrices = useMemo(() => makeLinkMatrices(), [])
   const armClockRef = useRef(0) // seconds since the arms finished assembling
 
+  // ...and their places in the backend scene it alternates with (infraScene.ts).
+  const infraCloud = useMemo(() => (armCloud ? buildInfraCloud(armCloud) : null), [armCloud])
+  const packetCenters = useMemo(() => new Float32Array(PACKET_COUNT * 4), [])
+  const infraClockRef = useRef(0)
+  // How formed each scene is. They swap one after the other: the shown one
+  // puffs apart first, then the next gathers in.
+  const robotsRef = useRef(1)
+  const infraRef = useRef(0)
+  // Where each dot drifts to as its scene dissolves, in scene units.
+  const puff = useMemo(() => {
+    const out = new Float32Array(totalPositions * 3)
+    for (let i = 0; i < totalPositions; i++) {
+      const u = Math.random() * 2 - 1
+      const t = Math.random() * 2 * Math.PI
+      const r = (1 + Math.random() * 2) * 0.6
+      const h = Math.sqrt(1 - u * u)
+      out[i * 3] = r * h * Math.cos(t)
+      out[i * 3 + 1] = r * u
+      out[i * 3 + 2] = r * h * Math.sin(t)
+    }
+    return out
+  }, [totalPositions])
+
   useEffect(() => {
     // Start with every particle at the origin, morphing out to the first shape.
     startPositionsRef.current = Array(totalPositions).fill([0, 0, 0])
@@ -205,10 +230,26 @@ function OptimizedStars({
       }
     }
 
+    // Swap between the arms and the backend as the About lead line changes.
+    // Offscreen, just snap to whichever is current.
+    const want = getAboutScene()
+    if (armsAmt <= 0) {
+      robotsRef.current = want === "robots" ? 1 : 0
+      infraRef.current = want === "infra" ? 1 : 0
+    } else {
+      const swap = dt / 1.1
+      const [show, hide] = want === "robots" ? [robotsRef, infraRef] : [infraRef, robotsRef]
+      if (hide.current > 0) hide.current = Math.max(0, hide.current - swap)
+      else show.current = Math.min(1, show.current + swap)
+    }
+    const rv = robotsRef.current
+    const iv = infraRef.current
+
     // The arms start their routine once they've fully formed, from the top
     // each time they come back.
-    if (armsAmt >= 0.95) armClockRef.current += dt
-    else if (armsAmt <= 0) armClockRef.current = -0.6
+    if (armsAmt >= 0.95 && rv >= 0.95) armClockRef.current += dt
+    else if (armsAmt <= 0 || rv <= 0) armClockRef.current = -0.6
+    if (iv > 0) infraClockRef.current += dt
 
     // Cycle shapes every 4s — but never for reduced motion (stays on shape 0).
     if (!reducedMotion && currentShapeRef.current >= 0 && elapsed - lastTransitionRef.current >= 4) {
@@ -267,7 +308,8 @@ function OptimizedStars({
     let shiftX = 0
     let shiftZ = 0
     if (armCloud && armsAmt > 0) {
-      poseArms(linkMatrices, armClockRef.current)
+      if (rv > 0) poseArms(linkMatrices, armClockRef.current)
+      if (iv > 0) placePackets(packetCenters, infraClockRef.current)
       shiftX = Math.cos(ARM_VIEW) * ARM_SHIFT
       shiftZ = -Math.sin(ARM_VIEW) * ARM_SHIFT
     }
@@ -285,31 +327,62 @@ function OptimizedStars({
       let z = (start[2] + (target[2] - start[2]) * eased) * spread
       let scale = dotScale
 
-      if (armCloud && armsAmt > 0) {
-        // Each dot leaves the scattered cloud on its own beat, so the arms
-        // gather in rather than snapping together.
-        const k = smooth(clamp01(armsAmt * 1.6 - ((scatter[i] - 0.4) / 1.6) * 0.6))
+      if (armCloud && infraCloud && armsAmt > 0) {
+        // Each dot leaves the scattered cloud on its own beat, so the scene
+        // gathers in rather than snapping together. The same beat staggers
+        // the swaps between the arms and the backend.
+        const beat = ((scatter[i] - 0.4) / 1.6) * 0.6
+        const k = smooth(clamp01(armsAmt * 1.6 - beat))
         if (k > 0) {
           const part = armCloud.part[i]
-          const lx = armCloud.local[i * 3]
-          const ly = armCloud.local[i * 3 + 1]
-          const lz = armCloud.local[i * 3 + 2]
-          let wx = lx
-          let wy = ly
-          let wz = lz
-          if (part !== BENCH) {
+          let wx = 0
+          let wy = 0
+          let wz = 0
+          let formed = 0 // how settled this dot is in the current scene
+          let size = 0
+          if (part === BENCH) {
+            // The bench is shared, so it stays put through a swap.
+            wx = armCloud.local[i * 3]
+            wy = armCloud.local[i * 3 + 1]
+            wz = armCloud.local[i * 3 + 2]
+            formed = 1
+            size = 0.1
+          } else if (rv > 0) {
+            const lx = armCloud.local[i * 3]
+            const ly = armCloud.local[i * 3 + 1]
+            const lz = armCloud.local[i * 3 + 2]
             const e = linkMatrices[part === CUBE_PART ? 16 : part].elements
             wx = e[0] * lx + e[4] * ly + e[8] * lz + e[12]
             wy = e[1] * lx + e[5] * ly + e[9] * lz + e[13]
             wz = e[2] * lx + e[6] * ly + e[10] * lz + e[14]
+            formed = smooth(clamp01(rv * 1.6 - beat))
+            size = 0.17
+          } else if (iv > 0 && infraCloud.kind[i] !== HIDDEN) {
+            wx = infraCloud.pos[i * 3]
+            wy = infraCloud.pos[i * 3 + 1]
+            wz = infraCloud.pos[i * 3 + 2]
+            if (infraCloud.kind[i] === PACKET) {
+              const pk = infraCloud.packet[i] * 4
+              wx += packetCenters[pk]
+              wy += packetCenters[pk + 1]
+              wz += packetCenters[pk + 2]
+              size = 0.21 * packetCenters[pk + 3]
+            } else {
+              size = 0.14 * infraCloud.weight[i]
+            }
+            formed = smooth(clamp01(iv * 1.6 - beat))
           }
-          const ax = (wx - ARM_CENTER[0]) * ARM_SCALE + shiftX
-          const ay = (wy - ARM_CENTER[1]) * ARM_SCALE
-          const az = (wz - ARM_CENTER[2]) * ARM_SCALE + shiftZ
-          x += (ax - x) * k
-          y += (ay - y) * k
-          z += (az - z) * k
-          scale += ((part === BENCH ? 0.1 : 0.17) - scale) * k
+
+          if (formed > 0) {
+            const loose = 1 - formed
+            const ax = (wx - ARM_CENTER[0]) * ARM_SCALE + shiftX + puff[i * 3] * loose
+            const ay = (wy - ARM_CENTER[1]) * ARM_SCALE + puff[i * 3 + 1] * loose
+            const az = (wz - ARM_CENTER[2]) * ARM_SCALE + shiftZ + puff[i * 3 + 2] * loose
+            x += (ax - x) * k
+            y += (ay - y) * k
+            z += (az - z) * k
+          }
+          scale += (size * formed - scale) * k
         }
       }
 
@@ -344,7 +417,8 @@ function besideProgress(id: string): number {
   if (!el) return 0
   const r = el.getBoundingClientRect()
   const h = window.innerHeight || 1
-  const into = clamp01((0.3 * h - r.top) / (0.45 * h))
+  // Formed by the time the section's heading reaches the top third.
+  const into = clamp01((0.8 * h - r.top) / (0.5 * h))
   const out = clamp01((0.55 * h - r.bottom) / (0.45 * h))
   return into * (1 - out)
 }

@@ -1,5 +1,12 @@
 // import Image from "next/image"; // with the hidden portrait below
 import Link from "next/link";
+import { useRef } from "react";
+
+import {
+  useAboutCycle,
+  useAboutScene,
+  type AboutScene,
+} from "../lib/aboutScene";
 
 import { PopInBlock } from "./popinBlockContext";
 import SectionHead, { HOME_COLUMN } from "./SectionHead";
@@ -10,6 +17,12 @@ const FACTS = [
   { label: "Languages", value: "Go · C++ · Python" },
   { label: "Off the clock", value: "Hiking · Fishing · Gaming" },
 ];
+
+// The lead alternates between these, in step with the background behind it.
+const LEADS: Record<AboutScene, string> = {
+  robots: "Get the robots out the lab.",
+  infra: "Infrastructure isn't solved.",
+};
 
 const LINKS = [
   { label: "linkedin", href: "https://www.linkedin.com/in/jaxon-poentis" },
@@ -24,8 +37,12 @@ const LINKS = [
  * has dissolved, so it sits on the plain dark base with no panel.
  */
 export default function About() {
+  const sectionRef = useRef<HTMLElement>(null);
+  useAboutCycle(sectionRef);
+  const scene = useAboutScene();
+
   return (
-    <section id="about" className="pt-24 md:pt-32 text-white">
+    <section ref={sectionRef} id="about" className="pt-24 md:pt-32 text-white">
       <SectionHead n={1} label="About" />
 
       {/* Portrait hidden for now (keeping it lowkey). On wide screens the
@@ -50,8 +67,22 @@ export default function About() {
 
         <PopInBlock variant="materialize" delay={100}>
           <div className="font-montserrat max-w-3xl">
-            <p className="font-cormorant font-light text-4xl md:text-6xl leading-[1.1]">
-              Get the robots out the lab.
+            {/* Both lines share one grid cell, so swapping them never moves
+                the text below. */}
+            <p className="grid font-cormorant font-light text-4xl md:text-6xl leading-[1.1]">
+              {(Object.keys(LEADS) as AboutScene[]).map((key) => (
+                <span
+                  key={key}
+                  aria-hidden={key !== scene}
+                  className={`[grid-area:1/1] transition-[opacity,transform] duration-700 ease-out ${
+                    key === scene
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 translate-y-1"
+                  }`}
+                >
+                  {LEADS[key]}
+                </span>
+              ))}
             </p>
 
             <div className="mt-8 space-y-5 text-sm md:text-base font-light leading-relaxed text-white/65 max-w-xl">
