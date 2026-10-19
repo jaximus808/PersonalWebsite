@@ -27,7 +27,22 @@ const ARM_SHIFT = 1.4 // toward screen right, clear of the About text
 
 /** The scene beside About: how present it is, and how far (px) its section
     sits from where the scene is framed, so the scene can travel with it. */
-type Beside = { amount: number; anchor: number }
+type Beside = {
+  amount: number
+  anchor: number
+  /** Narrow screens: the scene fills a stage box above the text instead.
+      Its width (px; 0 = beside the text) and how far (px) its center sits
+      right of the canvas's center. */
+  stageWidth: number
+  stageHeight: number
+  anchorX: number
+}
+
+/** Roughly the scene's size on screen, in scene units, at full size, and the
+    height (meters) of its visual middle, used to center it in a stage. */
+const SCENE_WIDTH = 8.6
+const SCENE_HEIGHT = 5.2
+const SCENE_MID_Y = 0.17
 
 const smooth = (x: number) => x * x * (3 - 2 * x)
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x))
@@ -311,6 +326,8 @@ function OptimizedStars({
     let shiftX = 0
     let shiftY = 0
     let shiftZ = 0
+    let fit = 1
+    let midY = ARM_CENTER[1]
     if (armCloud && arms && armsAmt > 0) {
       if (mix < 1) poseArms(linkMatrices, armClockRef.current)
       if (mix > 0) {
@@ -320,7 +337,16 @@ function OptimizedStars({
       const cam = state.camera as THREE.PerspectiveCamera
       const dist = cam.position.length()
       const unitsTall = (2 * dist * Math.tan((cam.fov * Math.PI) / 360)) / cam.zoom
-      const lift = -arms.current.anchor * (unitsTall / state.size.height)
+      const pxToUnits = unitsTall / state.size.height
+      const lift = -arms.current.anchor * pxToUnits
+      // Beside the text it keeps its size; in a stage box it shrinks to fit.
+      const stage = arms.current.stageWidth
+      fit =
+        stage > 0
+          ? Math.min(1, (stage * pxToUnits) / SCENE_WIDTH, (arms.current.stageHeight * pxToUnits) / SCENE_HEIGHT)
+          : 1
+      midY = stage > 0 ? SCENE_MID_Y : ARM_CENTER[1]
+      const side = stage > 0 ? arms.current.anchorX * pxToUnits : ARM_SHIFT
       // Screen-up in the world: world up, minus its part along the view.
       const fx = -cam.position.x / dist
       const fy = -cam.position.y / dist
@@ -329,9 +355,11 @@ function OptimizedStars({
       const uy = 1 - fy * fy
       const uz = -fy * fz
       const ul = Math.hypot(ux, uy, uz)
-      shiftX = Math.cos(ARM_VIEW) * ARM_SHIFT + (ux / ul) * lift
+      // ...and screen-right: the view direction crossed with world up.
+      const rl = Math.hypot(fx, fz)
+      shiftX = (-fz / rl) * side + (ux / ul) * lift
       shiftY = (uy / ul) * lift
-      shiftZ = -Math.sin(ARM_VIEW) * ARM_SHIFT + (uz / ul) * lift
+      shiftZ = (fx / rl) * side + (uz / ul) * lift
     }
 
     // Lerp all positions
@@ -401,9 +429,10 @@ function OptimizedStars({
             swing = Math.sin(Math.PI * m)
           }
 
-          const tx = (wx - ARM_CENTER[0]) * ARM_SCALE + shiftX + puff[i * 3] * swing
-          const ty = (wy - ARM_CENTER[1]) * ARM_SCALE + shiftY + puff[i * 3 + 1] * swing
-          const tz = (wz - ARM_CENTER[2]) * ARM_SCALE + shiftZ + puff[i * 3 + 2] * swing
+          const sc = ARM_SCALE * fit
+          const tx = (wx - ARM_CENTER[0]) * sc + shiftX + puff[i * 3] * swing * fit
+          const ty = (wy - midY) * sc + shiftY + puff[i * 3 + 1] * swing * fit
+          const tz = (wz - ARM_CENTER[2]) * sc + shiftZ + puff[i * 3 + 2] * swing * fit
           x += (tx - x) * k
           y += (ty - y) * k
           z += (tz - z) * k
@@ -436,22 +465,40 @@ type BackgroundProps = {
 /**
  * Where the `armsBeside` section sits. `amount` (0 → 1): the scene gathers as
  * the section scrolls up into view and scatters again as it leaves. `anchor`:
- * how far (px) the section's middle is below the middle of the screen, so the
- * scene can sit beside it and scroll with it.
+ * how far (px) the scene's spot is below the middle of the canvas, so it can
+ * sit with the section and scroll with it.
+ *
+ * Wide screens put the scene beside the text. Narrower ones put it in the
+ * section's stage box (`<id>-stage`), above the text, sized to fit.
  */
-function besideOf(id: string, out: Beside) {
-  const el = document.getElementById(id)
-  if (!el) {
+function besideOf(id: string, canvas: Element | null, out: Beside) {
+  const wide = window.innerWidth >= 1180
+  const el = document.getElementById(wide ? id : `${id}-stage`)
+  if (!el || !canvas) {
     out.amount = 0
     return
   }
   const r = el.getBoundingClientRect()
+  const c = canvas.getBoundingClientRect()
   const h = window.innerHeight || 1
-  // Formed by the time the section's heading is near the top of the screen.
-  const into = clamp01((0.6 * h - r.top) / (0.45 * h))
-  const out_ = clamp01((0.45 * h - r.bottom) / (0.4 * h))
+  if (wide) {
+    // Formed by the time the section's heading is near the top of the screen.
+    const into = clamp01((0.6 * h - r.top) / (0.45 * h))
+    const out_ = clamp01((0.45 * h - r.bottom) / (0.4 * h))
+    out.amount = into * (1 - out_)
+    out.anchor = r.top + r.height * 0.6 - h * 0.5
+    out.stageWidth = 0
+    out.stageHeight = 0
+    return
+  }
+  // Formed once the stage is well on screen; gone as it leaves the top.
+  const into = clamp01((0.8 * h - r.top) / (0.35 * h))
+  const out_ = clamp01((0.2 * h - r.bottom) / (0.25 * h))
   out.amount = into * (1 - out_)
-  out.anchor = r.top + r.height * 0.6 - h * 0.5
+  out.anchor = r.top + r.height * 0.5 - (c.top + c.height / 2)
+  out.anchorX = r.left + r.width / 2 - (c.left + c.width / 2)
+  out.stageWidth = r.width
+  out.stageHeight = r.height
 }
 
 export default function Background({ fadeOnScroll = false, offsetRight = false, armsBeside }: BackgroundProps) {
@@ -482,13 +529,13 @@ export default function Background({ fadeOnScroll = false, offsetRight = false, 
   // loop stops until the visitor scrolls back up.
   const sceneRef = useRef<HTMLDivElement>(null)
   const fade = useRef(0)
-  const arms = useRef<Beside>({ amount: 0, anchor: 0 })
+  const arms = useRef<Beside>({ amount: 0, anchor: 0, stageWidth: 0, stageHeight: 0, anchorX: 0 })
   const [gone, setGone] = useState(false)
-  const armsOn = !!armsBeside && !env.isMobile && !env.reducedMotion
+  const armsOn = !!armsBeside && !env.reducedMotion
   useHeroFade((p) => {
     fade.current = p
-    // Too narrow and the arms would sit under the text, so they sit out.
-    if (armsOn && window.innerWidth >= 1180) besideOf(armsBeside!, arms.current)
+    // Beside the text on wide screens, in a stage above it on narrow ones.
+    if (armsOn) besideOf(armsBeside!, sceneRef.current?.firstElementChild ?? null, arms.current)
     else arms.current.amount = 0
     const a = arms.current.amount
     if (sceneRef.current) sceneRef.current.style.opacity = String(Math.max(1 - p, a))

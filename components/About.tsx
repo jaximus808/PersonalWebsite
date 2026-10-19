@@ -67,6 +67,14 @@ export default function About() {
 
         <PopInBlock variant="materialize" delay={100}>
           <div className="font-montserrat max-w-3xl">
+            {/* Narrower screens: room above the lead for the background's
+                arms / systems scene, which sizes itself to this box. Wide
+                screens show it beside the text instead. */}
+            <div
+              id="about-stage"
+              aria-hidden="true"
+              className="mb-6 aspect-[16/10] max-h-[34vh] w-full min-[1180px]:hidden motion-reduce:hidden"
+            />
             {/* Both lines share one grid cell, so swapping them never moves
                 the text below. The old line fades out before the new one
                 fades in, so they never overlap. */}
