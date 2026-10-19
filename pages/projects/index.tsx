@@ -5,8 +5,7 @@ import { ArrowRight } from "lucide-react";
 import Seo from "../../components/Seo";
 import Header from "../../components/header";
 import Footer from "../../components/footer";
-import Background from "../../components/backgroundThree";
-import GradientBG from "../../components/gradientbg";
+import QuietBackground from "../../components/QuietBackground";
 import {
   ScrollObserverProvider,
   PopInBlock,
@@ -30,8 +29,7 @@ export default function ProjectsPage({ projects }: Props) {
           path="/projects"
         />
         <Header />
-        <Background />
-        <GradientBG />
+        <QuietBackground />
 
         <div className="pt-24 md:pt-28 text-center">
           <p className="text-xs uppercase tracking-[0.18em] text-white/50 font-montserrat">

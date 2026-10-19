@@ -16,7 +16,6 @@ import {
 } from "../components/popinBlockContext";
 import GradientBG from "../components/gradientbg";
 import MyPath from "../components/myPath";
-import TechStack from "../components/techStack";
 import LivingGreeting from "../components/LivingGreeting";
 import { FramedImage } from "../components/content/Frame";
 import { listPosts, listProjects, type PostMeta, type ProjectMeta } from "../lib/content";
@@ -276,12 +275,9 @@ const Index = ({ projects, latestPost }: Props) => {
 
             <MyPath />
 
-            <br></br>
-
-            <TechStack />
             <div id="projects"></div>
             <div className={`pt-4 mt-24 ${styles.textContainer} text-white`}>
-              {/* Section header — matches the My Path / Tech Stack cadence */}
+              {/* Section header — matches the My Path cadence */}
               <div className="text-center">
                 <p className="text-xs uppercase tracking-[0.18em] text-white/50 font-montserrat">
                   A few things I&apos;ve built

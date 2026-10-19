@@ -6,8 +6,7 @@ import { Calendar, ArrowLeft, ArrowRight } from "lucide-react";
 import Seo from "../../components/Seo";
 import Header from "../../components/header";
 import Footer from "../../components/footer";
-import Background from "../../components/backgroundThree";
-import GradientBG from "../../components/gradientbg";
+import QuietBackground from "../../components/QuietBackground";
 import {
   ScrollObserverProvider,
   PopInBlock,
@@ -40,8 +39,7 @@ export default function BlogPage({ posts }: Props) {
           path="/blog"
         />
         <Header />
-        <Background />
-        <GradientBG />
+        <QuietBackground />
 
         <div className="text-center pt-24 md:pt-28">
           <p className="text-xs uppercase tracking-[0.18em] text-white/50 font-montserrat">
@@ -53,7 +51,7 @@ export default function BlogPage({ posts }: Props) {
           <div className="mt-5 mx-auto h-px w-16 bg-white/25" />
         </div>
 
-        <div className="mx-auto w-[90%] max-w-3xl mt-16">
+        <div className="mx-auto w-[90%] max-w-3xl mt-16 font-montserrat">
           {posts.length === 0 && (
             <p className="min-h-[30vh] text-center font-montserrat font-light text-white/60">
               No posts yet.
