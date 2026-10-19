@@ -55,15 +55,15 @@ export default function About() {
 
             <div className="mt-8 space-y-5 text-sm md:text-base font-light leading-relaxed text-white/65 max-w-xl">
               <p>
-                Born and raised on Oʻahu. I study CS + Math at Washington
-                University in St. Louis, with a focus on backend systems and
-                robotics.
+                Born and raised on Oʻahu. In high school I built a robotic
+                hand you could control over the internet, and took it to
+                Regeneron ISEF as a robotics finalist.
               </p>
               <p>
-                Right now I&apos;m a robotics engineer at Northstar
-                Robotics, working on teleoperation, data pipelines, and policy
-                fine-tuning. Before that I was at Tesla, Capital One, and
-                Spectrum.
+                Now I study CS + Math at Washington University in St. Louis
+                and work as a robotics engineer at Northstar Robotics, on
+                teleoperation, data pipelines, and policy fine-tuning. Before
+                that: Tesla, Capital One, and Spectrum.
               </p>
             </div>
 

@@ -8,7 +8,6 @@ const ELSEWHERE = [
 
 const INDEX = [
   { href: "#whoIam", label: "About" },
-  { href: "#path", label: "Path" },
   { href: "#projects", label: "Projects" },
   { href: "#blogs", label: "Writing" },
 ];

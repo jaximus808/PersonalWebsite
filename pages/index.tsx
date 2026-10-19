@@ -13,7 +13,6 @@ import {
   ScrollObserverProvider,
 } from "../components/popinBlockContext";
 import GradientBG from "../components/gradientbg";
-import MyPath from "../components/myPath";
 import HeroIntro from "../components/HeroIntro";
 import About from "../components/About";
 import SectionHead, { HOME_COLUMN } from "../components/SectionHead";
@@ -50,13 +49,10 @@ const Index = ({ projects, latestPost }: Props) => {
         <div id="whoIam" className={`${styles.homeMaincotainer} `}>
           <div className={` ${styles.textContainer}   text-white`}>
             <About />
-            <div id="path"></div>
-
-            <MyPath />
 
             <div id="projects"></div>
             <div className={`pt-4 mt-32 ${styles.textContainer} text-white`}>
-              <SectionHead n={3} label="Projects" />
+              <SectionHead n={2} label="Projects" />
 
               <div className={`${HOME_COLUMN} mt-12`}>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -108,7 +104,7 @@ const Index = ({ projects, latestPost }: Props) => {
 
           <div id="blogs"></div>
           <div className={`pt-4 mt-32 pb-4 ${styles.textContainer} text-white`}>
-            <SectionHead n={4} label="Writing" />
+            <SectionHead n={3} label="Writing" />
 
             {latestPost && (
               <div className={`${HOME_COLUMN} mt-12`}>
