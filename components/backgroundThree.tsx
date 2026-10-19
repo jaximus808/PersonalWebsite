@@ -5,6 +5,7 @@ import * as THREE from "three"
 import React, { useState, useEffect, useRef, useMemo, Suspense } from 'react'
 import shapePositions from './shapePositions.json'
 import { useHeroFade } from '../lib/useHeroFade'
+import { buildArmCloud, makeLinkMatrices, poseArms, BENCH, CUBE_PART } from './yamArms'
 
 // Low-poly on purpose: these render as tiny dots, so high tessellation was
 // pure waste. 8x6 keeps them round while cutting ~1,400 tris/sphere down to
@@ -15,14 +16,26 @@ const white = new THREE.MeshLambertMaterial({ color: "white" })
 
 type ShapeMap = { [key: string]: number[][] }
 
+// Where the YAM arms sit in the scene: meters → scene units, the point that
+// lands at the origin, and the camera angle they're framed from.
+const ARM_SCALE = 8
+const ARM_CENTER = [0, -0.08, 0]
+const ARM_VIEW = 0.3
+const ARM_SHIFT = 1.4 // toward screen right, clear of the About text
+
+const smooth = (x: number) => x * x * (3 - 2 * x)
+const clamp01 = (x: number) => Math.min(1, Math.max(0, x))
+
 function System({
   isMobile,
   reducedMotion,
   fade,
+  arms,
 }: {
   isMobile: boolean
   reducedMotion: boolean
   fade: React.MutableRefObject<number>
+  arms: React.MutableRefObject<number> | null
 }): JSX.Element {
   const camera = useThree((state) => state.camera)
 
@@ -32,11 +45,12 @@ function System({
   const angle = useRef(0)
   const scrollPrev = useRef(0)
 
-  const rotateCamera = () => {
-    const xPos = xDist * Math.sin(angle.current)
-    const zPos = Zdist * Math.cos(angle.current)
+  const rotateCamera = (theta: number = angle.current, height = 20) => {
+    const xPos = xDist * Math.sin(theta)
+    const zPos = Zdist * Math.cos(theta)
     camera.position.setZ(zPos)
     camera.position.setX(xPos)
+    camera.position.setY(height)
     camera.lookAt(0, 0, 0)
   }
 
@@ -78,6 +92,7 @@ function System({
       isMobile={isMobile}
       reducedMotion={reducedMotion}
       fade={fade}
+      arms={arms}
     />
   )
 }
@@ -89,13 +104,16 @@ function OptimizedStars({
   isMobile,
   reducedMotion,
   fade,
+  arms,
 }: {
   allShapesPositions: ShapeMap
   angle: React.MutableRefObject<number>
-  rotateCamera: () => void
+  rotateCamera: (theta?: number, height?: number) => void
   isMobile: boolean
   reducedMotion: boolean
   fade: React.MutableRefObject<number>
+  /** 0 → 1: how far the dots have regrouped into the YAM arms. */
+  arms: React.MutableRefObject<number> | null
 }) {
   const meshRef = useRef<THREE.InstancedMesh>(null!)
   const tempObject = useMemo(() => new THREE.Object3D(), [])
@@ -136,6 +154,12 @@ function OptimizedStars({
     return out
   }, [totalPositions])
 
+  // The same dots, later: their places on two YAM arms (see yamArms.ts).
+  // Built only where the arms can show.
+  const armCloud = useMemo(() => (arms ? buildArmCloud(totalPositions) : null), [arms, totalPositions])
+  const linkMatrices = useMemo(() => makeLinkMatrices(), [])
+  const armClockRef = useRef(0) // seconds since the arms finished assembling
+
   useEffect(() => {
     // Start with every particle at the origin, morphing out to the first shape.
     startPositionsRef.current = Array(totalPositions).fill([0, 0, 0])
@@ -165,10 +189,26 @@ function OptimizedStars({
     // The signature slow camera drift. Reduced-motion visitors get a still frame.
     // dt-scaled so the speed is the same regardless of frame rate (0.01/frame at
     // 60fps == 0.6/s).
+    // While the arms are up, the camera eases off its spin to a fixed,
+    // slightly raised three-quarter view with a slow sway, so the motion
+    // stays readable.
+    const armsAmt = armCloud && arms ? arms.current : 0
+    const armsEased = smooth(armsAmt)
     if (!reducedMotion) {
       angle.current += dt * 0.6
-      rotateCamera()
+      if (armsEased > 0) {
+        const target = ARM_VIEW + 0.12 * Math.sin(elapsed * 0.3)
+        const off = Math.atan2(Math.sin(target - angle.current), Math.cos(target - angle.current))
+        rotateCamera(angle.current + off * armsEased, 20 + 22 * armsEased)
+      } else {
+        rotateCamera()
+      }
     }
+
+    // The arms start their routine once they've fully formed, from the top
+    // each time they come back.
+    if (armsAmt >= 0.95) armClockRef.current += dt
+    else if (armsAmt <= 0) armClockRef.current = -0.6
 
     // Cycle shapes every 4s — but never for reduced motion (stays on shape 0).
     if (!reducedMotion && currentShapeRef.current >= 0 && elapsed - lastTransitionRef.current >= 4) {
@@ -206,7 +246,7 @@ function OptimizedStars({
     const fadeMoved = dissolve !== drawnFadeRef.current
     drawnFadeRef.current = dissolve
 
-    if (lerpProgressRef.current < 1 || fadeMoved) {
+    if (lerpProgressRef.current < 1 || fadeMoved || armsAmt > 0) {
       settledRef.current = false
     } else if (settledRef.current) {
       return
@@ -224,6 +264,14 @@ function OptimizedStars({
     const d = 1 - Math.pow(1 - dissolve, 2)
     const dotScale = 0.15 * (1 - 0.75 * d)
 
+    let shiftX = 0
+    let shiftZ = 0
+    if (armCloud && armsAmt > 0) {
+      poseArms(linkMatrices, armClockRef.current)
+      shiftX = Math.cos(ARM_VIEW) * ARM_SHIFT
+      shiftZ = -Math.sin(ARM_VIEW) * ARM_SHIFT
+    }
+
     // Lerp all positions
     for (let i = 0; i < totalPositions; i++) {
       const start = startPositionsRef.current[i]
@@ -232,12 +280,41 @@ function OptimizedStars({
       if (!start || !target) continue
 
       const spread = 1 + d * scatter[i]
-      const x = (start[0] + (target[0] - start[0]) * eased) * spread
-      const y = (start[1] + (target[1] - start[1]) * eased) * spread
-      const z = (start[2] + (target[2] - start[2]) * eased) * spread
+      let x = (start[0] + (target[0] - start[0]) * eased) * spread
+      let y = (start[1] + (target[1] - start[1]) * eased) * spread
+      let z = (start[2] + (target[2] - start[2]) * eased) * spread
+      let scale = dotScale
+
+      if (armCloud && armsAmt > 0) {
+        // Each dot leaves the scattered cloud on its own beat, so the arms
+        // gather in rather than snapping together.
+        const k = smooth(clamp01(armsAmt * 1.6 - ((scatter[i] - 0.4) / 1.6) * 0.6))
+        if (k > 0) {
+          const part = armCloud.part[i]
+          const lx = armCloud.local[i * 3]
+          const ly = armCloud.local[i * 3 + 1]
+          const lz = armCloud.local[i * 3 + 2]
+          let wx = lx
+          let wy = ly
+          let wz = lz
+          if (part !== BENCH) {
+            const e = linkMatrices[part === CUBE_PART ? 16 : part].elements
+            wx = e[0] * lx + e[4] * ly + e[8] * lz + e[12]
+            wy = e[1] * lx + e[5] * ly + e[9] * lz + e[13]
+            wz = e[2] * lx + e[6] * ly + e[10] * lz + e[14]
+          }
+          const ax = (wx - ARM_CENTER[0]) * ARM_SCALE + shiftX
+          const ay = (wy - ARM_CENTER[1]) * ARM_SCALE
+          const az = (wz - ARM_CENTER[2]) * ARM_SCALE + shiftZ
+          x += (ax - x) * k
+          y += (ay - y) * k
+          z += (az - z) * k
+          scale += ((part === BENCH ? 0.1 : 0.17) - scale) * k
+        }
+      }
 
       tempObject.position.set(x, y, z)
-      tempObject.scale.setScalar(dotScale)
+      tempObject.scale.setScalar(scale)
       tempObject.updateMatrix()
       meshRef.current.setMatrixAt(i, tempObject.matrix)
     }
@@ -253,9 +330,26 @@ type BackgroundProps = {
   fadeOnScroll?: boolean
   /** Sit the cloud right of center on wide screens, beside left-aligned text. */
   offsetRight?: boolean
+  /** With fadeOnScroll: the id of a section the dots regroup beside, as two
+      YAM arms, once the hero has gone. Wide screens with motion only. */
+  armsBeside?: string
 }
 
-export default function Background({ fadeOnScroll = false, offsetRight = false }: BackgroundProps) {
+/**
+ * How present the arms are, 0 → 1, from where the `armsBeside` section sits:
+ * they gather as it scrolls up into view and scatter again as it leaves.
+ */
+function besideProgress(id: string): number {
+  const el = document.getElementById(id)
+  if (!el) return 0
+  const r = el.getBoundingClientRect()
+  const h = window.innerHeight || 1
+  const into = clamp01((0.3 * h - r.top) / (0.45 * h))
+  const out = clamp01((0.55 * h - r.bottom) / (0.45 * h))
+  return into * (1 - out)
+}
+
+export default function Background({ fadeOnScroll = false, offsetRight = false, armsBeside }: BackgroundProps) {
   // Device profile drives both the WebGL context options (which are fixed at
   // Canvas creation) and the per-frame workload, so resolve it before we mount
   // the Canvas. Defaults are SSR-safe (desktop, motion on) and get corrected on
@@ -283,11 +377,16 @@ export default function Background({ fadeOnScroll = false, offsetRight = false }
   // loop stops until the visitor scrolls back up.
   const sceneRef = useRef<HTMLDivElement>(null)
   const fade = useRef(0)
+  const arms = useRef(0)
   const [gone, setGone] = useState(false)
+  const armsOn = !!armsBeside && !env.isMobile && !env.reducedMotion
   useHeroFade((p) => {
     fade.current = p
-    if (sceneRef.current) sceneRef.current.style.opacity = String(1 - p)
-    setGone(p >= 1)
+    // Too narrow and the arms would sit under the text, so they sit out.
+    const a = armsOn && window.innerWidth >= 1180 ? besideProgress(armsBeside!) : 0
+    arms.current = a
+    if (sceneRef.current) sceneRef.current.style.opacity = String(Math.max(1 - p, a))
+    setGone(p >= 1 && a <= 0)
   }, fadeOnScroll && env.mounted)
 
   useEffect(() => {
@@ -338,7 +437,12 @@ export default function Background({ fadeOnScroll = false, offsetRight = false }
         <pointLight intensity={0.4} color="#a3cbff" position={[-10, 10, 10]} />
 
         <Suspense fallback={null}>
-          <System isMobile={env.isMobile} reducedMotion={env.reducedMotion} fade={fade} />
+          <System
+            isMobile={env.isMobile}
+            reducedMotion={env.reducedMotion}
+            fade={fade}
+            arms={armsOn ? arms : null}
+          />
         </Suspense>
       </Canvas>
     </div>

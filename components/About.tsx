@@ -25,11 +25,12 @@ const LINKS = [
  */
 export default function About() {
   return (
-    <section className="pt-24 md:pt-32 text-white">
+    <section id="about" className="pt-24 md:pt-32 text-white">
       <SectionHead n={1} label="About" />
 
-      {/* Portrait hidden for now (keeping it lowkey); this slot may get an
-          animation instead. To bring the photo back, restore the two-column
+      {/* Portrait hidden for now (keeping it lowkey). On wide screens the
+          background's dots regroup as two YAM arms in the space to the right
+          (id="about" is what they track). To bring the photo back, restore the two-column
           grid, md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-12 md:gap-16
           lg:gap-24, and uncomment the block below. */}
       <div className={`${HOME_COLUMN} mt-12 md:mt-16`}>
@@ -61,8 +62,7 @@ export default function About() {
               </p>
               <p>
                 I grew up on Oʻahu, where I led robotics teams and presented at
-                ISEF. I&apos;ve also worked at Tesla, Capital One, and
-                Spectrum.
+                ISEF. I&apos;ve also worked at Tesla, Capital One, and Spectrum.
               </p>
               <p>This site holds my work and writing.</p>
             </div>

@@ -29,7 +29,7 @@ const Index = ({ projects, latestPost }: Props) => {
   return (
     <ScrollObserverProvider>
       <div className="text-caviar ">
-        <Background fadeOnScroll offsetRight />
+        <Background fadeOnScroll offsetRight armsBeside="about" />
         <GradientBG fadeOnScroll />
         <Seo
           title="Jaxon Poentis — Software Engineer · Capital One, Tesla · CS + Math at WashU"
