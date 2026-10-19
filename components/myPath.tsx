@@ -367,7 +367,7 @@ export default function MyPath() {
         </PopInBlock>
         <TimelineRow entry={isef} />
 
-        {/* Origin — where it all began */}
+        {/* Origin — Oʻahu, Hawaiʻi */}
         <PopInBlock variant="materialize">
           <div className="flex gap-5 md:gap-8 pb-10">
             <div className="relative flex-none w-4 flex justify-center pt-7">
@@ -405,7 +405,7 @@ export default function MyPath() {
               </span>
             </div>
             <p className="text-[0.7rem] uppercase tracking-[0.18em] text-white/45 font-montserrat">
-              Where it all began · Oʻahu, Hawaiʻi
+              Oʻahu, Hawaiʻi
             </p>
           </div>
         </PopInBlock>
