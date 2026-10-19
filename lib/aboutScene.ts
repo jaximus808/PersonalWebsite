@@ -7,8 +7,9 @@ import { useEffect, useSyncExternalStore, type RefObject } from "react";
  */
 export type AboutScene = "robots" | "infra";
 
-// Long enough for the arms to form and run one full hand-off.
-const HOLD: Record<AboutScene, number> = { robots: 13500, infra: 9500 };
+// The arms usually get cut off partway through a hand-off; they pick it back
+// up where they left off next time (see backgroundThree.tsx).
+const HOLD: Record<AboutScene, number> = { robots: 8500, infra: 9500 };
 
 let scene: AboutScene = "robots";
 const listeners = new Set<() => void>();

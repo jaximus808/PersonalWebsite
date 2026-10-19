@@ -244,10 +244,11 @@ function OptimizedStars({
     else if (mixRef.current > want) mixRef.current = Math.max(want, mixRef.current - dt / 1.8)
     const mix = mixRef.current
 
-    // Each scene runs from the top every time it comes back: the arms once
-    // they've fully formed, the system as soon as it starts forming.
+    // The arms run while they're fully formed and pause, mid hand-off, while
+    // the system is up, so they resume where they left off. Scrolling away
+    // starts them over. The system runs from the top each time it forms.
     if (armsAmt >= 0.95 && mix <= 0) armClockRef.current += dt
-    else if (armsAmt <= 0 || mix >= 1) armClockRef.current = -0.6
+    else if (armsAmt <= 0) armClockRef.current = -0.6
     if (mix > 0) infraClockRef.current += dt
     else infraClockRef.current = 0
 
