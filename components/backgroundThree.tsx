@@ -4,6 +4,7 @@ import css from "../styles/Home.module.css"
 import * as THREE from "three"
 import React, { useState, useEffect, useRef, useMemo, Suspense } from 'react'
 import shapePositions from './shapePositions.json'
+import { useHeroFade } from '../lib/useHeroFade'
 
 // Low-poly on purpose: these render as tiny dots, so high tessellation was
 // pure waste. 8x6 keeps them round while cutting ~1,400 tris/sphere down to
@@ -14,7 +15,15 @@ const white = new THREE.MeshLambertMaterial({ color: "white" })
 
 type ShapeMap = { [key: string]: number[][] }
 
-function System({ isMobile, reducedMotion }: { isMobile: boolean; reducedMotion: boolean }): JSX.Element {
+function System({
+  isMobile,
+  reducedMotion,
+  fade,
+}: {
+  isMobile: boolean
+  reducedMotion: boolean
+  fade: React.MutableRefObject<number>
+}): JSX.Element {
   const camera = useThree((state) => state.camera)
 
   const Zdist = 100
@@ -68,6 +77,7 @@ function System({ isMobile, reducedMotion }: { isMobile: boolean; reducedMotion:
       rotateCamera={rotateCamera}
       isMobile={isMobile}
       reducedMotion={reducedMotion}
+      fade={fade}
     />
   )
 }
@@ -78,12 +88,14 @@ function OptimizedStars({
   rotateCamera,
   isMobile,
   reducedMotion,
+  fade,
 }: {
   allShapesPositions: ShapeMap
   angle: React.MutableRefObject<number>
   rotateCamera: () => void
   isMobile: boolean
   reducedMotion: boolean
+  fade: React.MutableRefObject<number>
 }) {
   const meshRef = useRef<THREE.InstancedMesh>(null!)
   const tempObject = useMemo(() => new THREE.Object3D(), [])
@@ -114,6 +126,15 @@ function OptimizedStars({
   const lastTransitionRef = useRef(0)
   const settledRef = useRef(false) // true once a shape has finished morphing
   const timeRef = useRef(0) // our own monotonic clock (see useFrame)
+  const drawnFadeRef = useRef(0) // the scroll fade the matrices were last built at
+
+  // How far each particle drifts as the cloud dissolves on scroll. Uneven on
+  // purpose, so it fizzles apart instead of just growing.
+  const scatter = useMemo(() => {
+    const out = new Float32Array(totalPositions)
+    for (let i = 0; i < totalPositions; i++) out[i] = 0.4 + Math.random() * 1.6
+    return out
+  }, [totalPositions])
 
   useEffect(() => {
     // Start with every particle at the origin, morphing out to the first shape.
@@ -179,7 +200,13 @@ function OptimizedStars({
     // has settled (progress === 1) the positions are static, so we apply one
     // final frame and then skip the loop until the next transition — the camera
     // still rotates, but we stop recomposing every matrix on idle frames.
-    if (lerpProgressRef.current < 1) {
+    // Scrolling past the hero changes the dissolve, which also needs a rebuild.
+    // Reduced motion skips the scatter; the stage only fades.
+    const dissolve = reducedMotion ? 0 : fade.current
+    const fadeMoved = dissolve !== drawnFadeRef.current
+    drawnFadeRef.current = dissolve
+
+    if (lerpProgressRef.current < 1 || fadeMoved) {
       settledRef.current = false
     } else if (settledRef.current) {
       return
@@ -193,6 +220,10 @@ function OptimizedStars({
         ? 2 * lerpProgressRef.current * lerpProgressRef.current
         : 1 - Math.pow(-2 * lerpProgressRef.current + 2, 2) / 2
 
+    // Dissolve: ease-out spread, dots shrink as they leave.
+    const d = 1 - Math.pow(1 - dissolve, 2)
+    const dotScale = 0.15 * (1 - 0.75 * d)
+
     // Lerp all positions
     for (let i = 0; i < totalPositions; i++) {
       const start = startPositionsRef.current[i]
@@ -200,12 +231,13 @@ function OptimizedStars({
 
       if (!start || !target) continue
 
-      const x = start[0] + (target[0] - start[0]) * eased
-      const y = start[1] + (target[1] - start[1]) * eased
-      const z = start[2] + (target[2] - start[2]) * eased
+      const spread = 1 + d * scatter[i]
+      const x = (start[0] + (target[0] - start[0]) * eased) * spread
+      const y = (start[1] + (target[1] - start[1]) * eased) * spread
+      const z = (start[2] + (target[2] - start[2]) * eased) * spread
 
       tempObject.position.set(x, y, z)
-      tempObject.scale.setScalar(0.15)
+      tempObject.scale.setScalar(dotScale)
       tempObject.updateMatrix()
       meshRef.current.setMatrixAt(i, tempObject.matrix)
     }
@@ -216,7 +248,14 @@ function OptimizedStars({
   return <instancedMesh key={totalPositions} ref={meshRef} args={[sphere, white, totalPositions]} />
 }
 
-export default function Background() {
+type BackgroundProps = {
+  /** Landing page: dissolve and fade the stage as the hero scrolls away. */
+  fadeOnScroll?: boolean
+  /** Sit the cloud right of center on wide screens, beside left-aligned text. */
+  offsetRight?: boolean
+}
+
+export default function Background({ fadeOnScroll = false, offsetRight = false }: BackgroundProps) {
   // Device profile drives both the WebGL context options (which are fixed at
   // Canvas creation) and the per-frame workload, so resolve it before we mount
   // the Canvas. Defaults are SSR-safe (desktop, motion on) and get corrected on
@@ -239,6 +278,18 @@ export default function Background() {
   // visible freeze); reduced-motion renders a couple of settle frames then stops.
   const [frameloop, setFrameloop] = useState<"always" | "never">("always")
 
+  // Scroll fade: the cloud scatters and the whole stage fades out as the hero
+  // leaves. Opacity is written straight to the DOM; once fully gone the render
+  // loop stops until the visitor scrolls back up.
+  const sceneRef = useRef<HTMLDivElement>(null)
+  const fade = useRef(0)
+  const [gone, setGone] = useState(false)
+  useHeroFade((p) => {
+    fade.current = p
+    if (sceneRef.current) sceneRef.current.style.opacity = String(1 - p)
+    setGone(p >= 1)
+  }, fadeOnScroll && env.mounted)
+
   useEffect(() => {
     if (!env.mounted) return
     if (env.reducedMotion) {
@@ -252,16 +303,18 @@ export default function Background() {
     return () => document.removeEventListener("visibilitychange", onVisibility)
   }, [env.mounted, env.reducedMotion])
 
+  const sceneClass = `${css.scene} ${offsetRight ? "md:translate-x-[18vw]" : ""}`
+
   if (!env.mounted) {
-    return <div className={css.scene} />
+    return <div className={sceneClass} />
   }
 
   return (
-    <div className={css.scene}>
+    <div ref={sceneRef} className={sceneClass}>
       <Canvas
         shadows={false}
         className={css.canvas}
-        frameloop={frameloop}
+        frameloop={gone ? "never" : frameloop}
         style={{ position: "fixed", background: "transparent" }}
         camera={{ zoom: 10, position: [0, 20, 100] }}
         dpr={1}
@@ -285,7 +338,7 @@ export default function Background() {
         <pointLight intensity={0.4} color="#a3cbff" position={[-10, 10, 10]} />
 
         <Suspense fallback={null}>
-          <System isMobile={env.isMobile} reducedMotion={env.reducedMotion} />
+          <System isMobile={env.isMobile} reducedMotion={env.reducedMotion} fade={fade} />
         </Suspense>
       </Canvas>
     </div>

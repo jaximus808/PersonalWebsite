@@ -337,29 +337,6 @@
   transform: translate(-50%,0);
   padding: 20px;
 }
-.footerContainer
-{
-  color:white;
-  background-color: #1c1c1c;
-  font-weight: 400;
-  padding-left: 1vw;
-  padding-bottom: 0.5vw;
-  padding-right: 1vw;
-  padding-top: 0.1vw;
-  transition-duration: 0.5s;
-  padding: 1rem;
-  text-align: center;
-  
-
-}
-.realfooterContianer
-{
-  margin-top: auto;
-  position: relative;
-  z-index: 20;
-  bottom: 0;
-
-}
 .specialLink
 {
   text-decoration: underline;

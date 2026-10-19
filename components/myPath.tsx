@@ -1,6 +1,7 @@
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import { PopInBlock } from "./popinBlockContext";
+import SectionHead, { HOME_COLUMN } from "./SectionHead";
 
 type DetailSection = { label: string; items: string[] };
 
@@ -29,7 +30,8 @@ const timeline: YearGroup[] = [
         dates: "09/2026 — Present",
         logo: "/northstar_logo.jpg",
         logoLight: true,
-        blurb: "Building Teleoperation, Data Pipelines, and Policy Fine-Tuning.",
+        blurb:
+          "Building Teleoperation, Data Pipelines, and Policy Fine-Tuning.",
       },
       {
         org: "Capital One",
@@ -260,7 +262,7 @@ function EntryDetails({ entry }: { entry: Entry }) {
 function EntryCard({ entry }: { entry: Entry }) {
   return (
     <div
-      className={`${styles.stagePanel} rounded-2xl p-5 md:p-6 flex flex-col sm:flex-row gap-5`}
+      className={`${styles.stagePanel} rounded p-5 md:p-6 flex flex-col sm:flex-row gap-5`}
     >
       <LogoTile entry={entry} />
       <div className="flex-1 min-w-0">
@@ -271,7 +273,9 @@ function EntryCard({ entry }: { entry: Entry }) {
           {entry.role}
         </p>
         <p className="mt-2 text-[0.7rem] uppercase tracking-[0.14em] text-white/45">
-          {entry.location ? `${entry.location}  ·  ${entry.dates}` : entry.dates}
+          {entry.location
+            ? `${entry.location}  ·  ${entry.dates}`
+            : entry.dates}
         </p>
         <p className="mt-3 text-sm md:text-base text-white/70 font-light leading-relaxed">
           {entry.blurb}
@@ -313,102 +317,99 @@ function YearStation({ year }: { year: string }) {
 
 export default function MyPath() {
   return (
-    <div className={`pt-4 mt-16 ${styles.textContainer}`}>
-      {/* Section header */}
-      <div className="text-center">
-        <p className="text-xs uppercase tracking-[0.18em] text-white/50 font-montserrat">
-          The journey so far
-        </p>
-        <h1 className="mt-3 font-cormorant font-light text-5xl md:text-6xl text-white">
-          My Path
-        </h1>
-        <div className="mt-5 mx-auto h-px w-16 bg-white/25" />
-      </div>
+    <div className={`pt-4 mt-32 ${styles.textContainer}`}>
+      <SectionHead n={2} label="Path" title="My Path" />
 
       {/* Timeline rail */}
-      <div className="relative w-[90%] md:w-[80%] max-w-3xl mx-auto mt-16">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute top-2 bottom-16 left-2 w-px bg-gradient-to-b from-transparent via-white/15 to-white/5"
-        />
+      <div className={HOME_COLUMN}>
+        <div className="relative max-w-3xl mt-14">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute top-2 bottom-16 left-2 w-px bg-gradient-to-b from-transparent via-white/15 to-white/5"
+          />
 
-        {timeline.map((group) => (
-          <div key={group.year}>
-            <PopInBlock variant="materialize">
-              <YearStation year={group.year} />
-            </PopInBlock>
-            {group.entries.map((entry) => (
-              <TimelineRow key={`${entry.org}-${entry.dates}`} entry={entry} />
-            ))}
-          </div>
-        ))}
-
-        {/* Education */}
-        <PopInBlock variant="materialize">
-          <YearStation year="2023" />
-        </PopInBlock>
-        <PopInBlock variant="materialize">
-          <div className="flex gap-5 md:gap-8 pb-10">
-            <div className="relative flex-none w-4 flex justify-center pt-7">
-              <span className="h-2.5 w-2.5 rounded-full bg-blue-300/80 ring-4 ring-[#121212]" />
+          {timeline.map((group) => (
+            <div key={group.year}>
+              <PopInBlock variant="materialize">
+                <YearStation year={group.year} />
+              </PopInBlock>
+              {group.entries.map((entry) => (
+                <TimelineRow
+                  key={`${entry.org}-${entry.dates}`}
+                  entry={entry}
+                />
+              ))}
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="mb-3 text-[0.7rem] uppercase tracking-[0.16em] text-white/45">
-                Education
-              </p>
-              <EntryCard entry={education} />
-            </div>
-          </div>
-        </PopInBlock>
+          ))}
 
-        {/* ISEF 2022 — the robotic hand */}
-        <PopInBlock variant="materialize">
-          <YearStation year="2022" />
-        </PopInBlock>
-        <TimelineRow entry={isef} />
-
-        {/* Origin — Oʻahu, Hawaiʻi */}
-        <PopInBlock variant="materialize">
-          <div className="flex gap-5 md:gap-8 pb-10">
-            <div className="relative flex-none w-4 flex justify-center pt-7">
-              <span className="h-2.5 w-2.5 rounded-full bg-blue-300/80 ring-4 ring-[#121212]" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div
-                className={`${styles.stagePanel} rounded-2xl p-7 md:p-9 text-center`}
-              >
-                <p className="text-xs uppercase tracking-[0.18em] text-white/45 font-montserrat">
-                  2019 — Present
+          {/* Education */}
+          <PopInBlock variant="materialize">
+            <YearStation year="2023" />
+          </PopInBlock>
+          <PopInBlock variant="materialize">
+            <div className="flex gap-5 md:gap-8 pb-10">
+              <div className="relative flex-none w-4 flex justify-center pt-7">
+                <span className="h-2.5 w-2.5 rounded-full bg-blue-300/80 ring-4 ring-[#121212]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="mb-3 text-[0.7rem] uppercase tracking-[0.16em] text-white/45">
+                  Education
                 </p>
-                <h3 className="mt-3 font-cormorant font-light text-3xl md:text-4xl text-white">
-                  A Lifelong Journey of Learning
-                </h3>
-                <p className="mt-2 text-blue-300 text-sm md:text-base font-light">
-                  Aspiring Software Engineer
-                </p>
-                <p className="mt-5 max-w-xl mx-auto text-sm md:text-base text-white/70 font-light leading-relaxed">
-                  What began as a simple curiosity for making a video game
-                  during the COVID-19 pandemic ignited my passion for all things
-                  software — and a lifelong drive to keep learning and building.
-                </p>
+                <EntryCard entry={education} />
               </div>
             </div>
-          </div>
-        </PopInBlock>
+          </PopInBlock>
 
-        {/* Root node — a station on the rail */}
-        <PopInBlock variant="materialize">
-          <div className="flex items-center gap-5 md:gap-8 pt-2 pb-2">
-            <div className="relative flex-none w-4 flex justify-center">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/25 bg-[#121212] text-xl">
-                🌺
-              </span>
+          {/* ISEF 2022 — the robotic hand */}
+          <PopInBlock variant="materialize">
+            <YearStation year="2022" />
+          </PopInBlock>
+          <TimelineRow entry={isef} />
+
+          {/* Origin — Oʻahu, Hawaiʻi */}
+          <PopInBlock variant="materialize">
+            <div className="flex gap-5 md:gap-8 pb-10">
+              <div className="relative flex-none w-4 flex justify-center pt-7">
+                <span className="h-2.5 w-2.5 rounded-full bg-blue-300/80 ring-4 ring-[#121212]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div
+                  className={`${styles.stagePanel} rounded p-7 md:p-9 text-center`}
+                >
+                  <p className="text-xs uppercase tracking-[0.18em] text-white/45 font-montserrat">
+                    2019 — Present
+                  </p>
+                  <h3 className="mt-3 font-cormorant font-light text-3xl md:text-4xl text-white">
+                    A Lifelong Journey of Learning
+                  </h3>
+                  <p className="mt-2 text-blue-300 text-sm md:text-base font-light">
+                    Aspiring Software Engineer
+                  </p>
+                  <p className="mt-5 max-w-xl mx-auto text-sm md:text-base text-white/70 font-light leading-relaxed">
+                    What began as a simple curiosity for making a video game
+                    during the COVID-19 pandemic ignited my passion for all
+                    things software — and a lifelong drive to keep learning and
+                    building.
+                  </p>
+                </div>
+              </div>
             </div>
-            <p className="text-[0.7rem] uppercase tracking-[0.18em] text-white/45 font-montserrat">
-              Oʻahu, Hawaiʻi
-            </p>
-          </div>
-        </PopInBlock>
+          </PopInBlock>
+
+          {/* Root node — a station on the rail */}
+          <PopInBlock variant="materialize">
+            <div className="flex items-center gap-5 md:gap-8 pt-2 pb-2">
+              <div className="relative flex-none w-4 flex justify-center">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/25 bg-[#121212] text-xl">
+                  🌺
+                </span>
+              </div>
+              <p className="text-[0.7rem] uppercase tracking-[0.18em] text-white/45 font-montserrat">
+                Oʻahu, Hawaiʻi
+              </p>
+            </div>
+          </PopInBlock>
+        </div>
       </div>
     </div>
   );

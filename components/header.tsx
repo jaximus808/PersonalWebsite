@@ -1,59 +1,43 @@
-import type { NextPage } from 'next'
 import Link from 'next/link'
-import Head from 'next/head'
-import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import { useRef, useState,useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
-const Header: NextPage = () => {
+type HeaderProps = {
+  /** Landing page: stay out of the way until the hero has scrolled off, so
+      the name isn't shown twice. */
+  hideOnHero?: boolean
+}
 
-  const handleScroll =()=>
+const Header = ({ hideOnHero = false }: HeaderProps) => {
+
+  const [mini, setMini] = useState(false)
+  const [pastHero, setPastHero] = useState(!hideOnHero)
+
+  useEffect(() =>
   {
-      const y = window.scrollY;
-      yRef.current = y;
-      if(!scrolled.current && yRef.current > window.innerHeight*0.10 )
+      const handleScroll = () =>
       {
-        scrolled.current = true
-        window.requestAnimationFrame(()=>
-        {
-          headerRef.current.className = styles.navBarMini;
-        });
+          const y = window.scrollY
+          const h = window.innerHeight
+          setMini(y > h*0.10)
+          if (hideOnHero) setPastHero(y > h*0.6)
       }
-      if(scrolled.current && yRef.current <=window.innerHeight*0.10  )
-      {
-
-        scrolled.current = false
-
-          window.requestAnimationFrame(()=>
-          {
-            if(headerRef.current == null) return
-            headerRef.current.className = styles.navBar;
-          });
-      }
-  }
-
-  useEffect(() => 
-  {
-      window.addEventListener("scroll", handleScroll)
-      
-      const y = window.scrollY;
-      yRef.current = y;
+      handleScroll()
+      window.addEventListener("scroll", handleScroll, { passive: true })
       return () =>
       {
           window.removeEventListener("scroll", handleScroll)
       }
-      
-  },[])
 
-  const yRef = useRef(0);
-
-  const scrolled = useRef(false);
-
-  let headerRef:any = useRef(null);
+  },[hideOnHero])
 
   return (
     <>
-      <div ref={headerRef}  className={`${styles.navBar}`}>
+      <div
+        className={`${mini ? styles.navBarMini : styles.navBar} ${
+          pastHero ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
+      >
           
           <div className={`${styles.links} relative top-1/2 translate-y-[-50%]`}>
             <span className={styles.homeLink} style={{ marginLeft:"2vw"}}>
@@ -66,10 +50,8 @@ const Header: NextPage = () => {
     
           </div>
         </div>
-        <div  className={`${styles.navBarHolder}`}>
-          
-         
-        </div>
+        {/* Spacer under the fixed bar; the landing hero fills the screen itself. */}
+        {!hideOnHero && <div className={styles.navBarHolder} />}
     </>
     
     

@@ -102,7 +102,7 @@ export default function BlogPage({ posts }: Props) {
 
           {/* Pagination — quiet, text-only */}
           {totalPages > 1 && (
-            <div className="flex justify-center items-center gap-8 pt-10 pb-20 font-montserrat">
+            <div className="flex justify-center items-center gap-8 pt-10 font-montserrat">
               <button
                 type="button"
                 onClick={() => canGoBack && setBlogPage(currentPage - 1)}

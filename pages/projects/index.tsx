@@ -39,7 +39,7 @@ export default function ProjectsPage({ projects }: Props) {
 
         {/* Editorial list — one calm row per project, hairline dividers,
             the same rhythm as /blog */}
-        <div className="mx-auto w-[90%] max-w-3xl mt-16 pb-20 font-montserrat">
+        <div className="mx-auto w-[90%] max-w-3xl mt-16 font-montserrat">
           <div className="border-t border-white/10">
             {projects.map((project, i) => (
               <PopInBlock key={project.slug} variant="materialize">

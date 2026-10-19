@@ -7,6 +7,7 @@
 **Typography**
 - **Display / wordmark:** `font-cormorant` (Cormorant, weight 300 light) — high-contrast elegant serif. Used for the hero name and major section headings. This is the site's signature voice; keep it light and let it breathe.
 - **Body / UI:** `font-montserrat` (weight 300–400). Clean, quiet. Small labels/eyebrows: uppercase, wide tracking (`tracking-[0.18em]`), `text-white/60`.
+- **Mono accent:** `font-mono`, used sparingly on the landing page for the hero tagline, plain-text links, and the numbered section labels. Not for body copy.
 - **Legacy:** Tourner (`font-tourner`) and Caviar Dreams (`font-caviar`) are being phased out — do not add new usages.
 
 **Color (on the dark 3D stage)**
@@ -17,9 +18,9 @@
 
 **Motion:** subtle and slow (200–1500ms, ease-out). Purposeful only — no bouncy/childish effects. Always honor `prefers-reduced-motion` (see `components/Typewriter.tsx` for the pattern).
 
-**Landing hero:** `components/LivingGreeting.tsx` — a geo-aware "living greeting": a welcome types in and erases, then a location-aware opener types in (only a personal location story shows a place; otherwise a generic, location-free line), then an invitation fades in. All copy + location rules live in `config/greeting.json`; visitor location comes from `pages/api/geo.ts` (Vercel edge headers in prod, IP lookup in dev). Random lines are chosen after mount to avoid hydration mismatches.
+**Landing hero:** `components/HeroIntro.tsx` — left-aligned and static: headshot, the name, a two-line mono tagline ("Building robots, and the infrastructure that runs them."), a row of plain links, and a numbered page index (01 About … 04 Writing). No random or location-aware greetings. The header stays hidden until the hero scrolls off (`<Header hideOnHero />`) so the name isn't shown twice. The particle stage sits right of the text on wide screens (`<Background offsetRight />`) and scatters and fades out as the hero leaves (`fadeOnScroll`, `lib/useHeroFade.ts`). Each home section opens with `components/SectionHead.tsx` (numbered mono label + hairline + left-aligned Cormorant title).
 
-**Reusable typing effects:** `components/Typewriter.tsx` (type once, `onDone` callback) and `components/TypeErase.tsx` (type → hold → erase → type final). Reuse these rather than reinventing.
+**Typing effects (currently unused):** `components/Typewriter.tsx` (type once, `onDone` callback) and `components/TypeErase.tsx` (type → hold → erase → type final). Reuse these rather than reinventing if typing ever comes back.
 
 ## Project quick reference
 
