@@ -55,8 +55,17 @@ export default function About() {
 
             <div className="mt-8 space-y-5 text-sm md:text-base font-light leading-relaxed text-white/65 max-w-xl">
               <p>
-                Born and raised on Oʻahu. In high school I built a robotic
-                hand you could control over the internet, and took it to
+                Born and raised on Oʻahu. In high school I built{" "}
+                <a
+                  href="https://github.com/jaximus808/Telehand"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/85 underline decoration-white/25 underline-offset-4 transition-colors duration-300 hover:text-blue-300 hover:decoration-blue-300/60"
+                >
+                  Telehand
+                </a>
+                : a teleop stack with its own UDP protocol that drove a
+                robotic hand from a webcam, over the internet. It took me to
                 Regeneron ISEF as a robotics finalist.
               </p>
               <p>
