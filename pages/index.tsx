@@ -104,7 +104,7 @@ const Index = ({ projects, latestPost }: Props) => {
 
           <div id="blogs"></div>
           <div className={`pt-4 mt-32 pb-4 ${styles.textContainer} text-white`}>
-            <SectionHead n={3} label="Writing" />
+            <SectionHead n={3} label="Blog" />
 
             {latestPost && (
               <div className={`${HOME_COLUMN} mt-12`}>
