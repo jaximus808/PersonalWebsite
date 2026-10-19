@@ -22,10 +22,11 @@ export default function HeroIntro() {
   return (
     <div className="relative z-10 min-h-[100svh] w-full">
       {/* A soft wash behind the words so the particles never cross the text.
-          Wide screens fade it out toward the cloud on the right. */}
+          Wide screens fade it out toward the cloud on the right; it also
+          fades to nothing by the bottom of the hero so it never shows an edge. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[#121212]/45 md:bg-transparent md:bg-[linear-gradient(90deg,rgba(18,18,18,0.85)_0%,rgba(18,18,18,0.55)_38%,rgba(18,18,18,0)_62%)]"
+        className="pointer-events-none absolute inset-0 [mask-image:linear-gradient(to_bottom,black_45%,transparent)] [-webkit-mask-image:linear-gradient(to_bottom,black_45%,transparent)] bg-[#121212]/45 md:bg-transparent md:bg-[linear-gradient(90deg,rgba(18,18,18,0.85)_0%,rgba(18,18,18,0.55)_38%,rgba(18,18,18,0)_62%)]"
       />
       <div className="relative mx-auto flex min-h-[100svh] w-full max-w-6xl flex-col justify-center px-6 md:px-12 text-left text-white">
         {/* eslint-disable-next-line @next/next/no-img-element */}
