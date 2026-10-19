@@ -55,15 +55,16 @@ export default function About() {
 
             <div className="mt-8 space-y-5 text-sm md:text-base font-light leading-relaxed text-white/65 max-w-xl">
               <p>
-                Born and raised on Oʻahu, where I built a robotic teleop stack
-                and presented it at ISEF.
+                I&apos;m a robotics engineer at Northstar Robotics, working on
+                teleoperation, data pipelines, and policy fine-tuning. I also
+                study CS + Math at WashU.
               </p>
               <p>
-                Now I study CS + Math at Washington University in St. Louis
-                and work as a robotics engineer at Northstar Robotics, on
-                teleoperation, data pipelines, and policy fine-tuning. Before
-                that: Tesla, Capital One, and Spectrum.
+                I grew up on Oʻahu, where I led robotics teams and went to
+                ISEF. I&apos;ve also worked at Tesla, Capital One, and
+                Spectrum.
               </p>
+              <p>This site holds my work and writing.</p>
             </div>
 
             <dl className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6 border-t border-white/10 pt-8 max-w-xl">
