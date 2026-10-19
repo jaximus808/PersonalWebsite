@@ -203,7 +203,7 @@ export default function MyPath() {
 
   return (
     <div className="pt-4 mt-32 relative w-full">
-      <SectionHead n={2} label="Path" title="My Path" />
+      <SectionHead n={2} label="Path" />
 
       <div className={HOME_COLUMN}>
         <PopInBlock variant="materialize">
