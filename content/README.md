@@ -14,6 +14,9 @@ public/projects/<slug>/        images and videos for that project
 The slug is the filename: lowercase, words joined with `-`. Lists are sorted by
 `date`, newest first.
 
+Retired posts live in `content/archive/` (not built or served). See its README
+to restore one.
+
 ## Blog post
 
 ```mdx
