@@ -60,7 +60,7 @@ export default function About() {
                 study CS + Math at WashU.
               </p>
               <p>
-                I grew up on Oʻahu, where I led robotics teams and went to
+                I grew up on Oʻahu, where I led robotics teams and presented at
                 ISEF. I&apos;ve also worked at Tesla, Capital One, and
                 Spectrum.
               </p>
