@@ -31,10 +31,7 @@ export default function ProjectsPage({ projects }: Props) {
         <QuietBackground />
 
         <div className="pt-24 md:pt-28 text-center">
-          <p className="text-xs uppercase tracking-[0.18em] text-white/50 font-montserrat">
-            Things I&apos;ve designed, built &amp; shipped
-          </p>
-          <h1 className="mt-3 font-cormorant font-light text-5xl md:text-6xl text-white">
+          <h1 className="font-cormorant font-light text-5xl md:text-6xl text-white">
             My Projects
           </h1>
           <div className="mt-5 mx-auto h-px w-16 bg-white/25" />

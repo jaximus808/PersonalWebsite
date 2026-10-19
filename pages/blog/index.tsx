@@ -42,10 +42,7 @@ export default function BlogPage({ posts }: Props) {
         <QuietBackground />
 
         <div className="text-center pt-24 md:pt-28">
-          <p className="text-xs uppercase tracking-[0.18em] text-white/50 font-montserrat">
-            Thoughts, notes & what I&apos;m building
-          </p>
-          <h1 className="mt-3 font-cormorant font-light text-5xl md:text-6xl text-white">
+          <h1 className="font-cormorant font-light text-5xl md:text-6xl text-white">
             The Blog
           </h1>
           <div className="mt-5 mx-auto h-px w-16 bg-white/25" />
