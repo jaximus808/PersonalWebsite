@@ -39,13 +39,7 @@ function monthYear(ymd: string): string {
 function HeroMedia({ meta }: { meta: ProjectMeta }) {
   if (meta.hideCover || (!meta.youtube && !meta.cover)) return null;
   return (
-    <div className="relative isolate mt-14">
-      {/* A faint pool of light under the media, so it sits on the stage
-          rather than on the page. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -inset-x-16 -inset-y-12 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(163,203,255,0.09),transparent_68%)]"
-      />
+    <div className="mt-14">
       {meta.youtube ? (
         <Video youtube={meta.youtube} poster={meta.cover ?? undefined} title={meta.title} priority />
       ) : (
