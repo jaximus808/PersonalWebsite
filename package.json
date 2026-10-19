@@ -27,7 +27,7 @@
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.263.1",
     "n": "^9.1.0",
-    "next": "^16.1.6",
+    "next": "^16.4.2",
     "next-mdx-remote": "^6.0.0",
     "pdfjs-dist": "^4.9.124",
     "react": "^18.3.1",
