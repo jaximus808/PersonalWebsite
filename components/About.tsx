@@ -55,8 +55,8 @@ export default function About() {
 
             <div className="mt-8 space-y-5 text-sm md:text-base font-light leading-relaxed text-white/65 max-w-xl">
               <p>
-                Born and raised on Oʻahu. Built a teleop stack and robotic
-                hand. ISEF finalist.
+                Born and raised on Oʻahu, where I built a robotic teleop stack
+                and presented it at ISEF.
               </p>
               <p>
                 Now I study CS + Math at Washington University in St. Louis
