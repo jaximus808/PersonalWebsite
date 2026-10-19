@@ -50,8 +50,8 @@ export default function About() {
         <PopInBlock variant="materialize" delay={100}>
           <div className="font-montserrat max-w-3xl">
             <p className="font-cormorant font-light text-3xl md:text-4xl xl:text-[2.6rem] leading-[1.2] [text-wrap:balance]">
-              Hey, I&apos;m Jaxon. I build robots, and the infrastructure
-              underneath them.
+              Getting robots out of the lab is an infrastructure problem,
+              and it isn&apos;t solved yet.
             </p>
 
             <div className="mt-8 space-y-5 text-sm md:text-base font-light leading-relaxed text-white/65 max-w-xl">
