@@ -14,7 +14,7 @@ import SectionHead, { HOME_COLUMN } from "./SectionHead";
 const FACTS = [
   { label: "Right now", value: "Robotics Engineer · Northstar Robotics" },
   { label: "Studying", value: "CS + Math · WashU, class of '27" },
-  { label: "Languages", value: "Go · C++ · Python" },
+  { label: "Skills", value: "Distributed systems · Robotics" },
   { label: "Off the clock", value: "Hiking · Fishing · Gaming" },
 ];
 
