@@ -38,3 +38,7 @@ next-env.d.ts
 
 .env
 .gstack/
+
+# the writer (tools/writer): local tool, never committed beyond its source
+/tools/writer/node_modules/
+/tools/writer/drafts/

@@ -28,9 +28,10 @@ Personal website + portfolio. **Next.js 16 (Pages Router)** · TypeScript · Tai
 
 - `pages/` — routes: `index.tsx`, `blog/` (`index.tsx`, `[slug].tsx`), `projects/` (`index.tsx`, `[slug].tsx`), `chess.tsx`, `resume.tsx`, `contact.tsx`; `pages/api/`, `pages/admin/`.
 - `content/` — **every blog post and project is an MDX file here** (`content/blog/<slug>.mdx`, `content/projects/<slug>.mdx`), images in `public/blog/<slug>/` and `public/projects/<slug>/`. Read `content/README.md` before adding or editing one. Loaded by `lib/content.ts` at build time; no database.
-- `components/content/` — the shared MDX components (`Figure`, `Gallery`, `Video`, `Divider`, `PullQuote`, `Callout`) and one-off embeds in `embeds/`. Every image goes through the same `Frame` so pages stay consistent.
+- `components/content/` — the shared MDX components (`Figure`, `Gallery`, `Video`, `Divider`, `PullQuote`, `Callout`, `Diagram`) and one-off embeds in `embeds/`. Every image goes through the same `Frame` so pages stay consistent.
 - `components/` — `header.tsx`, `footer.tsx`, `backgroundThree.tsx`, `gradientbg.tsx`, `HeroIntro.tsx`, `About.tsx`, `SectionHead.tsx`, `chess/`, `finance/`.
 - `lib/`, `prisma/`, `supabase/`, `styles/`, `public/`.
+- `tools/writer/` — **the writer**, a local-only rich editor for posts and projects (Vite + TipTap, its own `package.json`, never deployed, excluded from the root `tsconfig.json`). Drafts live in `tools/writer/drafts/` (gitignored); `npm --prefix tools/writer run build-draft -- <kind>/<slug>` turns one into `content/` + `public/` files. The `write` skill (`.claude/skills/write/`) starts it on http://localhost:4310, builds a draft's Anatomy figures (embedded with `<Diagram>`), and publishes the draft. Spec: `tools/writer/SPEC.md`.
 
 **Commands:** `npm run dev` · `npm run build` (`prisma generate && next build`) · `npm run lint`
 

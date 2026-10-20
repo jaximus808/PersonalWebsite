@@ -20,15 +20,19 @@ export function Divider({ label }: { label?: string }) {
 }
 
 /**
- * A line worth lifting out of the text.
+ * A line worth lifting out of the text. Put the line on its own between the
+ * tags (the writer does): MDX then treats it as a paragraph, which keeps the
+ * <figure> out of a <p>. The paragraph's article margin is dropped here.
  *
- *   <PullQuote>The artifact is the shared memory.</PullQuote>
+ *   <PullQuote cite="Optional">
+ *   The artifact is the shared memory.
+ *   </PullQuote>
  */
 export function PullQuote({ children, cite }: { children: React.ReactNode; cite?: string }) {
   return (
     <figure className="my-14 text-center">
       {/* A div, not <blockquote>: the article's blockquote styling is for quoted passages. */}
-      <div className="font-cormorant text-[1.9em] font-light leading-[1.25] text-white text-balance">
+      <div className="font-cormorant text-[1.9em] font-light leading-[1.25] text-white text-balance [&>p:last-child]:mb-0">
         {children}
       </div>
       {cite ? (

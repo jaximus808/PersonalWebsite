@@ -3,7 +3,7 @@
 A local-only writing tool for jaxonp.com blog posts and projects. Jaxon writes
 in a rich editor that looks like the site (no markdown typing), drops in images,
 galleries, video, code, callouts and Anatomy figure requests; it autosaves to
-disk. When he says "build it", Claude reads the draft and publishes it as
+disk. When they say "build it", Claude reads the draft and publishes it as
 `content/<kind>/<slug>.mdx` plus files under `public/<kind>/<slug>/`.
 
 Never deployed, never imported by the Next.js app. Runs with
@@ -59,7 +59,7 @@ under drafts/ or the repo's content/ and public/).
 | PUT | `/api/drafts/:kind/:slug` | `SaveDraftBody` → `SaveDraftResult`. Writes meta.json, doc.json, draft.mdx, anatomy.json atomically (write temp + rename). Bumps updatedAt. If draftToMdx throws, still save doc/meta and return 200 with `mdx: ""` plus `error`. |
 | DELETE | `/api/drafts/:kind/:slug` | moves the folder to drafts/.trash/<kind>-<slug>-<timestamp> |
 | POST | `/api/drafts/:kind/:slug/assets?name=<filename>` | raw bytes (any image/video type) → `UploadResult`. Max 200 MB. Sanitize name, keep extension, dedupe with -2, -3. |
-| GET | `/api/drafts/:kind/:slug/figures` | `{ figures: FigureRequest[] }` (anatomy.json with `built` recomputed from disk) |
+| GET | `/api/drafts/:kind/:slug/figures` | `FiguresResult`: `{ figures: FigureRequest[], builtIds: string[] }` (anatomy.json with `built` recomputed from disk, plus every figures/<id>.html id so new requests never reuse a deleted request's page) |
 | GET | `/api/site` | `{ entries: SiteEntry[] }` from content/blog and content/projects frontmatter (gray-matter not installed here: parse with the `yaml` package) |
 | POST | `/api/import` | `{ kind, slug }` → `DraftFile`: mdxToDraft on content/<kind>/<slug>.mdx, copy the referenced public/<kind>/<slug>/ files into assets/. 409 if a draft exists. |
 | GET | `/drafts/<kind>/<slug>/<path>` | static file from the draft folder (assets, figures), correct content-type, Range support for video |
@@ -103,7 +103,7 @@ Body (blank line between blocks, no trailing spaces, ends with one newline):
 | table | GFM table; first row is the header (tableHeader cells); escape `|` |
 | figure | `<Figure src="…" caption="…" alt="…" ratio="wide" fit="cover" />`, omitting defaults (ratio standard, fit contain) and empty strings |
 | gallery | `<Gallery images={["…","…"]} caption="…" columns={3} />` |
-| video | `<Video youtube="id" />` or `<Video src="…" poster="…" loop />` |
+| video | `<Video youtube="id" />` or `<Video src="…" poster="…" loop />`, plus `title` and `caption` when set |
 | callout | `<Callout title="…">` blank line, children as MDX, blank line `</Callout>` |
 | pullQuote | `<PullQuote cite="…">inline MDX</PullQuote>` |
 | divider | `<Divider />` or `<Divider label="…" />` |
@@ -116,7 +116,10 @@ Import (`mdxToDraft`): parse with unified + remark-parse + remark-mdx +
 remark-gfm + remark-frontmatter, map everything above back (markdown images
 alone on a line become figure; `<Diagram>` becomes anatomy with id from the
 filename; unknown JSX (e.g. `<TandemBoardDemo />`) becomes a paragraph-level
-codeBlock with language "mdx" holding the raw source so nothing is lost).
+codeBlock with language "raw-mdx" (`RAW_MDX_LANGUAGE`) holding the raw source
+so nothing is lost). The value can't be typed as a ``` fence (TipTap's input
+rule takes letters only), so ```mdx in the editor or in a site file is always
+an ordinary "mdx" code sample.
 Round-trip test: every file in the repo's content/blog and content/projects
 must survive mdx → draft → mdx with the same compiled output (or a
 documented, harmless normalization).
@@ -124,6 +127,13 @@ documented, harmless normalization).
 `lint`: errors for missing title/date (and summary for projects), duplicate
 anatomy ids, figures with no src, galleries with < 2 images; warnings for
 remote (http) images, images without alt or caption, empty headings, no cover.
+Dates must be real days (2026-02-30 is refused; YAML would roll it to March 2).
+Raw MDX blocks are checked as the site would build them: the body must parse,
+every capitalised JSX name must be in `SITE_COMPONENTS` (src/mdx/siteComponents.ts,
+kept equal to MdxContent.tsx's map by a test), and expressions may only read
+`props` and JS globals. build-draft also reads the live map from the repo and
+runs the real `@mdx-js/mdx` compile (function-body, remark-gfm, ESM stripped
+like next-mdx-remote) before its first write.
 
 ## Editor (src/editor)
 
@@ -177,6 +187,6 @@ Tests (vitest) cover all of this against a temp repo root (make the repo root in
 ## Site side (SITE agent)
 
 - `components/content/Diagram.tsx`: renders an Anatomy figure page (same-origin static HTML under public/) in an `<iframe>` the width of the text, lazy-loaded, no border, transparent background, titled for a11y, auto-height from the iframe document (ResizeObserver on its documentElement, fallback 16:10 ratio), optional `caption` (same caption style as Figure), `size="hero"` lets it go a bit wider than the text like the site's wide media if the article layout allows (check `prose.module.css`; if not, same width). Register in `components/content/MdxContent.tsx` and document in `content/README.md`.
-- `.claude/skills/write/SKILL.md`: the skill Jaxon will invoke ("start my blog writing", "open the writer", "new project write-up", "build the figures for X", "build my draft", "publish the draft"). Steps: install deps if `tools/writer/node_modules` is missing; start the dev server in the background (reuse it if port 4310 answers); create the draft through the API when he names one; open the browser at `http://localhost:4310/?draft=<kind>/<slug>`. Figures: read anatomy.json, build each unbuilt request with the anatomy skill as a standalone dark-theme HTML page into the draft's figures/ folder, check it in a browser, and tell him to look in the writer. Build: run build-draft, then do an editorial pass that fixes formatting not voice (alt text, captions, heading levels, link text) directly in the written mdx, `npm run build` must pass, open `/blog/<slug>` or `/projects/<slug>` on `npm run dev` and look at it, then follow the publish skill's rules (branch, show him, ask before pushing). Never invent facts.
+- `.claude/skills/write/SKILL.md`: the skill Jaxon will invoke ("start my blog writing", "open the writer", "new project write-up", "build the figures for X", "build my draft", "publish the draft"). Steps: install deps if `tools/writer/node_modules` is missing; start the dev server in the background (reuse it if port 4310 answers); create the draft through the API when they name one; open the browser at `http://localhost:4310/?draft=<kind>/<slug>`. Figures: read anatomy.json, build each unbuilt request with the anatomy skill as a standalone dark-theme HTML page into the draft's figures/ folder, check it in a browser, and tell them to look in the writer. Build: run build-draft, then do an editorial pass that fixes formatting not voice (alt text, captions, heading levels, link text) directly in the written mdx, `npm run build` must pass, open `/blog/<slug>` or `/projects/<slug>` on `npm run dev` and look at it, then follow the publish skill's rules (branch, show them, ask before pushing). Never invent facts.
 - Root `tsconfig.json`: exclude `tools/writer` (it has its own). Root `.gitignore`: nothing needed beyond tools/writer/.gitignore, but make sure `tools/writer/node_modules` and drafts never get committed. `CLAUDE.md`: one short paragraph under the quick reference about the writer and the skill.
 - Confirm `npm run build` / `npx tsc --noEmit` at the repo root ignore tools/writer.

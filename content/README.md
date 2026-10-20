@@ -103,9 +103,32 @@ is needed.
 
 **`<Divider />`** / **`<Divider label="Part two" />`**: a section break.
 
-**`<PullQuote cite="optional">`**: lifts one line out of the text.
+**`<PullQuote cite="optional">`**: lifts one line out of the text. Put the
+line on its own between the tags; written on one line, MDX nests the quote's
+`<figure>` inside a `<p>`, which is invalid HTML.
+
+```mdx
+<PullQuote cite="optional">
+The artifact is the shared memory.
+</PullQuote>
+```
 
 **`<Callout title="Update">`**: an aside or note.
+
+**`<Diagram>`**: an interactive Anatomy figure (an isometric drawing built with
+the anatomy skill) as wide as the text, with the same caption as a Figure.
+
+```mdx
+<Diagram src="/blog/x/figures/fig-1.html" title="The teleop loop" caption="One frame, end to end" />
+<Diagram src="/projects/x/figures/rig.html" title="Test rig" size="hero" />
+```
+
+- `src`: a standalone figure page under `public/<kind>/<slug>/figures/`. It
+  loads lazily in a frame that sizes itself to the page.
+- `title`: what it shows, for screen readers (falls back to the caption).
+- `size="hero"` gives a centrepiece more room above and below; it stays the
+  width of the text like all media.
+- The figure page handles its own motion, including `prefers-reduced-motion`.
 
 ### Project-specific embeds
 
@@ -113,6 +136,21 @@ Interactive pieces made for one page live in `components/content/embeds/` and
 get added to the map in `MdxContent.tsx`. Example: `<TandemBoardDemo />`, a live
 recreation of Tandem's claim race, used on `projects/tandem.mdx`. Honor
 `prefers-reduced-motion` (see `lib/usePrefersReducedMotion.ts`).
+
+## Writing with the writer
+
+For anything longer than a quick fix, write in the writer: a local editor that
+looks like the site, so posts and projects are formatted without typing
+markdown (images, galleries, video, code, tables, callouts, and requests for
+Anatomy figures). It lives in `tools/writer/` and is never deployed. Ask
+Claude to "open the writer" (the `write` skill), or run
+`npm --prefix tools/writer run dev` and open http://localhost:4310.
+
+Drafts autosave to `tools/writer/drafts/<kind>/<slug>/` (not committed). When
+one is ready, `npm --prefix tools/writer run build-draft -- <kind>/<slug>`
+writes `content/<kind>/<slug>.mdx` and copies its images and figures into
+`public/<kind>/<slug>/`; the skill does that, checks the page, and follows
+the publishing rules.
 
 ## Checking your work
 

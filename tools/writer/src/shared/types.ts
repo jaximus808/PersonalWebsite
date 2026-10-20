@@ -33,6 +33,12 @@ export interface DraftMeta {
   /** ISO timestamps, writer bookkeeping only (never exported). */
   createdAt: string;
   updatedAt: string;
+  /**
+   * Frontmatter keys the writer has no field for (e.g. `legacyName` on an
+   * imported page). Kept untouched and written back after the known keys;
+   * anything that edits meta must spread the existing object to keep it.
+   */
+  extra?: Record<string, unknown>;
 }
 
 export type DraftDoc = JSONContent;
@@ -124,6 +130,10 @@ export interface VideoAttrs {
   src: string | null;
   poster: string | null;
   loop: boolean;
+  /** Shown under the frame, like a figure's caption. */
+  caption: string;
+  /** What the video is, for screen readers ("Play <title>"); the site says "Video" without it. */
+  title: string;
 }
 /** Not an atom: content "block+". */
 export interface CalloutAttrs {
@@ -168,6 +178,17 @@ export interface SaveDraftResult {
   savedAt: string;
   /** The exported MDX, as written to draft.mdx. */
   mdx: string;
+}
+
+/** GET /api/drafts/:kind/:slug/figures */
+export interface FiguresResult {
+  figures: FigureRequest[];
+  /**
+   * Every figures/<id>.html on disk, requested or not. A request deleted in
+   * an earlier session leaves its page behind; new requests must not take
+   * that id, or they would show the old figure as built.
+   */
+  builtIds: string[];
 }
 
 export interface UploadResult {
