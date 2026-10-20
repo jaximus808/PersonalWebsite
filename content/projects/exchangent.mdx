@@ -1,0 +1,80 @@
+---
+title: "Exchangent"
+date: 2026-10-20
+summary: "Let buyers and sellers have agents handle both buying, selling, and negotiating with the Negotiating Agent Protocol (NAP) (built with Surya Pugazhenthi)"
+cover: "/projects/exchangent/icon.svg"
+youtube: "TeSanVY8MK8"
+links:
+  - label: "webpage"
+    href: "https://web-five-jet-34.vercel.app/"
+  - label: "github"
+    href: "https://github.com/jaximus808/Exchangent"
+---
+Built for the YC Make something agents want hackathon with [Surya Pugazhenthi](https://www.linkedin.com/in/surya-pugazhenthi/).
+
+We built Exchangent to allow agents to do the entire lifecycle of bartering and negotiating a deal. Most tools are for GTM like Clay, which handles active outreach, and Shopify have their own agents that can let people ask questions about a shop.
+
+However from here nothing truly exists to have an agent actually handle a sale end to end without a human in the loop. So we built the infrastructure and system to do it.
+
+## Architecture
+
+<Diagram src="/projects/exchangent/figures/fig-1.html" title="Our System" />
+
+### Beginning a Sale
+
+The entry point is our public facing MCP or Connector. These integrate directly in Claude Code, Codex, or any harness that supports MCP/Connectors.
+
+A user starts by just prompting their agent through any interface that's setup, even through just [claude.ai](https://claude.ai) or [openai.com](https://openai.com). Prompts ideally include the budget and maximum loss that's acceptable.
+
+> Find me a desk no wider than 48 inches and an ergonomic chair delivered in San Francisco in 5 days. Budget $400 all-in, I'd love $300.
+
+Then the user's agent will use our MCP/Connector to place the buy order. These are hosted on [manufact](https://manufact.com/), and act as the gateway to begin an order process. This MCP then hits our backend to create a buy order transaction and kick off the buyer agent. We also do a match based on details of your order and available buyers. For each match we begin an A2A session using Inkbox.
+
+[Inkbox](https://inkbox.ai/) assigns an identity that a separate long running claude session uses to negotiate with a connected party, using its respective identity for its role.
+
+### Negotiating Agent Protocol
+
+Then the haggling begins, we have one buyer agent haggle with n matches of agents.
+
+Each buyer and seller agent also has a set limit of how much each party will "lose" in a deal, and this is governed by our system not agents. Of course all of this is set through our agent connector.
+
+Each send over offers, which are saved as transactions in our database to ensure no offer is lost, along with reasoning about the price.
+
+This is important for two reasons.
+
+1. The great cure for hallucinations is determinism, and a database row is the absolute source of truth.
+2. Yet sometimes there are reasons for prices, such as high quality, speed, timing. These are all factors needed for determining the value of an item and is "service".
+
+The buyer agent can then agree to any price.
+
+We call this NAP, Negotiating Agent Protocol, which is the infrastructure our long running agents use to barter.
+
+### Completing the sale
+
+Agents will negotiate until either the buyer's lowest price is met, or a standstill occurs. The user is also able to ask the agent to accept an offer early.
+
+Once done, the agent makes an offer transaction to the buyer, and once the buyer accepts the offer gets made into a Stripe checkout.
+
+From here, just open the link, pay, and the sale is completed just through your agent.
+
+## Testing + Success
+
+From our runs, sale periods often lasted at most 2 minutes before agents came to an agreement. As most people know, this is significantly faster than any human sale.
+
+The experiment worked best with multiple sellers, and we had really cool UI (that my partner built) that showcased the process.
+
+<Gallery images={["/projects/exchangent/screenshot-2026-10-20-at-12-51-38-am.png", "/projects/exchangent/screenshot-2026-10-20-at-12-51-31-am.png", "/projects/exchangent/screenshot-2026-10-20-at-12-51-25-am.png"]} />
+
+We were able to consistently do an entire flow from buy to end with a Stripe link sent and a purchase made.
+
+## Hurdles
+
+By far the biggest issue was the vertical. We aimed to be a marketplace, which everyone knows is almost impossible to pitch as actually useful. Buyers and Sellers need to exist, imbalance creates major problems.
+
+What was a better approach would be to instead be an integration layer. Where agents shopping the web can find your site, see a buyer agent ready for them, tell it what the user wants, then the buyer agent begins the bartering with all buyers integrated in.
+
+Another issue was making the buyer/seller agent, as we needed tokens and we had none.
+
+Luckily YC Startup School gave me a Claude Max plan, but without api tokens it would be against the TOS to have a VM run my Claude plan. And I didn't feel I should spend money on a hackathon. But low key I definitely should have.
+
+But also it may have not mattered, as the main issue is just the marketplace itself.
