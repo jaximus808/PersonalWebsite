@@ -1,0 +1,4 @@
+node_modules/
+# Drafts are local work in progress; build-draft copies the finished piece
+# into content/ and public/.
+drafts/

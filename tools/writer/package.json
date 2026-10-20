@@ -1,0 +1,49 @@
+{
+  "name": "writer",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Local-only writing tool for jaxonp.com posts and projects. Never deployed.",
+  "scripts": {
+    "dev": "vite --port 4310 --strictPort",
+    "typecheck": "tsc --noEmit -p .",
+    "test": "vitest run",
+    "build-draft": "tsx scripts/build-draft.ts"
+  },
+  "dependencies": {
+    "@floating-ui/dom": "^1.8.0",
+    "@mdx-js/mdx": "^3.1.1",
+    "@tiptap/extension-bubble-menu": "^3.32.0",
+    "@tiptap/extension-code-block-lowlight": "^3.32.0",
+    "@tiptap/extension-drag-handle": "^3.32.0",
+    "@tiptap/extension-drag-handle-react": "^3.32.0",
+    "@tiptap/extension-list": "^3.32.0",
+    "@tiptap/extension-table": "^3.32.0",
+    "@tiptap/extension-typography": "^3.32.0",
+    "@tiptap/extensions": "^3.32.0",
+    "@tiptap/pm": "^3.32.0",
+    "@tiptap/react": "^3.32.0",
+    "@tiptap/starter-kit": "^3.32.0",
+    "@tiptap/suggestion": "^3.32.0",
+    "lowlight": "^3.3.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "remark-frontmatter": "^5.0.0",
+    "remark-gfm": "^4.0.1",
+    "remark-mdx": "^3.1.1",
+    "remark-parse": "^11.0.0",
+    "unified": "^11.0.5",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@types/mdast": "^4.0.4",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.5"
+  }
+}
