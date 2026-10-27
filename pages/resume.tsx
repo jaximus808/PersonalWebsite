@@ -49,10 +49,10 @@ const resume = {
       location: "Fremont, CA",
       date: "Jan. 2026 – May 2026",
       bullets: [
-        "Led development of an AI agent platform for internal data retrieval and workflows using Python, FastAPI, LangGraph, and 12+ tools; adopted by billing, support, and application teams.",
-        "Automated energy lease transfers and account updates for Tesla's entire U.S. energy customer base through asynchronous, event-driven workflows across 10+ .NET microservices.",
-        "Led a cross-team authentication rollout to scope AI tool access to user accounts using Cerberus.",
-        "Tuned latency against SLA targets with tracing, APM, and load tests; deployed to Kubernetes via Jenkins.",
+        "Led development and deployment of a distributed AI agent platform (Python, FastAPI, LangGraph, MongoDB, WebSockets) connecting 12+ tool interfaces for data retrieval and workflow execution across internal microservices; adopted by billing, support, and application teams.",
+        "Engineered asynchronous, event-driven workflows across 10+ .NET microservices to orchestrate energy lease transfers and propagate account data in production, serving Tesla's entire U.S. energy customer base.",
+        "Led a cross-team rollout of account-based authentication across the microservice fleet, integrating Cerberus with on-behalf-of identity propagation and account passthrough for secure, scoped agent tool execution.",
+        "Profiled and tuned service latency with distributed tracing, APM, and load tests against production SLAs; deployed and managed 10+ services on Kubernetes through Jenkins CI/CD pipelines.",
       ],
     },
     {
@@ -67,13 +67,19 @@ const resume = {
   ],
   projects: [
     {
+      org: "GeonosisAI – Robot Deployment Factory",
+      role: "Python, TypeScript, SpacetimeDB, Modal, MuJoCo",
+      date: "Oct. 2026",
+      bullets: [
+        "Honorable Mention, SpacetimeDB track, Cal Hacks 13.0. Built an agent pipeline on SpacetimeDB that evaluates a robot policy, clusters failures with Claude, buys recovery data from contributors' phones, fine-tunes π0.5 on Modal, and re-evaluates before shipping.",
+      ],
+    },
+    {
       org: "Tandem – AI Agent Orchestration",
       role: "Go, TypeScript, MCP, SQLite",
       date: "May 2026 – Present",
       bullets: [
-        "Built an agent-orchestration platform with MCP integration, a durable task queue, and a live web interface where users review plans, approve work, and track execution across parallel agent sessions.",
-        "Implemented atomic task claims to prevent duplicate assignments, heartbeat-based claim expiry to recover stalled work, and WebSocket updates that expose agent progress and results to users.",
-        "Packaged the platform as a single binary with an embedded UI and SQLite; automated installation, MCP registration, and startup so new projects can reuse the same orchestration infrastructure.",
+        "Built an agent-orchestration platform with MCP integration, a durable task queue with atomic claims and heartbeat expiry, and a live web UI where users review plans, approve work, and track parallel agent sessions.",
       ],
     },
     {
@@ -88,7 +94,7 @@ const resume = {
   skills: [
     { label: "Languages", items: "Python, TypeScript, Go, SQL, C#, C++, Java, JavaScript" },
     { label: "AI & Applications", items: "LangGraph, MCP, FastAPI, React, Next.js, Node.js, PyTorch" },
-    { label: "Data & Integrations", items: "PostgreSQL, MongoDB, SQLite, WebSockets, Kafka, gRPC, .NET" },
+    { label: "Data & Integrations", items: "PostgreSQL, SpacetimeDB, MongoDB, SQLite, WebSockets, Kafka, gRPC, .NET" },
     { label: "Deployment", items: "Linux, Docker, Kubernetes, Azure, GCP, Modal, Jenkins, GitHub Actions" },
   ],
 }
