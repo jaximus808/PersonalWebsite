@@ -23,7 +23,7 @@ const resume = {
   experience: [
     {
       org: "Northstar Robotics",
-      role: "Robotics Software Engineer",
+      role: "Founding Engineer",
       location: "Remote, SF",
       date: "Sept. 2026 – Present",
       bullets: [
@@ -134,7 +134,7 @@ export default function ResumePage() {
     <div className="bg-[#121212] text-white">
       <Seo
         title="Resume — Jaxon Poentis · Software Engineer"
-        description="Resume of Jaxon Poentis: Robotics Software Engineer at Northstar Robotics, previously Software Engineer Intern at Capital One, Tesla, and Spectrum. CS + Math at Washington University in St. Louis, expected 2027."
+        description="Resume of Jaxon Poentis: Founding Engineer at Northstar Robotics, previously Software Engineer Intern at Capital One, Tesla, and Spectrum. CS + Math at Washington University in St. Louis, expected 2027."
         path="/resume"
       />
       {/* Full-viewport PDF first */}

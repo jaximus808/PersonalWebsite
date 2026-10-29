@@ -46,7 +46,7 @@ export default function HeroIntro() {
         </p>
 
         <p className="mt-6 max-w-md text-[0.7rem] uppercase tracking-[0.18em] leading-loose text-white/45 font-montserrat">
-          Robotics @ Northstar
+          Founding Engineer @ Northstar
           <br />
           CS + Math @ WashU
           <br />

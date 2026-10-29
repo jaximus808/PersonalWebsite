@@ -12,7 +12,7 @@ import { PopInBlock } from "./popinBlockContext";
 import SectionHead, { HOME_COLUMN } from "./SectionHead";
 
 const FACTS = [
-  { label: "Right now", value: "Robotics Engineer · Northstar Robotics" },
+  { label: "Right now", value: "Founding Engineer · Northstar Robotics" },
   { label: "Studying", value: "CS + Math · WashU, class of '27" },
   { label: "Areas", value: "Distributed systems · Robotics" },
   { label: "Off the clock", value: "Hiking · Fishing · Gaming" },
@@ -96,7 +96,7 @@ export default function About() {
 
             <div className="mt-8 space-y-5 text-sm md:text-base font-light leading-relaxed text-white/65 max-w-xl">
               <p>
-                I&apos;m a robotics engineer at Northstar Robotics, working on
+                I&apos;m a founding engineer at Northstar Robotics, working on
                 teleoperation, data pipelines, and policy fine-tuning. I also
                 study CS + Math at WashU.
               </p>
