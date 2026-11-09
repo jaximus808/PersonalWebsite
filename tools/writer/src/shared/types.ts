@@ -58,18 +58,28 @@ export interface DraftSummary {
   published: boolean;
 }
 
-/** One anatomy figure request found in a draft (anatomy.json). */
+/** One figure request found in a draft (anatomy.json): an Anatomy figure or a plain graphic. */
 export interface FigureRequest {
   id: string;
   title: string;
   prompt: string;
   caption: string;
   size: FigureSize;
+  /** How Claude builds it: "anatomy" (isometric, the anatomy skill) or "graphic" (flat steps, the write skill's graphic kit). */
+  style: FigureStyle;
   /** drafts/<kind>/<slug>/figures/<id>.html exists. */
   built: boolean;
 }
 
 export type FigureSize = "figure" | "hero";
+
+/**
+ * "anatomy": an interactive isometric drawing built with the anatomy skill.
+ * "graphic": a flat, numbered step-by-step graphic for when Anatomy is
+ * overkill. Both are standalone pages embedded with <Diagram>; only the way
+ * Claude builds them differs, so the MDX doesn't record it.
+ */
+export type FigureStyle = "anatomy" | "graphic";
 
 // ---------------------------------------------------------------------------
 // Editor document schema (TipTap JSON). Node and mark names are fixed; the
@@ -154,6 +164,7 @@ export interface AnatomyAttrs {
   prompt: string;
   caption: string;
   size: FigureSize;
+  style: FigureStyle;
 }
 
 // ---------------------------------------------------------------------------

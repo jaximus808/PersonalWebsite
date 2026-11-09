@@ -1,17 +1,19 @@
-// anatomy: a request for an Anatomy figure (an interactive isometric
-// drawing Claude builds with the anatomy skill). Until it is built the card
-// holds the brief; once figures/<id>.html exists it shows the figure live.
-// Becomes <Diagram src="/<kind>/<slug>/figures/<id>.html" title caption size />.
+// anatomy: a request for a figure Claude builds. Its `style` says how:
+// "anatomy" is an interactive isometric drawing (the anatomy skill),
+// "graphic" a flat, numbered step-by-step graphic for when Anatomy is
+// overkill (the write skill's graphic kit). Until it is built the card holds
+// the brief; once figures/<id>.html exists it shows the figure live. Either
+// style becomes <Diagram src="/<kind>/<slug>/figures/<id>.html" title caption size />.
 
 import { useEffect, useRef, useState } from "react";
 import { mergeAttributes, Node as TiptapNode } from "@tiptap/core";
 import { NodeViewWrapper, ReactNodeViewRenderer, type ReactNodeViewProps } from "@tiptap/react";
 
-import { NODE, type AnatomyAttrs, type FigureSize } from "../../shared/types";
+import { NODE, type AnatomyAttrs, type FigureSize, type FigureStyle } from "../../shared/types";
 import { useFigureFrame } from "../../shared/useFigureFrame";
 import { insertBlockNode } from "../blocks";
 import { buildFiguresPhrase, figureUrl, useEditorEnv } from "../env";
-import { IconAnatomy, IconCheck, IconChevronDown, IconCopy, IconReload, IconTrash } from "../icons";
+import { IconAnatomy, IconCheck, IconGraphic, IconChevronDown, IconCopy, IconReload, IconTrash } from "../icons";
 import { nextFigureId } from "../plugins/anatomyIds";
 import { dataAttr, oneOf, text } from "./attrs";
 import {
@@ -48,6 +50,21 @@ export interface AnatomyStorage {
 }
 
 const SIZES: FigureSize[] = ["figure", "hero"];
+const STYLES: FigureStyle[] = ["anatomy", "graphic"];
+
+/** What each style calls itself in the card, and how its brief is prompted. */
+const STYLE_COPY: Record<FigureStyle, { name: string; placeholder: string }> = {
+  anatomy: {
+    name: "Anatomy figure",
+    placeholder:
+      "The object, its parts, what moves, what the reader should notice. Plain words are fine: Claude reads this when it builds the figure.",
+  },
+  graphic: {
+    name: "Graphic",
+    placeholder:
+      "The steps, in order: 1. … 2. … 3. … What appears or moves at each step, and what the reader should take away. Plain words are fine.",
+  },
+};
 
 export const Anatomy = TiptapNode.create<Record<string, never>, AnatomyStorage>({
   name: NODE.anatomy,
@@ -67,6 +84,7 @@ export const Anatomy = TiptapNode.create<Record<string, never>, AnatomyStorage>(
       prompt: dataAttr("prompt", "", text),
       caption: dataAttr("caption", "", text),
       size: dataAttr<FigureSize>("size", "figure", oneOf(SIZES, "figure")),
+      style: dataAttr<FigureStyle>("style", "anatomy", oneOf(STYLES, "anatomy")),
     };
   },
 
@@ -75,11 +93,11 @@ export const Anatomy = TiptapNode.create<Record<string, never>, AnatomyStorage>(
   },
 
   renderHTML({ node, HTMLAttributes }) {
-    const { title, prompt } = node.attrs as AnatomyAttrs;
+    const { title, prompt, style } = node.attrs as AnatomyAttrs;
     return [
       "div",
       mergeAttributes({ "data-type": "anatomy" }, HTMLAttributes),
-      ["strong", {}, title || "Anatomy figure"],
+      ["strong", {}, title || STYLE_COPY[style === "graphic" ? "graphic" : "anatomy"].name],
       ["p", {}, prompt],
     ];
   },
@@ -113,6 +131,9 @@ function AnatomyView({ node, updateAttributes, deleteNode, selected, editor, get
   const prompt = useRef<FieldHandle>(null);
   const caption = useRef<FieldHandle>(null);
   const built = env.figures.some((figure) => figure.id === attrs.id && figure.built);
+  const style: FigureStyle = attrs.style === "graphic" ? "graphic" : "anatomy";
+  const copy = STYLE_COPY[style];
+  const StyleIcon = style === "graphic" ? IconGraphic : IconAnatomy;
   const [briefOpen, setBriefOpen] = useState(!built);
   const [reload, setReload] = useState(0);
   const [copied, setCopied] = useState(false);
@@ -152,6 +173,7 @@ function AnatomyView({ node, updateAttributes, deleteNode, selected, editor, get
         "wr-block wr-anatomy",
         built ? "is-built" : "is-requested",
         attrs.size === "hero" && "is-hero",
+        style === "graphic" && "is-graphic",
         active && "is-active",
         selected && "is-selected",
       )}
@@ -159,8 +181,8 @@ function AnatomyView({ node, updateAttributes, deleteNode, selected, editor, get
     >
       <div className="wr-anatomy__head" contentEditable={false}>
         <span className="wr-anatomy__eyebrow">
-          <IconAnatomy size={14} />
-          Anatomy figure
+          <StyleIcon size={14} />
+          {copy.name}
           <code className="wr-anatomy__id" title="Figure id: names figures/<id>.html">
             {attrs.id || "…"}
           </code>
@@ -169,6 +191,15 @@ function AnatomyView({ node, updateAttributes, deleteNode, selected, editor, get
           {built ? "Built" : "Requested"}
         </span>
         <NodeToolbar label="Figure request" className={cx("wr-anatomy__tools", active && "is-visible")}>
+          <Segmented
+            label="Style"
+            value={style}
+            options={[
+              { value: "anatomy", label: "Anatomy", title: "An interactive isometric drawing" },
+              { value: "graphic", label: "Graphic", title: "A flat, numbered step-by-step graphic" },
+            ]}
+            onChange={(next) => updateAttributes({ style: next })}
+          />
           <Segmented
             label="Size"
             value={attrs.size}
@@ -189,7 +220,9 @@ function AnatomyView({ node, updateAttributes, deleteNode, selected, editor, get
         </NodeToolbar>
       </div>
 
-      {built ? <FigureFrame src={`${figureUrl(env.kind, env.slug, attrs.id)}?v=${reload}`} title={attrs.title} /> : null}
+      {built ? (
+        <FigureFrame src={`${figureUrl(env.kind, env.slug, attrs.id)}?v=${reload}`} title={attrs.title || copy.name} />
+      ) : null}
 
       <div className="wr-anatomy__fields" contentEditable={false}>
         <AttrInput
@@ -224,7 +257,7 @@ function AnatomyView({ node, updateAttributes, deleteNode, selected, editor, get
               ref={prompt}
               className="wr-anatomy__prompt"
               label="What should the figure show?"
-              placeholder="The object, its parts, what moves, what the reader should notice. Plain words are fine: Claude reads this when it builds the figure."
+              placeholder={copy.placeholder}
               value={attrs.prompt}
               minRows={3}
               onCommit={(value) => updateAttributes({ prompt: value })}
@@ -275,7 +308,7 @@ function FigureFrame({ src, title }: { src: string; title: string }) {
       <iframe
         ref={ref}
         src={src}
-        title={title || "Anatomy figure"}
+        title={title}
         loading="lazy"
         onLoad={onLoad}
         style={height ? { height } : { aspectRatio: "16 / 10" }}

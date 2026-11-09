@@ -285,6 +285,8 @@ export class DraftStore {
     return Promise.all(
       requests.map(async (request) => ({
         ...request,
+        // anatomy.json written before graphics existed has no style.
+        style: request.style === "graphic" ? "graphic" : "anatomy",
         built: isFigureId(request.id) && (await isFile(path.join(figuresDir, `${request.id}.html`))),
       })),
     );

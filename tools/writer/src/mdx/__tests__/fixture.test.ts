@@ -220,10 +220,21 @@ describe("fixture: every node and mark", () => {
     expect(draftToMdx(back.meta, back.doc)).toBe(mdx);
   });
 
+  it("reads a graphic's style into its figure request, and leaves it out of the MDX", () => {
+    const doc = {
+      type: "doc",
+      content: [{ type: "anatomy", attrs: { id: "fig-1", title: "Steps", prompt: "1. a 2. b", caption: "", size: "figure", style: "graphic" } }],
+    };
+    expect(figureRequests(doc).map((figure) => figure.style)).toEqual(["graphic"]);
+    const mdx = draftToMdx({ kind: "blog", slug: "demo", title: "T", date: "2026-01-01", createdAt: "", updatedAt: "" }, doc);
+    expect(mdx).toContain('<Diagram src="/blog/demo/figures/fig-1.html" title="Steps" />');
+    expect(mdx).not.toContain("graphic");
+  });
+
   it("lists figure requests, assets and words", () => {
     expect(figureRequests(fixture)).toEqual([
-      { id: "teleop-loop", title: "Teleop loop", prompt: "Show the loop", caption: "How it flows", size: "hero", built: false },
-      { id: "fig-2", title: 'A "quoted" title', prompt: "", caption: "", size: "figure", built: false },
+      { id: "teleop-loop", title: "Teleop loop", prompt: "Show the loop", caption: "How it flows", size: "hero", style: "anatomy", built: false },
+      { id: "fig-2", title: 'A "quoted" title', prompt: "", caption: "", size: "figure", style: "anatomy", built: false },
     ]);
     expect(referencedAssets(meta, fixture)).toEqual([
       "assets/cover.jpg",

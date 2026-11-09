@@ -6,6 +6,7 @@ import type { Editor } from "@tiptap/react";
 
 import {
   IconAnatomy,
+  IconGraphic,
   IconCallout,
   IconChecklist,
   IconCodeBlock,
@@ -148,6 +149,15 @@ export const BLOCK_ITEMS: BlockItem[] = [
     keywords: ["diagram", "illustration", "isometric", "figure", "drawing", "visual", "explainer", "interactive"],
     icon: IconAnatomy,
     run: (editor) => editor.chain().focus().insertAnatomy().run(),
+  },
+  {
+    id: "graphic",
+    title: "Graphic",
+    hint: "Simple numbered steps; Claude builds it",
+    group: "Blocks",
+    keywords: ["steps", "flow", "sequence", "chart", "diagram", "simple", "animation", "figure", "visual", "process"],
+    icon: IconGraphic,
+    run: (editor) => editor.chain().focus().insertAnatomy({ style: "graphic" }).run(),
   },
   {
     id: "callout",

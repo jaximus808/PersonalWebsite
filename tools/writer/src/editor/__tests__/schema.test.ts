@@ -22,7 +22,7 @@ describe("editor schema matches the contract", () => {
     expect(attrs(NODE.gallery)).toEqual({ images: [], caption: "", columns: null });
     expect(attrs(NODE.video)).toEqual({ youtube: null, src: null, poster: null, loop: false, caption: "", title: "" });
     expect(attrs(NODE.divider)).toEqual({ label: "" });
-    expect(attrs(NODE.anatomy)).toEqual({ id: "", title: "", prompt: "", caption: "", size: "figure" });
+    expect(attrs(NODE.anatomy)).toEqual({ id: "", title: "", prompt: "", caption: "", size: "figure", style: "anatomy" });
     expect(schema.nodes[NODE.callout].createAndFill()!.attrs).toEqual({ title: "" });
     expect(schema.nodes[NODE.pullQuote].create().attrs).toEqual({ cite: "" });
   });
@@ -69,7 +69,7 @@ describe("editor schema matches the contract", () => {
         { type: "callout", attrs: { title: "Note" }, content: [{ type: "paragraph", content: [{ type: "text", text: "Hi" }] }] },
         { type: "pullQuote", attrs: { cite: "Me" }, content: [{ type: "text", text: "Lifted" }] },
         { type: "divider", attrs: { label: "Part two" } },
-        { type: "anatomy", attrs: { id: "fig-1", title: "Loop", prompt: "Show it", caption: "", size: "hero" } },
+        { type: "anatomy", attrs: { id: "fig-1", title: "Loop", prompt: "Show it", caption: "", size: "hero", style: "graphic" } },
         { type: "codeBlock", attrs: { language: "ts" }, content: [{ type: "text", text: "const x = 1;" }] },
         {
           type: "taskList",

@@ -19,6 +19,7 @@ export function figureRequestsOf(doc: DraftDoc): FigureRequest[] {
       prompt: stringAttr(node, "prompt"),
       caption: stringAttr(node, "caption"),
       size: stringAttr(node, "size") === "hero" ? "hero" : "figure",
+      style: stringAttr(node, "style") === "graphic" ? "graphic" : "anatomy",
       built: false,
     });
     return false;

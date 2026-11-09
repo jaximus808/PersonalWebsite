@@ -1,10 +1,11 @@
-// The anatomy figures a draft asks for, and which are built, for Claude to
-// work through with the anatomy skill:
+// The figures a draft asks for, and which are built, for Claude to work
+// through: `style` "anatomy" with the anatomy skill, "graphic" with the
+// write skill's graphic kit (.claude/skills/write/graphic-kit.mjs):
 //
 //   npx tsx scripts/figures.ts blog/my-post
 //
 // Prints JSON: { draft, figuresDir, figures: [{ id, title, prompt, caption,
-// size, built, file }] }. Each figure is a standalone HTML page written to
+// size, style, built, file }] }. Each figure is a standalone HTML page written to
 // `file`; the writer shows it as soon as it exists.
 
 import path from "node:path";

@@ -49,7 +49,7 @@ export function OutlinePanel({
 }
 
 // ---------------------------------------------------------------------------
-// Figures (Anatomy requests)
+// Figures (Anatomy figure and graphic requests)
 
 export function FiguresPanel({
   figures,
@@ -68,8 +68,9 @@ export function FiguresPanel({
       <div className="panel-section panel-empty">
         <p>No figures requested.</p>
         <p className="field__hint">
-          Type <kbd>/</kbd> and “anatomy” where a picture would explain it better than words. Describe what it should
-          show; Claude draws it with the Anatomy skill and it appears here when it's built.
+          Type <kbd>/</kbd> and “anatomy” (an interactive isometric drawing) or “graphic” (simple numbered steps) where
+          a picture would explain it better than words. Describe what it should show; Claude builds it and it appears
+          here when it's built.
         </p>
       </div>
     );
@@ -97,6 +98,7 @@ export function FiguresPanel({
                 {figure.built ? "Built" : "Requested"}
               </span>
               <span className="mono figure-card__id">{figure.id}</span>
+              {figure.style === "graphic" ? <span className="figure-card__size">graphic</span> : null}
               {figure.size === "hero" ? <span className="figure-card__size">hero</span> : null}
             </div>
             <p className="figure-card__title">{figure.title || "Untitled figure"}</p>
@@ -151,7 +153,7 @@ export function ChecksPanel({
             <p>{unbuilt > 0 ? "Ready once the figures are built." : "Ready to build."}</p>
             <p className="field__hint">
               {unbuilt > 0
-                ? `${unbuilt === 1 ? "One Anatomy figure is" : `${unbuilt} Anatomy figures are`} still a request. `
+                ? `${unbuilt === 1 ? "One figure is" : `${unbuilt} figures are`} still a request. `
                 : warnings.length > 0
                   ? "A few things to look at first, none blocking. "
                   : ""}

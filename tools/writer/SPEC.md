@@ -41,7 +41,7 @@ tools/writer/drafts/<kind>/<slug>/
   draft.mdx      draftToMdx(meta, doc): what the site file will be
   anatomy.json   FigureRequest[] (figureRequests(doc) + built flags)
   assets/        uploaded images/videos (safe, unique filenames)
-  figures/       <id>.html built by Claude with the anatomy skill
+  figures/       <id>.html built by Claude: the anatomy skill (style "anatomy") or the write skill's graphic kit (style "graphic")
 tools/writer/drafts/.trash/   deleted drafts (moved, never hard-deleted)
 ```
 
@@ -107,7 +107,7 @@ Body (blank line between blocks, no trailing spaces, ends with one newline):
 | callout | `<Callout title="…">` blank line, children as MDX, blank line `</Callout>` |
 | pullQuote | `<PullQuote cite="…">inline MDX</PullQuote>` |
 | divider | `<Divider />` or `<Divider label="…" />` |
-| anatomy | `<Diagram src="/<kind>/<slug>/figures/<id>.html" title="…" caption="…" size="hero" />` (size only when hero) |
+| anatomy | `<Diagram src="/<kind>/<slug>/figures/<id>.html" title="…" caption="…" size="hero" />` (size only when hero). Its `style` attr ("anatomy" default, or "graphic") only says how Claude builds the page; it lives in doc.json and anatomy.json, never in the MDX, so an imported Diagram comes back as "anatomy". |
 
 Attribute strings: emit `attr="..."` when the value has no `"` or `{`/`}`
 issues; otherwise `attr={"…"}` via JSON.stringify. Prove both compile.
@@ -155,7 +155,7 @@ export default function DraftEditor(props: DraftEditorProps): JSX.Element
 
 Must have:
 - StarterKit (headings 2–4 only, no h1; its horizontalRule replaced by `divider`), Link (autolink, paste URLs onto selection), Placeholder, Typography, CharacterCount, TaskList/TaskItem, Table (resizable off), CodeBlockLowlight (common languages, highlighted), Dropcursor/Gapcursor, history.
-- Custom nodes from the contract, each a React node view styled like the site component it becomes: figure (image in a 3:2/16:9/… frame, editable caption below, toolbar on select: ratio, fit, alt, replace, delete), gallery (grid, add/remove/reorder images, caption, columns), video (YouTube id or uploaded file, preview), callout (editable title + rich content), pullQuote (Cormorant, editable cite), divider (optional label), anatomy (dashed card: title, "What should it show?" prompt textarea, caption, size; shows an iframe of the built figure when `figures` says built, else a "requested" state with the hint: ask Claude "build the figures for <slug>").
+- Custom nodes from the contract, each a React node view styled like the site component it becomes: figure (image in a 3:2/16:9/… frame, editable caption below, toolbar on select: ratio, fit, alt, replace, delete), gallery (grid, add/remove/reorder images, caption, columns), video (YouTube id or uploaded file, preview), callout (editable title + rich content), pullQuote (Cormorant, editable cite), divider (optional label), anatomy (dashed card: title, "What should it show?" prompt textarea, caption, size, style (Anatomy / Graphic; the slash menu has an item for each); shows an iframe of the built figure when `figures` says built, else a "requested" state with the hint: ask Claude "build the figures for <slug>").
 - Slash menu (`/` at line start or after space): Heading 2/3/4, Bulleted, Numbered, Checklist, Quote, Code, Table, Image, Gallery, Video, Callout, Pull quote, Divider, Anatomy figure. Filter as you type, arrow keys, Enter, Esc.
 - Bubble menu on text selection: bold, italic, strike, code, link (inline input), H2, H3, quote.
 - Markdown shortcuts work (StarterKit input rules: `## `, `- `, `1. `, `> `, ``` ``` ```, `---` → divider, `[ ] ` → task).

@@ -1,13 +1,14 @@
 ---
 name: write
-description: Jaxon's local writing tool ("the writer") for jaxonp.com blog posts and project write-ups, plus the Anatomy figures inside them. Use when they say "start my blog writing", "open the writer", "let's write", "write a post", "new post", "write up a project", "new project write-up", "what drafts do I have", "import <post> into the writer", "build the figures (for <slug>)", "make the diagrams", "build my draft", "publish my draft", "put it on the blog", or "stop the writer". It starts the local editor on http://localhost:4310, creates and opens drafts, builds the Anatomy figure requests in a draft, and turns a finished draft into content/<kind>/<slug>.mdx and the site page. For a quick edit straight to an existing .mdx file without the writer, use the publish skill instead.
+description: Jaxon's local writing tool ("the writer") for jaxonp.com blog posts and project write-ups, plus the figures inside them (Anatomy figures and simple step graphics). Use when they say "start my blog writing", "open the writer", "let's write", "write a post", "new post", "write up a project", "new project write-up", "what drafts do I have", "import <post> into the writer", "build the figures (for <slug>)", "make the diagrams", "build my draft", "publish my draft", "put it on the blog", or "stop the writer". It starts the local editor on http://localhost:4310, creates and opens drafts, builds the Anatomy figure requests in a draft, and turns a finished draft into content/<kind>/<slug>.mdx and the site page. For a quick edit straight to an existing .mdx file without the writer, use the publish skill instead.
 ---
 
 # The writer
 
 A local editor that looks like the site. Jaxon writes and formats there
 (headings, lists, code, tables, images, galleries, video, callouts, pull
-quotes, and requests for Anatomy figures) without typing markdown. It autosaves
+quotes, and requests for Anatomy figures and simple graphics) without typing
+markdown. It autosaves
 to disk. When they say the piece is ready, you build it into the site.
 
 Never deployed. Lives in `tools/writer/` with its own `package.json`; the
@@ -53,6 +54,8 @@ tools/writer/drafts/<kind>/<slug>/     (gitignored; kind is blog or projects)
 6. Tell them in a line or two: the URL, that it autosaves, that `/` opens the
    block menu (images, gallery, video, code, callout, Anatomy figure, …), and
    that they should come back and say "build the figures" or "build my draft".
+  `/` offers two kinds of figure: **Anatomy figure** (an interactive isometric
+  drawing) and **Graphic** (flat, numbered steps, for when Anatomy is overkill).
 
 To stop it: if you started it in this session, stop that background task;
 otherwise `lsof -ti tcp:4310 | xargs kill`. The writer saves on every pause
@@ -61,16 +64,27 @@ and keeps unsaved changes in the browser too, but glance at its "Saved" state
 
 ## Build the figures
 
-An Anatomy block in the draft is a request: an id (`fig-1`, …), a title,
-"what should it show" in Jaxon's words, a caption and a size. You build each
-one as a standalone dark page with the anatomy skill; the writer and the site
-both show it in a frame (`<Diagram>` on the site).
+A figure block in the draft is a request: an id (`fig-1`, …), a title,
+"what should it show" in Jaxon's words, a caption, a size and a **style**:
+`anatomy` (an interactive isometric drawing, built with the anatomy skill) or
+`graphic` (a flat, numbered step-by-step graphic, built with this skill's
+graphic kit; see "Build a graphic" below). Either way you build a standalone
+dark page; the writer and the site both show it in a frame (`<Diagram>` on the
+site), and the MDX is the same for both.
+
+**Clarity first.** Jaxon wants a figure he understands in two seconds. Show
+the real system the text talks about (the car at the crossing, the robot in
+the building), not a clever machine standing in for the idea. When the idea
+is a sequence, number the steps. If an Anatomy request would need a metaphor
+machine to work, say so and suggest a graphic instead.
 
 1. List them: `npm --prefix tools/writer run --silent figures -- <kind>/<slug>`
    (works without the server and prints the exact `file` each page must be
    written to), or `curl -s localhost:4310/api/drafts/<kind>/<slug>/figures`.
    Work on the ones with `"built": false`, or the one they name. Read
    `draft.mdx` around each request too: the text says what the figure is for.
+   Each request's `style` picks the path: `graphic` → "Build a graphic" below
+   (skip steps 2–3); `anatomy` (the default) → carry on here.
 2. Load the anatomy skill (Skill tool, `anatomy`) and follow its workflow in
    full. It is the quality bar; nothing here relaxes it.
 3. **Size.** The request's `size` picks the anatomy tier:
@@ -124,6 +138,46 @@ both show it in a frame (`<Diagram>` on the site).
    the live figure; Preview shows it as the site will). For changes, edit the
    build script and run it again; if they rewrite the request's prompt in the
    writer, the figure needs rebuilding.
+
+## Build a graphic
+
+For requests with `"style": "graphic"`. No anatomy skill, no isometric
+machine: plain flat SVG in the same card, stepping through numbered steps.
+Most graphics take a few minutes, not an hour.
+
+1. **Plan the steps first.** Write the steps as Jaxon would say them
+   ("1. read the sensors, 2. decide, 3. move"), then what appears, lights up
+   or moves at each one. Three to six steps. Every label and number comes from
+   the draft or from Jaxon (the Truth rule above applies); step numbers are
+   the only digits you add.
+2. **Build it** with `.claude/skills/write/graphic-kit.mjs` (read its header:
+   the primitives `node`, `arrow`, `badge`, `label`, `bar`, `dot`, `group`,
+   `shape`, the step attributes `show`, `lit`, `at`, `draw`, and the timing
+   options `dur`, `linear`, `snap`, `stagger`). Pass `size: 14` or more to
+   text-bearing primitives; the bare defaults are smaller. One script:
+   ```
+   tools/writer/drafts/<kind>/<slug>/figures/<id>/build.mjs  →  figures/<id>.html
+   ```
+   ```js
+   import * as g from "../../../../../../../.claude/skills/write/graphic-kit.mjs";
+   const svg = [ g.node({ … , lit: "1" }), g.arrow({ … , draw: "2-" }), … ].join("");
+   g.writeFigure(import.meta.url, g.graphicPage({ fig: "Fig 2", title: "…", viewBox: [0, 0, 480, 220], svg, steps: [ { label: "…" }, … ] }));
+   ```
+   `fig` is `Fig n` by position among the draft's requests, like Anatomy.
+3. **Look.**
+   - Keep it calm: dim by default, the active step lit, at most one thing in
+     the accent blue (`accent: true`).
+   - Lay it out in a viewBox about 480 wide and use 14px text or larger. The
+     whole drawing scales down to fit a 390px phone, so a 600-wide viewBox
+     with small text becomes unreadable.
+   - No legend unless it adds something: the step rail under the drawing
+     already explains each step.
+4. **Check it.** Run the build script. Capture desktop (~720 wide), phone (390)
+   and one shot per step with the anatomy skill's `scripts/drive.mjs`, for
+   example `[["wait",1200],["shot","…/s1.png"],["key","ArrowRight"],["wait",1200],["shot","…/s2.png"]]`.
+   Run it with `--reduced` too: it should open on `still` with no motion.
+   Read every PNG. The console must be clean, and the figures list must show
+   `"built": true`.
 
 ## Build the draft into the site
 

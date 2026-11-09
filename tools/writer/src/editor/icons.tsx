@@ -114,6 +114,14 @@ export const IconAnatomy = icon(
     <path d="M12 12l8-4.5M12 12v9M12 12L4 7.5" />
   </>,
 );
+export const IconGraphic = icon(
+  <>
+    <circle cx="5" cy="12" r="2.25" />
+    <circle cx="12" cy="12" r="2.25" />
+    <circle cx="19" cy="12" r="2.25" />
+    <path d="M7.25 12h2.5M14.25 12h2.5" />
+  </>,
+);
 export const IconMdx = icon(
   <>
     <rect x="2.5" y="6" width="19" height="12" rx="2" />
