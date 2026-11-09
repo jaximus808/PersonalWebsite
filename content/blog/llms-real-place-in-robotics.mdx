@@ -97,7 +97,12 @@ Now take a factory, where bags get passed to you quickly. Can you really trust t
 
 What actual PhD researchers do is, well, actual ML. They train the robot on the expected behavior and control: VLAs, WAMs, even RL (though RL is kind of a dead end for anything that relies on generalizing outside what it has seen).
 
-<Figure src="/projects/geonosis-ai/04-phone-teleop-real-arm.jpg" caption="Collecting a clean teleop demo from a phone for a fine-tune, from Geonosis-AI." alt="Side by side: a phone showing the teleop page with top and wrist camera feeds, a Move stick, Grip, Up/down and Tilt controls and a recording timer, and a photo of the real YAM arm it is driving" ratio="wide" />
+If you want the real material, start with the papers:
+
+- **VLAs:** [RT-2](https://arxiv.org/abs/2307.15818) (2023), [OpenVLA](https://arxiv.org/abs/2406.09246) (2024), [π0](https://arxiv.org/abs/2410.24164) (2024)
+- **Imitation learning and DAgger:** [DAgger](https://arxiv.org/abs/1011.0686) (2011), [ACT / ALOHA](https://arxiv.org/abs/2304.13705) (2023), [Diffusion Policy](https://arxiv.org/abs/2303.04137) (2023)
+- **World models:** [World Models](https://arxiv.org/abs/1803.10122) (2018), [DreamerV3](https://arxiv.org/abs/2301.04104) (2023), [GAIA-1](https://arxiv.org/abs/2309.17080) (2023)
+- **World action models:** [World Action Models are Zero-shot Policies](https://arxiv.org/abs/2602.15922) (2026), [World Action Models: A Survey](https://arxiv.org/abs/2606.20781) (2026)
 
 A VLA (vision-language-action model) takes in the camera and the instruction, runs them through a transformer backbone, and puts out a chunk of robot actions instead of text.
 
