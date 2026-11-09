@@ -130,6 +130,16 @@ the anatomy skill) as wide as the text, with the same caption as a Figure.
   width of the text like all media.
 - The figure page handles its own motion, including `prefers-reduced-motion`.
 
+**`<Tweet>`**: a post on X, embedded with X's own widget (dark theme, centred,
+"do not track"). Until it loads, or if it can't, a quiet card links to the post.
+
+```mdx
+<Tweet id="2116727410972590380" />
+<Tweet id="2116727410972590380" caption="Where this started" />
+```
+
+- `id`: the number at the end of the post's `x.com/<user>/status/<id>` link.
+
 ### Project-specific embeds
 
 Interactive pieces made for one page live in `components/content/embeds/` and

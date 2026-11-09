@@ -4,6 +4,7 @@ import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import Diagram from "./Diagram";
 import Figure from "./Figure";
 import Gallery from "./Gallery";
+import Tweet from "./Tweet";
 import Video from "./Video";
 import { Callout, Divider, PullQuote } from "./Accents";
 import TandemBoardDemo from "./embeds/TandemBoardDemo";
@@ -33,6 +34,7 @@ const components = {
   PullQuote,
   Callout,
   Diagram,
+  Tweet,
   TandemBoardDemo,
 
   a({ href, children, ...rest }: React.ComponentProps<"a">) {

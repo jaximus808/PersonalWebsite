@@ -16,6 +16,7 @@ export const SITE_COMPONENTS: readonly string[] = [
   "PullQuote",
   "Callout",
   "Diagram",
+  "Tweet",
   "TandemBoardDemo",
 ];
 

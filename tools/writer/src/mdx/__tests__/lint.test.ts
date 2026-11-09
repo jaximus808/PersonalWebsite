@@ -174,7 +174,7 @@ describe("lint: raw MDX", () => {
   it("flags components the site doesn't register", () => {
     const issues = errors(raw("<TandemBoardDemos />"), raw("Inline <Fancy.Thing /> and <motion.div /> too, but <span /> is fine."));
     expect(issues).toEqual([
-      expect.stringMatching(/^<TandemBoardDemos> in a raw MDX block isn't one of the site's components \(Callout, Diagram, .*TandemBoardDemo, Video\)\./),
+      expect.stringMatching(/^<TandemBoardDemos> in a raw MDX block isn't one of the site's components \(Callout, Diagram, .*TandemBoardDemo, Tweet, Video\)\./),
       expect.stringContaining("<Fancy.Thing>"),
       expect.stringContaining("<motion.div>"),
     ]);

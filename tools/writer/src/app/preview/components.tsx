@@ -3,7 +3,7 @@
 // of Tailwind. Paths in the exported MDX are site paths, so every src goes
 // through the preview's resolver to reach the draft folder or public/.
 
-import { Children, isValidElement, useState, type ComponentProps, type ReactNode } from "react";
+import { Children, isValidElement, useEffect, useRef, useState, type ComponentProps, type ReactNode } from "react";
 
 import { SITE_COMPONENTS } from "../../mdx/siteComponents";
 import type { Fit, FigureRequest, Ratio } from "../../shared/types";
@@ -222,6 +222,61 @@ export function PreviewDiagram({
 }
 
 /**
+ * A post on X, embedded with X's widget like the site's Tweet component, with
+ * a link card while it loads or if it can't.
+ */
+export function PreviewTweet({ id, caption }: { id: string; caption?: ReactNode }) {
+  const target = useRef<HTMLDivElement>(null);
+  const [state, setState] = useState<"loading" | "ready" | "failed">("loading");
+  useEffect(() => {
+    const host = target.current;
+    if (!host) return;
+    // Own child per run, removed on cleanup, so a late widget can't double up.
+    const el = document.createElement("div");
+    el.style.width = "100%";
+    el.style.maxWidth = "550px";
+    host.appendChild(el);
+    let cancelled = false;
+    setState("loading");
+    type Twttr = { widgets: { createTweet(id: string, el: HTMLElement, o: object): Promise<HTMLElement | undefined> } };
+    const w = window as unknown as { twttr?: Twttr; __wrTwttr?: Promise<Twttr> };
+    w.__wrTwttr ??= new Promise<Twttr>((resolve, reject) => {
+      if (w.twttr?.widgets) return resolve(w.twttr);
+      const script = document.createElement("script");
+      script.src = "https://platform.twitter.com/widgets.js";
+      script.async = true;
+      script.onload = () => (w.twttr?.widgets ? resolve(w.twttr) : reject(new Error("no twttr")));
+      script.onerror = () => reject(new Error("widgets.js failed"));
+      document.head.appendChild(script);
+    });
+    w.__wrTwttr
+      .then((t) => t.widgets.createTweet(id, el, { theme: "dark", dnt: true, align: "center", conversation: "none" }))
+      .then((node) => !cancelled && setState(node ? "ready" : "failed"))
+      .catch(() => {
+        w.__wrTwttr = undefined;
+        if (!cancelled) setState("failed");
+      });
+    return () => {
+      cancelled = true;
+      el.remove();
+    };
+  }, [id]);
+  return (
+    <figure className="media">
+      {/* Always laid out: X's widget won't render into a hidden container. */}
+      <div ref={target} style={{ display: "flex", justifyContent: "center" }} />
+      {state !== "ready" ? (
+        <a className="embed-placeholder" href={`https://x.com/i/status/${id}`} target="_blank" rel="noopener noreferrer">
+          <span className="mono">&lt;Tweet /&gt;</span>
+          <span>{state === "loading" ? "Loading the post from X…" : "View the post on X"}</span>
+        </a>
+      ) : null}
+      {caption ? <Caption>{caption}</Caption> : null}
+    </figure>
+  );
+}
+
+/**
  * A component the preview can't run. Either the site has it (a one-off embed
  * like TandemBoardDemo) and it just renders there, or the site doesn't, and
  * the build would fail on it (Checks says the same).
@@ -265,6 +320,7 @@ export function previewComponents(ctx: PreviewContext, unknownNames: string[]) {
     PullQuote: PreviewPullQuote,
     Callout: PreviewCallout,
     Diagram: (props: Omit<ComponentProps<typeof PreviewDiagram>, "ctx">) => <PreviewDiagram {...props} ctx={ctx} />,
+    Tweet: PreviewTweet,
 
     a({ href, children, ...rest }: ComponentProps<"a">) {
       return (
