@@ -1,0 +1,245 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Inside a WAM</title><style>
+.iso{
+  --anatomy-page:#0b0b0b;--anatomy-card:#131313;--anatomy-text:#a3a3a3;--anatomy-strong:#e6e6e6;--anatomy-muted:#6e6e6e;
+  --anatomy-paper:#131313;--anatomy-face:#1b1b1b;--anatomy-top:#1c1c1c;
+  --anatomy-shade-0:#0f0f0f;--anatomy-shade-1:#121212;--anatomy-shade-2:#151515;--anatomy-shade-3:#181818;
+  --anatomy-lit-top:#262626;--anatomy-lit-shade:#1d1d1d;
+  --anatomy-hi:#d4d4d4;--anatomy-mid:#6a6a6a;--anatomy-lo:#3e3e3e;--anatomy-faint:#2a2a2a;--anatomy-lit:#ffffff;
+  --anatomy-halo:#050505;--anatomy-halo-opacity:.9;--anatomy-dot:#e6e6e6;
+  --anatomy-red:#ff6b6b;--anatomy-green:#6be0a0;--anatomy-blue:#6b9bff;
+  --anatomy-weight:.6px;--anatomy-ease:cubic-bezier(.32,.72,0,1);
+  --anatomy-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --anatomy-lift:inset 0 1px 0 0 #ffffff0a,inset 0 0 0 1px #ffffff06,0 0 0 1px #00000026,0 1px 1px -.5px #00000014,0 3px 3px -1.5px #00000014,0 6px 6px -3px #00000014,0 12px 12px -6px #00000014;
+}
+.iso[data-theme="light"]{
+  --anatomy-page:#f2f2ef;--anatomy-card:#fbfbfa;--anatomy-text:#57575a;--anatomy-strong:#18181a;--anatomy-muted:#8c8c90;
+  --anatomy-paper:#fbfbfa;--anatomy-face:#ffffff;--anatomy-top:#ffffff;
+  --anatomy-shade-0:#dcdcd9;--anatomy-shade-1:#e5e5e2;--anatomy-shade-2:#ededea;--anatomy-shade-3:#f4f4f1;
+  --anatomy-lit-top:#ffffff;--anatomy-lit-shade:#eeeeeb;
+  --anatomy-hi:#26262a;--anatomy-mid:#8a8a8f;--anatomy-lo:#b4b4b8;--anatomy-faint:#d4d4d6;--anatomy-lit:#000000;
+  --anatomy-halo:#8a8a80;--anatomy-halo-opacity:.32;--anatomy-dot:#3a3a3e;
+  --anatomy-red:#e5484d;--anatomy-green:#30a46c;--anatomy-blue:#3e63dd;
+  --anatomy-lift:inset 0 1px 0 0 #ffffff,0 0 0 1px #0000000f,0 1px 1px -.5px #0000000a,0 3px 3px -1.5px #0000000a,0 6px 6px -3px #0000000a,0 12px 12px -6px #0000000a;
+}
+.iso-svg{display:block;width:100%;height:auto;overflow:visible}
+.iso-svg path,.iso-svg circle{vector-effect:non-scaling-stroke}
+.iso-fill{fill:var(--anatomy-paper);stroke:none}
+.iso-solid[data-lit]>.iso-fill{fill:var(--anatomy-face)}
+.iso-shade,.iso-top{stroke:none}
+.iso-shade[data-shade="0"]{fill:var(--anatomy-shade-0)}
+.iso-shade[data-shade="1"]{fill:var(--anatomy-shade-1)}
+.iso-shade[data-shade="2"]{fill:var(--anatomy-shade-2)}
+.iso-shade[data-shade="3"]{fill:var(--anatomy-shade-3)}
+.iso-top{fill:var(--anatomy-top)}
+.iso-solid[data-lit]>.iso-top{fill:var(--anatomy-lit-top)}
+.iso-solid[data-lit]>.iso-shade{fill:var(--anatomy-lit-shade)}
+.iso-solid[data-seamless]>.iso-shade,.iso-solid[data-seamless]>.iso-top{stroke-width:.4;stroke-linejoin:round}
+.iso-solid[data-seamless]>.iso-shade[data-shade="0"]{stroke:var(--anatomy-shade-0)}
+.iso-solid[data-seamless]>.iso-shade[data-shade="1"]{stroke:var(--anatomy-shade-1)}
+.iso-solid[data-seamless]>.iso-shade[data-shade="2"]{stroke:var(--anatomy-shade-2)}
+.iso-solid[data-seamless]>.iso-shade[data-shade="3"]{stroke:var(--anatomy-shade-3)}
+.iso-solid[data-seamless]>.iso-top{stroke:var(--anatomy-top)}
+.iso-solid[data-seamless][data-lit]>.iso-top{stroke:var(--anatomy-lit-top)}
+.iso-solid[data-seamless][data-lit]>.iso-shade{stroke:var(--anatomy-lit-shade)}
+.iso-solid[data-lit]>.iso-edge{stroke:var(--anatomy-lit)}
+.iso-halo{fill:var(--anatomy-halo);stroke:none;filter:blur(9px);opacity:var(--anatomy-halo-opacity);transform:translateY(3px)}
+.iso-line{fill:none;stroke:var(--anatomy-lo);stroke-width:var(--anatomy-weight);stroke-linecap:round;stroke-linejoin:round}
+.iso-line[data-tone="hi"]{stroke:var(--anatomy-hi)}
+.iso-line[data-tone="mid"]{stroke:var(--anatomy-mid)}
+.iso-line[data-tone="lo"]{stroke:var(--anatomy-lo)}
+.iso-line[data-tone="faint"]{stroke:var(--anatomy-faint)}
+.iso-line[data-tone="lit"]{stroke:var(--anatomy-lit)}
+.iso-line[data-tone="red"]{stroke:var(--anatomy-red)}
+.iso-line[data-tone="green"]{stroke:var(--anatomy-green)}
+.iso-line[data-tone="blue"]{stroke:var(--anatomy-blue)}
+.iso-line[data-dotted]{stroke-dasharray:.01 3.5;stroke-width:1}
+.iso-line[data-dashed]{stroke-dasharray:3 3}
+.iso-line[data-flow]{stroke-dasharray:2 6}
+.iso-wire-end{fill:var(--anatomy-paper);stroke:var(--anatomy-lo);stroke-width:var(--anatomy-weight)}
+.iso-wire[data-tone="hi"] .iso-wire-end{stroke:var(--anatomy-hi)}
+.iso-wire[data-tone="mid"] .iso-wire-end{stroke:var(--anatomy-mid)}
+.iso-wire[data-tone="faint"] .iso-wire-end{stroke:var(--anatomy-faint)}
+.iso-wire[data-tone="lit"] .iso-wire-end{stroke:var(--anatomy-lit)}
+.iso-dots circle{fill:var(--anatomy-dot);stroke:none;opacity:.32}
+.iso-dots[data-tone="hi"] circle{opacity:.85}
+.iso-dots[data-tone="mid"] circle{opacity:.45}
+.iso-dots[data-tone="lo"] circle{opacity:.22}
+.iso-dots[data-tone="faint"] circle{opacity:.12}
+.iso-face-text{fill:var(--anatomy-mid);font-family:var(--anatomy-mono);letter-spacing:.04em}
+.iso-face-text[data-tone="hi"]{fill:var(--anatomy-hi)}
+.iso-face-text[data-tone="lo"]{fill:var(--anatomy-lo)}
+.iso-face-text[data-tone="faint"]{fill:var(--anatomy-faint)}
+.tb-body{fill:var(--anatomy-shade-2);stroke:none}
+.tb-shine{fill:var(--anatomy-top);stroke:none}
+.tb-shade{fill:var(--anatomy-shade-0);stroke:none}
+.tb-ring{fill:none;stroke:var(--anatomy-lo);stroke-width:.45;stroke-linecap:butt;stroke-linejoin:round}
+.tb-ring[data-tone="mid"]{stroke:var(--anatomy-mid)}
+.tb-ring[data-tone="faint"]{stroke:var(--anatomy-faint)}
+.tb-ring[data-tone="hi"]{stroke:var(--anatomy-hi)}
+@keyframes iso-flow{to{stroke-dashoffset:-32}}
+@keyframes iso-pulse{0%,100%{opacity:.18}12%{opacity:1}40%{opacity:.18}}
+.iso-line[data-flow]{animation:iso-flow 1600ms linear infinite}
+.iso-dots circle[data-pulse]{animation:iso-pulse 1600ms steps(1,end) infinite;animation-delay:var(--pulse-at,0ms)}
+.iso-figure{margin:32px 0 36px}
+.iso-plate{position:relative;padding:52px 24px;border-radius:0;background:var(--anatomy-card);box-shadow:0 0 0 1px var(--anatomy-mid);--anatomy-paper:var(--anatomy-card)}
+.iso-plate-corners{position:absolute;inset:18px 20px;pointer-events:none}
+.iso-plate-corner{position:absolute;color:var(--anatomy-muted);font-family:var(--anatomy-mono);font-size:10.5px;line-height:1;letter-spacing:.04em;white-space:nowrap}
+.iso-plate-corner[data-corner="fig"]{top:0;left:0;color:var(--anatomy-text)}
+.iso-plate-corner[data-corner="title"]{top:0;right:0;text-transform:uppercase;letter-spacing:.1em}
+.iso-plate-corner[data-corner="hint"]{bottom:0;left:0;text-transform:uppercase;letter-spacing:.1em}
+.iso-plate-corner[data-corner="readout"]{right:0;bottom:0;color:var(--anatomy-text);font-variant-numeric:tabular-nums}
+.iso-plate .iso-svg{margin:0 auto}
+.iso-legend{display:grid;gap:8px;margin-top:12px;color:var(--anatomy-muted);font-size:13px;line-height:1.55}
+.iso-keys{display:flex;flex-wrap:wrap;gap:6px 18px}
+.iso-key{display:inline-flex;align-items:center;gap:7px}
+.iso-swatch{width:16px;height:10px;flex:none;overflow:visible}
+.iso-swatch path{fill:none;stroke:var(--anatomy-hi);stroke-width:1;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round}
+.iso-swatch[data-mark="raised"] path,.iso-swatch[data-mark="flat"] path{stroke:var(--anatomy-mid)}
+.iso-swatch[data-mark="lit"] path{stroke:var(--anatomy-lit)}
+.iso-swatch[data-mark="dim"] path{stroke:var(--anatomy-lo)}
+.iso-swatch[data-mark="dotted"] path{stroke-dasharray:.01 3;stroke-width:1.4}
+.iso-swatch[data-mark="dashed"] path{stroke-dasharray:3 2.5}
+.iso-swatch[data-mark="red"] path{stroke:var(--anatomy-red)}
+.iso-swatch[data-mark="green"] path{stroke:var(--anatomy-green)}
+.iso-swatch[data-mark="blue"] path{stroke:var(--anatomy-blue)}
+.iso-swatch-crease{stroke:var(--anatomy-lo)!important}
+@media (max-width:560px){.iso-plate{padding:48px 12px 70px}.iso-plate-corner[data-corner="hint"]{bottom:18px}}
+@media (prefers-reduced-motion:reduce){.iso-line[data-flow],.iso-dots circle[data-pulse]{animation:none}}
+
+*{box-sizing:border-box}
+html{color-scheme:dark}
+body[data-theme="light"]{color-scheme:light}
+body{margin:0;background:var(--anatomy-page);color:var(--anatomy-text);font:14px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+.iso-page{width:min(650px,100% - 32px);margin:64px auto 96px}
+</style><style>html,body{background:transparent}.iso-page{width:auto;margin:0}.iso-figure{margin:1px 1px 2px}</style></head><body class="iso" data-theme="dark"><main class="iso-page"><style>
+.gx{--gx-ink:#ededed;--gx-text:#a3a3a3;--gx-dim:#4d4d4d;--gx-hair:#333;--gx-fill:#161616;--gx-lit-fill:#1f1f1f;--gx-accent:#a3cbff;--gx-ease:cubic-bezier(.22,.61,.36,1);--gx-t:420ms;outline:none}
+.gx-svg{display:block;width:100%;height:auto;overflow:visible;font-family:Montserrat,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+.gx-el{transition:opacity var(--gx-t) var(--gx-curve,var(--gx-ease)),transform var(--gx-move,900ms) var(--gx-curve,var(--gx-ease));transform-box:view-box}
+.gx-el.gx-snapping,.gx-el.gx-snapping *{transition:none!important}
+.gx-fill rect{fill:var(--gx-dim)}
+.gx-lit .gx-fill rect,.gx-lit.gx-fill rect{fill:var(--gx-ink)}
+.gx-accent.gx-lit .gx-fill rect{fill:var(--gx-accent)}
+.gx-mono.gx-case,.gx-sub.gx-case{text-transform:none}
+.gx-el.gx-hidden{opacity:0}
+.gx-box{fill:var(--gx-fill);stroke:var(--gx-dim);stroke-width:1;transition:stroke var(--gx-t) var(--gx-ease),fill var(--gx-t) var(--gx-ease)}
+.gx-title{fill:var(--gx-text);font-size:14px;font-weight:400;letter-spacing:.01em;transition:fill var(--gx-t) var(--gx-ease)}
+.gx-sub,.gx-mono{fill:var(--gx-dim);font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;transition:fill var(--gx-t) var(--gx-ease)}
+.gx-text{fill:var(--gx-text);font-size:13px;transition:fill var(--gx-t) var(--gx-ease)}
+.gx-line,.gx-head{fill:none;stroke:var(--gx-dim);stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;transition:stroke var(--gx-t) var(--gx-ease)}
+.gx-dashed{stroke-dasharray:3 4}
+.gx-line[data-draw]{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 900ms var(--gx-ease),stroke var(--gx-t) var(--gx-ease)}
+.gx-line[data-draw].gx-drawn{stroke-dashoffset:0}
+.gx-badge circle{fill:var(--gx-fill);stroke:var(--gx-dim);stroke-width:1;transition:all var(--gx-t) var(--gx-ease)}
+.gx-badge text{fill:var(--gx-dim);font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:11px;transition:fill var(--gx-t) var(--gx-ease)}
+.gx-dot circle{fill:var(--gx-dim);transition:fill var(--gx-t) var(--gx-ease)}
+.gx-lit .gx-box{stroke:var(--gx-ink);fill:var(--gx-lit-fill)}
+.gx-lit .gx-title,.gx-lit .gx-text{fill:var(--gx-ink)}
+.gx-lit .gx-sub,.gx-lit .gx-mono{fill:var(--gx-text)}
+.gx-lit .gx-line,.gx-lit .gx-head{stroke:var(--gx-ink)}
+.gx-lit.gx-badge circle{fill:var(--gx-ink);stroke:var(--gx-ink)}
+.gx-lit.gx-badge text{fill:#111}
+.gx-lit.gx-dot circle{fill:var(--gx-ink)}
+.gx-accent.gx-lit .gx-box,.gx-accent.gx-lit .gx-line,.gx-accent.gx-lit .gx-head{stroke:var(--gx-accent)}
+.gx-accent.gx-lit .gx-title,.gx-accent.gx-lit .gx-text,.gx-accent.gx-lit .gx-mono,.gx-accent.gx-lit .gx-sub,.gx-accent.gx-lit.gx-mono{fill:var(--gx-accent)}
+.gx-accent.gx-lit.gx-badge circle,.gx-accent.gx-lit.gx-dot circle{fill:var(--gx-accent);stroke:var(--gx-accent)}
+.gx-rail{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 4px;margin:22px 0 0;padding:0;list-style:none;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:11px;letter-spacing:.04em}
+.gx-rail li{display:flex;align-items:center;gap:4px}
+.gx-rail button{display:inline-flex;align-items:center;gap:7px;padding:5px 9px;border:1px solid transparent;border-radius:999px;background:none;color:var(--gx-dim);font:inherit;cursor:pointer;transition:color var(--gx-t) var(--gx-ease),border-color var(--gx-t) var(--gx-ease)}
+.gx-rail .gx-n{display:inline-grid;place-items:center;width:17px;height:17px;border-radius:50%;border:1px solid currentColor;font-size:10px}
+.gx-rail li.is-done button{color:var(--gx-text)}
+.gx-rail li.is-active button{color:var(--gx-ink);border-color:var(--gx-hair)}
+.gx-rail li.is-active .gx-n{background:var(--gx-ink);border-color:var(--gx-ink);color:#111}
+.gx-rail .gx-sep{color:var(--gx-dim)}
+.gx-reduced *{transition:none!important}
+@media (max-width:520px){.gx-rail{font-size:10px}.gx-rail button{padding:4px 6px}}
+</style><figure class="iso-figure"><div class="iso-plate"><div class="iso-plate-corners" aria-hidden="true"><span class="iso-plate-corner" data-corner="fig">Fig 8</span><span class="iso-plate-corner" data-corner="title">Inside a WAM</span><span class="iso-plate-corner" data-corner="hint">Click or → to step</span><span class="iso-plate-corner" data-corner="readout" data-readout>Now · the current camera frame</span></div><div class="gx" tabindex="0" role="group" aria-label="Inside a WAM: 5 steps; click or use the arrow keys to step"><svg class="gx-svg" viewBox="-10 -4 480 200" role="img" aria-label="Inside a WAM"><g class="gx-el" data-lit="5"><g class="gx-el"><path class="gx-line" d="M434 44 L434 22 L32 22 L32 43"/><path class="gx-head" d="M28.96 36.70 L32 43 L35.04 36.70"/></g><text class="gx-mono" x="233" y="13" text-anchor="middle" style="font-size:14px">new frame</text></g><g class="gx-el" data-lit="1,5"><rect class="gx-box" x="8" y="44" width="150" height="90" rx="8"/><svg x="8" y="44" width="150" height="90" viewBox="0 0 140 84" overflow="hidden"><path class="gx-line" vector-effect="non-scaling-stroke" d="M8 76 L132 76"/><path class="gx-line" vector-effect="non-scaling-stroke" d="M115.5 57 C125 57 125 70 114.5 70"/><path class="gx-box" vector-effect="non-scaling-stroke" d="M88 47 L116 47 L113 76 L91 76 Z"/><path class="gx-line" vector-effect="non-scaling-stroke" d="M40 0 L40 12"/><rect class="gx-box" vector-effect="non-scaling-stroke" x="33" y="12" width="14" height="7" rx="1.5"/><rect class="gx-box" vector-effect="non-scaling-stroke" x="21" y="19" width="38" height="5" rx="1.5"/><path class="gx-line" vector-effect="non-scaling-stroke" d="M24 24 L24 35 L28 39 M56 24 L56 35 L52 39"/></svg></g><g class="gx-el" data-lit="1,5"><text class="gx-text" x="83" y="188" text-anchor="middle" style="font-size:14px">Now</text></g><g class="gx-el" data-lit="2"><path class="gx-line" d="M161 89 L171 89"/><path class="gx-head" d="M164.70 92.04 L171 89 L164.70 85.96"/></g><g class="gx-el" data-lit="2"><rect class="gx-box" x="174" y="44" width="56" height="120" rx="8"/><rect class="gx-box" x="178" y="54" width="9" height="100" rx="3"/><rect class="gx-box" x="191" y="54" width="9" height="100" rx="3"/><rect class="gx-box" x="204" y="54" width="9" height="100" rx="3"/><rect class="gx-box" x="217" y="54" width="9" height="100" rx="3"/><text class="gx-text" x="202" y="188" text-anchor="middle" style="font-size:14px">World model</text></g><g class="gx-el" data-show="3-" data-lit="3"><rect class="gx-line" x="244" y="57.4" width="48" height="82.6" rx="7"/><rect class="gx-line" x="295" y="57.4" width="48" height="82.6" rx="7"/><rect class="gx-line" x="346" y="57.4" width="48" height="82.6" rx="7"/></g><g class="gx-el" data-show="2-" data-lit="2"><path class="gx-line" d="M233 76.7 L241 76.7"/><path class="gx-head" d="M234.70 79.74 L241 76.7 L234.70 73.66"/></g><g class="gx-el" data-show="2-" data-lit="2-3"><g class="gx-el"><rect class="gx-box gx-dashed" x="246" y="61.4" width="44" height="30.6" rx="5"/><svg x="246" y="61.4" width="44" height="30.6" viewBox="22 4 112 78" overflow="hidden"><path class="gx-line" vector-effect="non-scaling-stroke" d="M8 76 L132 76"/><path class="gx-line" vector-effect="non-scaling-stroke" d="M115.5 57 C125 57 125 70 114.5 70"/><path class="gx-box" vector-effect="non-scaling-stroke" d="M88 47 L116 47 L113 76 L91 76 Z"/><path class="gx-line" vector-effect="non-scaling-stroke" d="M62 0 L62 12"/><rect class="gx-box" vector-effect="non-scaling-stroke" x="55" y="12" width="14" height="7" rx="1.5"/><rect class="gx-box" vector-effect="non-scaling-stroke" x="43" y="19" width="38" height="5" rx="1.5"/><path class="gx-line" vector-effect="non-scaling-stroke" d="M46 24 L46 35 L50 39 M78 24 L78 35 L74 39"/></svg></g><g class="gx-el"><rect class="gx-box gx-dashed" x="297" y="61.4" width="44" height="30.6" rx="5"/><svg x="297" y="61.4" width="44" height="30.6" viewBox="22 4 112 78" overflow="hidden"><path class="gx-line" vector-effect="non-scaling-stroke" d="M8 76 L132 76"/><path class="gx-line" vector-effect="non-scaling-stroke" d="M115.5 57 C125 57 125 70 114.5 70"/><path class="gx-box" vector-effect="non-scaling-stroke" d="M88 47 L116 47 L113 76 L91 76 Z"/><path class="gx-line" vector-effect="non-scaling-stroke" d="M84 0 L84 18"/><rect class="gx-box" vector-effect="non-scaling-stroke" x="77" y="18" width="14" height="7" rx="1.5"/><rect class="gx-box" vector-effect="non-scaling-stroke" x="65" y="25" width="38" height="5" rx="1.5"/><path class="gx-line" vector-effect="non-scaling-stroke" d="M68 30 L68 41 L72 45 M100 30 L100 41 L96 45"/></svg></g><g class="gx-el"><rect class="gx-box gx-dashed" x="348" y="61.4" width="44" height="30.6" rx="5"/><svg x="348" y="61.4" width="44" height="30.6" viewBox="22 4 112 78" overflow="hidden"><path class="gx-line" vector-effect="non-scaling-stroke" d="M8 76 L132 76"/><path class="gx-line" vector-effect="non-scaling-stroke" d="M115.5 57 C125 57 125 70 114.5 70"/><path class="gx-box" vector-effect="non-scaling-stroke" d="M88 47 L116 47 L113 76 L91 76 Z"/><path class="gx-line" vector-effect="non-scaling-stroke" d="M102 0 L102 32"/><rect class="gx-box" vector-effect="non-scaling-stroke" x="95" y="32" width="14" height="7" rx="1.5"/><rect class="gx-box" vector-effect="non-scaling-stroke" x="83" y="39" width="38" height="5" rx="1.5"/><path class="gx-line" vector-effect="non-scaling-stroke" d="M86 44 L86 55 L90 59 M118 44 L118 55 L114 59"/></svg></g></g><g class="gx-el" data-show="3-" data-lit="3"><path class="gx-line" d="M233 123 L241 123"/><path class="gx-head" d="M234.70 126.04 L241 123 L234.70 119.96"/></g><g class="gx-el" data-show="3-" data-lit="3"><path class="gx-line" d="M268 95 L268 107"/><path class="gx-line" d="M319 95 L319 107"/><path class="gx-line" d="M370 95 L370 107"/></g><g class="gx-el gx-accent" data-show="3-" data-lit="3-4"><rect class="gx-box" x="246" y="110" width="44" height="26" rx="5"/><g class="gx-el"><path class="gx-line" d="M261 123 L275 123"/><path class="gx-head" d="M268.70 126.04 L275 123 L268.70 119.96"/></g><rect class="gx-box" x="297" y="110" width="44" height="26" rx="5"/><g class="gx-el"><path class="gx-line" d="M312.24 121.19 L325.76 124.81"/><path class="gx-head" d="M318.88 126.12 L325.76 124.81 L320.46 120.24"/></g><rect class="gx-box" x="348" y="110" width="44" height="26" rx="5"/><g class="gx-el"><path class="gx-line" d="M364.48 118.69 L375.52 127.31"/><path class="gx-head" d="M368.68 125.83 L375.52 127.31 L372.43 121.03"/></g></g><g class="gx-el" data-show="2-"><g class="gx-el" data-lit="2-3"><text class="gx-text" x="319" y="188" text-anchor="middle" style="font-size:14px">Imagined</text></g></g><g class="gx-el" data-show="3-" data-lit="4"><path class="gx-line" d="M395 123 L405 123"/><path class="gx-head" d="M398.70 126.04 L405 123 L398.70 119.96"/></g><g class="gx-el" data-lit="4"><rect class="gx-box" x="408" y="44" width="52" height="120" rx="8"/><path class="gx-line" d="M421 150 L447 150"/><path class="gx-line" d="M434 144 L422 106 L436 74"/><path class="gx-line" d="M436 74 L442 74 M442 67 L442 81 M442 67 L450 67 M442 81 L450 81"/><circle class="gx-box" cx="434" cy="144" r="3.5"/><circle class="gx-box" cx="422" cy="106" r="3.5"/><circle class="gx-box" cx="436" cy="74" r="3.5"/><text class="gx-text" x="434" y="188" text-anchor="middle" style="font-size:14px">System 1</text></g><g transform="translate(5 41) scale(1.2727272727272727)"><g class="gx-el gx-badge" data-lit="1"><circle cx="0" cy="0" r="10"/><text x="0" y="3.8499999999999996" text-anchor="middle">1</text></g></g><g transform="translate(171 41) scale(1.2727272727272727)"><g class="gx-el gx-badge" data-lit="2"><circle cx="0" cy="0" r="10"/><text x="0" y="3.8499999999999996" text-anchor="middle">2</text></g></g><g transform="translate(252 148) scale(1.2727272727272727)"><g class="gx-el gx-badge" data-show="3-" data-lit="3"><circle cx="0" cy="0" r="10"/><text x="0" y="3.8499999999999996" text-anchor="middle">3</text></g></g><g transform="translate(405 41) scale(1.2727272727272727)"><g class="gx-el gx-badge" data-lit="4"><circle cx="0" cy="0" r="10"/><text x="0" y="3.8499999999999996" text-anchor="middle">4</text></g></g><g transform="translate(434 22) scale(1.2727272727272727)"><g class="gx-el gx-badge" data-lit="5"><circle cx="0" cy="0" r="10"/><text x="0" y="3.8499999999999996" text-anchor="middle">5</text></g></g></svg><ol class="gx-rail"><li data-n="1"><button type="button" tabindex="-1"><span class="gx-n">1</span>Now</button></li><li class="gx-sep" aria-hidden="true">→</li><li data-n="2"><button type="button" tabindex="-1"><span class="gx-n">2</span>Imagine</button></li><li class="gx-sep" aria-hidden="true">→</li><li data-n="3"><button type="button" tabindex="-1"><span class="gx-n">3</span>Actions</button></li><li class="gx-sep" aria-hidden="true">→</li><li data-n="4"><button type="button" tabindex="-1"><span class="gx-n">4</span>System 1</button></li><li class="gx-sep" aria-hidden="true">→</li><li data-n="5"><button type="button" tabindex="-1"><span class="gx-n">5</span>Again</button></li><li class="gx-sep" aria-hidden="true">↺</li></ol></div><script type="application/json" id="gx-config">{"steps":[{"label":"Now","readout":"Now · the current camera frame"},{"label":"Imagine","readout":"World model · imagining what happens next"},{"label":"Actions","readout":"Actions, in step with the frames"},{"label":"System 1","readout":"System 1 executes the actions"},{"label":"Again","readout":"A new frame comes in · predict again","hold":3400}],"still":3,"hold":2800,"idle":6000}</script></div></figure></main><script type="module">
+const cfg = JSON.parse(document.getElementById("gx-config").textContent);
+const root = document.querySelector(".gx");
+const readout = document.querySelector("[data-readout]");
+const rail = [...root.querySelectorAll(".gx-rail li[data-n]")];
+const N = cfg.steps.length;
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (reduced) root.classList.add("gx-reduced");
+
+function inRange(spec, s) {
+  return String(spec).split(",").some((part) => {
+    part = part.trim();
+    if (!part) return false;
+    if (!part.includes("-")) return Number(part) === s;
+    const [a, b] = part.split("-");
+    return s >= (a === "" ? 1 : Number(a)) && s <= (b === "" ? Infinity : Number(b));
+  });
+}
+const els = {
+  show: [...root.querySelectorAll("[data-show]")],
+  lit: [...root.querySelectorAll("[data-lit]")],
+  at: [...root.querySelectorAll("[data-at]")].map((el) => ({
+    el,
+    keys: el.dataset.at.split(";").map((kv) => { const [k, v] = kv.split(":"); const [x, y] = v.split(",").map(Number); return [Number(k), x, y]; }).sort((a, b) => a[0] - b[0]),
+  })),
+  draw: [...root.querySelectorAll("[data-draw]")],
+  snap: [...root.querySelectorAll("[data-snap]")],
+};
+for (const g of root.querySelectorAll("[data-stagger]")) {
+  const gap = Number(g.dataset.stagger) || 0;
+  [...g.children].forEach((child, i) => { child.style.transitionDelay = (i * gap) + "ms"; });
+}
+
+let step = Math.min(Math.max(cfg.still || 1, 1), N);
+function apply(s) {
+  step = s;
+  const snapping = els.snap.filter((el) => inRange(el.dataset.snap, s));
+  for (const el of snapping) el.classList.add("gx-snapping");
+  root.dataset.step = String(s);
+  for (const el of els.show) el.classList.toggle("gx-hidden", !inRange(el.dataset.show, s));
+  for (const el of els.lit) el.classList.toggle("gx-lit", inRange(el.dataset.lit, s));
+  for (const { el, keys } of els.at) {
+    let pos = [0, 0];
+    for (const [k, x, y] of keys) if (k <= s) pos = [x, y];
+    el.style.transform = "translate(" + pos[0] + "px," + pos[1] + "px)";
+  }
+  for (const el of els.draw) el.classList.toggle("gx-drawn", inRange(el.dataset.draw, s));
+  rail.forEach((li) => {
+    const n = Number(li.dataset.n);
+    li.classList.toggle("is-active", n === s);
+    li.classList.toggle("is-done", n < s);
+    li.querySelector("button").setAttribute("aria-current", n === s ? "step" : "false");
+  });
+  if (snapping.length) {
+    root.getBoundingClientRect(); // commit the jump before transitions come back
+    requestAnimationFrame(() => { for (const el of snapping) el.classList.remove("gx-snapping"); });
+  }
+  const info = cfg.steps[s - 1];
+  if (readout) readout.textContent = info.readout || "Step " + s + " · " + info.label;
+}
+
+let timer = 0, idle = 0, visible = true, held = false;
+function schedule() {
+  clearTimeout(timer);
+  if (reduced || held || !visible) return;
+  const info = cfg.steps[step - 1];
+  timer = setTimeout(() => { apply(step % N + 1); schedule(); }, info.hold || cfg.hold);
+}
+function hold() {
+  held = true;
+  clearTimeout(timer);
+  clearTimeout(idle);
+  if (!reduced) idle = setTimeout(() => { held = false; schedule(); }, cfg.idle);
+}
+function go(s) { apply(((s - 1 + N) % N) + 1); hold(); }
+
+root.addEventListener("click", (e) => {
+  const li = e.target.closest(".gx-rail li[data-n]");
+  go(li ? Number(li.dataset.n) : step + 1);
+});
+root.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowRight" || e.key === " " || e.key === "Enter") { e.preventDefault(); go(step + 1); }
+  else if (e.key === "ArrowLeft") { e.preventDefault(); go(step - 1); }
+  else if (e.key === "Home") { e.preventDefault(); go(1); }
+});
+new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; if (visible) schedule(); else clearTimeout(timer); }).observe(root);
+
+// Start from step 1 so the first transitions play; reduced motion opens on the still step.
+apply(reduced ? step : 1);
+schedule();
+</script></body></html>

@@ -1,0 +1,122 @@
+---
+title: "The real place of LLMs in robotics"
+date: 2026-11-08
+cover: "/blog/llms-real-place-in-robotics/cover-yam-systems.png"
+---
+<Tweet id="2116727410972590380" />
+
+Every week there's a new tweet saying robotics is solved. Someone hooks ChatGPT, Astra or Fable up to an arm, it picks up a block, and the replies call it the end of the field.
+
+Most of the people saying this don't understand what these models are actually doing. So let's start from the bottom.
+
+## Start with control
+
+The basic layer of any robot is deterministic control. You know where you are, you know where you want to be, and control theory gets you there. This part is old, well understood, and it works.
+
+Waymo is the cleanest example. A car with lidar and a good controller can hold a lane, keep its distance and follow a path. But driving is full of decisions that aren't obvious from lidar and control theory alone. A person is crossing. There's a stop sign. A police officer is waving you through. Nothing in the controller tells you what to do there.
+
+## What the world model is for
+
+That's why Waymo talks so heavily about its investment in world models: models that understand the world from video and decide what should happen next.
+
+The stack looks like this. The world model is the high-level, slow layer. It takes in everything the car sees, decides what the next state of the world should be, and directs the car on what decision to make. Below it, the controller does the actual moving: which wheel actions get the car to that state.
+
+<Diagram src="/blog/llms-real-place-in-robotics/figures/fig-1.html" title="The driving stack" caption="The world model decides to yield. The controller does the braking." />
+
+This balance, a slow layer that decides and a fast layer that moves, is what LLMs in robotics will actually look like.
+
+It helps to give the layers names. **System 1** is low-level control: fast, deterministic, the thing that actually moves the wheels or the joints. **System 2** understands the world and decides what should happen next, like Waymo's world model. **System 3** sits on top of both: slow, high-level reasoning about what the robot should be doing at all. That's where an LLM belongs.
+
+<Diagram src="/blog/llms-real-place-in-robotics/figures/fig-6.html" title="Sense, decide, move" caption="Every loop: read the sensors, decide from what's there, then move." />
+
+## Now follow that into robotics
+
+Lots of people show demos of robots planning what to do just from what they see. The biggest drawback is that all of these need heavy calibration.
+
+The LLM is just looking at a flat camera. And too much data from the other sensors (a depth camera, joint states, and so on) can overwhelm the context of any cheap model.
+
+<Figure src="/projects/geonosis-ai/02-real-yam-arm.jpg" caption="My YAM arm from Geonosis-AI. One top camera on the pole, one on the wrist." alt="An I2RT YAM arm clamped to a wooden desk against a white wall, a camera on a pole behind it, a small orange cube on the table and a light panel on the left" />
+
+<Diagram src="/blog/llms-real-place-in-robotics/figures/fig-8.html" title="What the model sees" caption="A flat image fits. Every sensor you add crowds the context." />
+
+## What's actually happening
+
+What's really going on in most of these demos is that Claude Code is writing code to deterministically control the robot.
+
+It calls tools to calibrate. Then it calls a tool like "grab X Y" off an OpenCV camera, which has been done for decades now.
+
+The control of that loop is completely ignored and wished away. How does the robot work out how to move the end effector to grab something oddly placed? Usually you see the AI get close, calibrate again, then go in.
+
+<Diagram src="/blog/llms-real-place-in-robotics/figures/fig-9.html" title="The demo loop" caption="Most demos: write code, calibrate, detect, get close, calibrate again, go in." />
+
+And from this, how do you even train the model? Fable and Astra are closed source. The Chinese models are trillions of parameters, and fine-tuning them on robot data is frankly a waste, for hopefully obvious reasons.
+
+For demos, this works. That's especially true for pick and place, because pick and place is essentially solved at this point.
+
+## Why this isn't Waymo
+
+This is fundamentally different from what Waymo is doing.
+
+World models are not writing code. Writing code is insanely slow and error prone (AI taking down prod is enough to know this). Instead, world models make decisions on what to do: wait for the person to cross, slow down for the police officer. That just will not work by writing code.
+
+Waymo most likely does use LLMs for more complex decisions too, a System 3 on top. But those decisions are slower, and the main stack they talk about is a world model that uses everything it sees to decide what the next state of the world is, and how to get the car there.
+
+## Where LLMs actually fit
+
+So here's the lesson. LLMs are very promising for anything that requires intelligence: reasoning about what to do.
+
+They still struggle with images. This is very apparent in frontend design. Things come out misaligned, and the AI just can't get it perfect from screenshotting the web page. That will likely get better, but the fundamental bottleneck is that these models are built for text, and the world just isn't text.
+
+Using them for decision making, though, is very doable at a high level.
+
+### A security patrol
+
+Say you have a security patrol robot and a dog, and you want an agent to decide where each robot goes.
+
+The most control the agent should ever get is deciding where the dog should go. Maybe this place is empty, maybe there's an event, maybe a person was detected. That's the kind of reasoning it's good at.
+
+Picking the path the dog follows? Hell no. At most it can pass constraints, like "this path is closed", to a planner. From there, SLAM or an EKF with Nav2 and a lidar decides the actual robot control.
+
+In system terms: the agent is System 3, the planner is System 2, and the controller is System 1.
+
+<Diagram src="/blog/llms-real-place-in-robotics/figures/fig-3.html" title="The patrol stack" caption="The agent picks the goal and closes a corridor. The planner and the controller do the rest." />
+
+The only thing the LLM did was decide, from an insanely high orchestrator level, what should happen. No actual control. That's an effective use case.
+
+## The factory problem
+
+Then there's the Twitter slop of people demoing their arms doing pick and place. Pick and place is easy because nothing in the world changes except the effects of what you do.
+
+Now take a factory, where bags get passed to you quickly. Can you really trust that a high-intelligence model will see quickly enough, and reason quickly enough, about what to do? Not a chance. Or the cost will be high.
+
+<Diagram src="/blog/llms-real-place-in-robotics/figures/fig-12.html" title="Pick and place vs the factory" caption="Pick and place waits for you. A factory line doesn't." />
+
+## What researchers actually do
+
+What actual PhD researchers do is, well, actual ML. They train the robot on the expected behavior and control: VLAs, WAMs, even RL (though RL is kind of a dead end for anything that relies on generalizing outside what it has seen).
+
+<Figure src="/projects/geonosis-ai/04-phone-teleop-real-arm.jpg" caption="Collecting a clean teleop demo from a phone for a fine-tune, from Geonosis-AI." alt="Side by side: a phone showing the teleop page with top and wrist camera feeds, a Move stick, Grip, Up/down and Tilt controls and a recording timer, and a photo of the real YAM arm it is driving" ratio="wide" />
+
+A VLA (vision-language-action model) takes in the camera and the instruction, runs them through a transformer backbone, and puts out a chunk of robot actions instead of text.
+
+<Diagram src="/blog/llms-real-place-in-robotics/figures/fig-10.html" title="Inside a VLA" caption="The same kind of transformer as an LLM, but out comes motion, not text." />
+
+A WAM (world action model) goes a step further. It predicts what the world will look like next and the actions that get it there, together.
+
+<Diagram src="/blog/llms-real-place-in-robotics/figures/fig-11.html" title="Inside a WAM" caption="The imagined future and the actions that get there, predicted together." />
+
+Yes, VLAs follow the same architecture as an LLM, a transformer. But that's pretty much where it ends, and just calling one an LLM is frankly not right.
+
+A robot can't just say "oh, something happened, let me step back and replan." Robots should act more like people.
+
+## Speed and cost
+
+Then there's the argument about speed and cost. Robotics is a low-latency system, and the faster the model can think, the more reliable the robot is.
+
+<Diagram src="/blog/llms-real-place-in-robotics/figures/fig-7.html" title="Three speeds" caption="The fast layers keep the robot alive. The slow one only steers." />
+
+A trillion-parameter model taught to solve math proofs or do finance is wasted compute, and you're paying for all of it.
+
+## Let's be realistic
+
+Robotics is the future, and hopefully it gets solved soon. But we need to actually learn the material first.
