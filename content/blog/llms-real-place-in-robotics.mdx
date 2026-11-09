@@ -19,6 +19,8 @@ Waymo is the cleanest example. A car with lidar and a good controller can hold a
 
 That's why Waymo talks so heavily about its investment in world models: models that understand the world from video and decide what should happen next.
 
+<Video youtube="Gp4zrV3-6N8" title="Waymo Co-CEO Dmitri Dolgov: The Demo Is Only 1% Of The Work" caption="Waymo co-CEO Dmitri Dolgov on Y Combinator: the demo is only 1% of the work." />
+
 The stack looks like this. The world model is the high-level, slow layer. It takes in everything the car sees, decides what the next state of the world should be, and directs the car on what decision to make. Below it, the controller does the actual moving: which wheel actions get the car to that state.
 
 <Diagram src="/blog/llms-real-place-in-robotics/figures/fig-1.html" title="The driving stack" caption="The world model decides to yield. The controller does the braking." />
@@ -119,4 +121,4 @@ A trillion-parameter model taught to solve math proofs or do finance is wasted c
 
 ## Let's be realistic
 
-Robotics is the future, and hopefully it gets solved soon. But we need to actually learn the material first.
+Robotics is the future, and hopefully it gets solved soon. But we should make mature decisions, built on decades of work from people significantly smarter than us.
