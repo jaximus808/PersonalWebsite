@@ -129,3 +129,31 @@ A trillion-parameter model taught to solve math proofs or do finance is wasted c
 ## Let's be realistic
 
 Robotics is the future, and hopefully it gets solved soon. But we should make mature decisions, built on decades of work from people significantly smarter than us.
+
+## Addendum: after Fable 5.2
+
+After I posted this, Fable 5.2 came out, and we shipped [Draw.Northstar](/projects/draw-northstar): Fable 5.2 drawing people's pictures with a real robot arm, with no human in the loop.
+
+This project was a case of how an LLM could be made effective in robotics. It follows the same philosophy as a coding harness: don't make the agent do more work than it needs to. It's obvious that scanning the codebase each time is how you waste tokens, and will likely degrade performance. There are even pushes in removing adversarial agent reviews, and just add lint rules to your code (shout out @poteto on X). These systems of determinism are just incredibly important to speed and performance, as a context fully focused on solving a hard problem, without the noise, is optimal for the best intelligent output.
+
+LLMs are kind of great, and will 100% get better, at robotics that requires strategy and planning into the future. Drawing is exactly this as you just need to plan how to move the pen to draw said person, then you have lots of time to, look, replan, and fix. Planning how to use a fleet of robot dogs to find an intruder. It's also likely very great at figuring out a solution to a truly novel scenario from first principles, where there is no possible way to prepare a model before hand.
+
+### The LLM weaknesses
+
+Sometimes in the real world, you just gotta wing it for the sake of speed. If I'm carrying a person out a building, I don't have time to plan out even any action to escape said fire. I just need to move forward with some intuition of strategy that I apply to my local planning.
+
+Waymos do this, they plan a large global path, and as the world changes they adapt its local plan of motion in real time. This is even outside what their lidar picks up. Their world model will detect a cop car that appears, that may have no obvious chance of collision, to change the plan to get out the way. A cop car has no damn time to wait for you to plan how to move out the way, you just gotta move!
+
+Another point is that in a real scenario, an LLM powering a robot won't often have the luxury to try again and just improve its harness. Dropped the glass, crashed a car, hit someone. These actions have an acceptable error bar of 0%. Robotics just can't be functional if it's always in a state of "shit" and improvement. It must be deployed and be perfect in the realms of a human alternative, there is no compromise.
+
+Lastly is speed, the LLM needed to reason heavily about the world each time, almost from scratch. It needed around 12 camera looks per drawing, and imagine if the scene was moving. Disaster! Even if we get to magical world of 10k TPS, the LLM needing to take an image, move closer, and take an image, is obviously NOT bottle-necked by tokens.
+
+<Diagram src="/blog/llms-real-place-in-robotics/figures/fig-13.html" title="If thinking were free" caption="Faster tokens shrink the thinking. The arm still takes its time." />
+
+### My Bet on the Future
+
+I am bullish about systems that use the best of 2 good, general models, that compensate each other's weaknesses. Multi-stage reasoning and planning just fundamentally will always be slow, and often will be bottle necked by the speed of capturing more info. No amount of TPS will fix this. World Models pretty much skip the reasoning and just go from image to actions, which is much better in a system that is latency bound.
+
+<Diagram src="/blog/llms-real-place-in-robotics/figures/fig-14.html" title="Two models" caption="A slow model that plans, and a fast one that acts." />
+
+The world operates as a society of experts in many specific areas and trade-offs. This is almost organized by nature, and I hope we follow suit. I am fearing, that this narrative of one singular model is pushed by greed and monetary gain.
