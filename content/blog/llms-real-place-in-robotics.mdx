@@ -11,21 +11,21 @@ Unfortunately, most of the people saying this don't understand what these models
 
 ## Start with control
 
-The basic layer is deterministic control. The robot localizes where it is, then given some goal that shares your frame of reference, and control theory gets you there. This part is old, well understood, and it works.
+The basic layer is deterministic control. The robot localizes where it is, then is given some goal that shares your frame of reference, and control theory gets you there. This part is old, well understood, and it works.
 
 Waymo is the cleanest example. A car with lidar and a good controller can hold a lane, keep its distance and follow a path. But driving is full of decisions that aren't obvious from lidar and control theory alone. A person is crossing. There's a stop sign. A police officer is waving you through. Nothing in the controller tells you what to do there.
 
 ## Then the World Models
 
-That's why Waymo talks so heavily about its investment in world models. Models that understand the world from a fusion of video, lidar, sound, and more, and predicts its best action from that world.
+That's why Waymo talks so heavily about its investment in world models. Models that understand the world from a fusion of video, lidar, sound, and more, and predict the best action from that world.
 
 <Video youtube="Gp4zrV3-6N8" title="Waymo Co-CEO Dmitri Dolgov: The Demo Is Only 1% Of The Work" caption="Waymo co-CEO Dmitri Dolgov on Y Combinator: the demo is only 1% of the work." />
 
-The world model is the high-level, slow layer. Once the world model understands the world and decides an action to take, the actual control make that happen. However the world model does not decide the literal car movement, but instead where the car goes. Then the controller does the actual moving: which wheel actions get the car to that state.
+The world model is the high-level, slow layer. Once the world model understands the world and decides an action to take, the actual control makes that happen. However, the world model does not decide the literal car movement, but instead where the car goes. Then the controller does the actual moving: which wheel actions get the car to that state.
 
 <Diagram src="/blog/llms-real-place-in-robotics/figures/fig-1.html" title="The driving stack" caption="The world model decides to yield. The controller does the braking." />
 
-This balance, a slow layer that decides and a fast layer that moves, is very similar to how LLMs in robotics will actually look like.
+This balance, a slow layer that decides and a fast layer that moves, is very similar to what LLMs in robotics will actually look like.
 
 It helps to give the layers names. **System 1** is low-level control: fast, deterministic, the thing that actually moves the wheels or the joints. **System 2** understands the world and decides what should happen next, like Waymo's world model. **System 3** sits on top of both: slow, high-level reasoning about what the robot should be doing at all.
 
@@ -63,7 +63,7 @@ This is fundamentally different from what Waymo is doing.
 
 World models are not writing code. Writing code is insanely slow and error prone (AI taking down prod is enough to know this). Instead, world models make decisions on what to do: wait for the person to cross, slow down for the police officer. That just will not work by writing code.
 
-Waymo most likely does use LLMs for more complex decisions too, a System 3 on top. But those decisions are slower, and are more intelligent bound. The main stack they talk about is a world model that uses everything it sees to decide what the next state of the world is, and how to get the car there.
+Waymo most likely does use LLMs for more complex decisions too, a System 3 on top. But those decisions are slower, and are more intelligence bound. The main stack they talk about is a world model that uses everything it sees to decide what the next state of the world is, and how to get the car there.
 
 ## Where LLMs actually fit
 
