@@ -1,0 +1,117 @@
+---
+title: "Automating latency research with ARC Bench"
+date: 2026-11-13
+---
+ARC has one of the fastest relays in the market. It carries robot camera video to a teleoperator's headset and commands back to the robot. Near the robot, an operator gets every main-camera frame with a p99 frame delay of 19 ms. From India, a hand movement becomes a robot command in 133 ms.
+
+We tuned the relay for operators on the other side of the world, on connections that drop packets in bursts. It now delivers 91% of main-camera frames on the poor India link, and 99% on the clean India link and Brazil. Frozen video on the poor link is down to 3 seconds a minute from 38.
+
+The poor India profile was the hard case we targeted. Before tuning, it delivered 10% of main-camera frames. Median latency was already good, so we left it alone and focused on video delivery. The near link remains as fast as it was.
+
+<Diagram src="/blog/automating-latency-research/figures/fig-3.html" title="Frames delivered" caption="Main-camera frames that reached the operator end, by link profile. The profiles are defined below. Two-minute runs through the relay, two to four runs per bar." />
+
+We used an AI agent to tune the relay with ARC Bench, our test bench. The agent formed a hypothesis, changed the relay, tested it, checked the results, and chose what to try next. It completed 117 two-minute runs across 11 rounds on one small cloud machine, for under a dollar of compute.
+
+This post is about that loop, and the bench that made it possible.
+
+## How ARC Bench works
+
+We built ARC Bench to test the relay without a person in a headset. It sends traffic from both ends through the production relay code, using the production protocol over real QUIC connections.
+
+All of it runs on a runner, a cloud machine that starts when a test is queued and shuts down when it has nothing to do.
+
+<Diagram src="/blog/automating-latency-research/figures/fig-1.html" title="The runner" caption="One cell on the runner: start the relay, shape the link, run traffic for two minutes, timestamp everything, tear it down." />
+
+There are three pieces on the runner:
+
+- **Robot end:** a process that sends three camera streams at production sizes and rates. The main camera sends 15 frames a second at about 20 kB a frame, and two wrist cameras send 8.
+- **Operator end:** a process that sends hand poses 72 times a second, as the headset does, and receives the video.
+- **The link:** each end runs in its own Linux network namespace, and the kernel delays, jitters, drops and rate-limits every packet between the operator and the relay to match a link profile.
+
+A test is a matrix. We pick a set of link profiles and a set of relay settings, and the runner works through every combination. Each combination is one cell, and each cell goes like this:
+
+1. Start the relay with that cell's settings, then the robot end and the operator end.
+2. Shape the link to that cell's profile.
+3. Run traffic for two minutes: video one way, hand poses and commands the other.
+4. Timestamp every frame and every command where it is sent and where it lands.
+5. Work out how much video arrived, how long it froze, how late frames were, and how long a hand movement took to become a robot command.
+6. Tear everything down and move to the next cell.
+
+The results come back as a grid of links against settings, which shows which change helps which link and whether it costs anything elsewhere. Each cell also keeps its full logs, so a surprising number can be traced to the second it happened.
+
+The grid tells the agent whether a change worked. The logs help it work out why.
+
+## What we measured
+
+We ran five link profiles. Each one is a fixed set of network conditions between the operator and the relay, named for the operator it stands for. The robot is in the San Francisco Bay Area in all of them.
+
+| Profile | Round trip | Jitter | Packet loss | Capacity |
+| --- | --- | --- | --- | --- |
+| Same region | 2 ms | 0.3 ms | none | 1 Gbit/s |
+| Brazil | 170 ms | 8 ms | 0.3% | 1 Gbit/s |
+| Good India | 250 ms | 5 ms | 0.1% | 1 Gbit/s |
+| Bad India | 270 ms | 15 ms | 1.5%, in bursts | 1 Gbit/s |
+| Thin India | 250 ms | 5 ms | 0.1% | 2.5 Mbit/s |
+
+The three cameras together send about 3.1 Mbit/s. Four of the profiles have far more room than that, so delay and loss are their only obstacles. Thin India is the one profile where the link itself is too small.
+
+Public cloud measurements put US West to India at 194 to 238 ms round trip between data centres, so the three India profiles sit at or past the slow end of real paths.
+
+## The loop
+
+The agent ran each test with a command, then read the grid and logs to decide what to try next. Each round followed the same steps:
+
+<Diagram src="/blog/automating-latency-research/figures/fig-2.html" title="The research loop" caption="One round on the bad India link: hypothesis, change, test, validate, iterate." />
+
+1. **Hypothesis.** Read the last round's grid and logs, and say what limits the relay on that link.
+2. **Change.** Change the relay to test that one idea, behind a setting.
+3. **Test.** Queue the matrix. The runner works through every link with the new settings.
+4. **Validate.** Read the grid for the result and the logs for the reason. Check the links that were already fine.
+5. **Iterate.** Keep the change, revise it, or throw it out. Then form the next hypothesis.
+
+## What we found
+
+The agent found three changes that improved video delivery.
+
+- **Delay-based congestion control.** The new controller slows down when round-trip time shows a queue building and treats an isolated lost packet as noise. The previous loss-based controller halves its send rate on every lost packet. That works well on short links. Delay-based control delivers more of the 300 kB/s video stream on long links with random loss.
+- **A higher frame-skipping threshold.** The relay now skips frames at 5% loss. The previous threshold was 1%, which reduced delivery to a third of the frames on a link with 1.5% loss.
+- **Smaller frames on a thin link.** The relay now asks the robot for smaller frames before dropping frames, so it can keep the frame rate when capacity is limited.
+
+The grid shows main-camera frames delivered for each link. Each column adds a change to the settings in the column before it. A dash marks a cell we did not run.
+
+<Diagram src="/blog/automating-latency-research/figures/fig-6.html" title="The grid" caption="Main-camera frames delivered for each link profile under each set of relay settings. Stronger blue is better." />
+
+More error-correction data delivered more frames but increased the worst delay, so we left it out. The agent also found three bugs in the bench.
+
+## Results
+
+<Diagram src="/blog/automating-latency-research/figures/fig-7.html" title="Before and after" caption="Before and after on each link profile." />
+
+Frozen per minute and frame delay cover all three cameras. Frame delay measures the time from the robot sending a frame to the operator end receiving the complete frame.
+
+The same-region link stays as fast as it was, which is what we wanted. On the long links with ample capacity, the main camera now delivers nearly every frame, and p99 frame delay is three to five times lower.
+
+Commands are untouched. Hand-to-command delay stays at 133 ms on the good India link and 157 ms on the bad one, before and after.
+
+On the bad India profile, the median main-camera frame now arrives in 171 ms, down from 1,053 ms. The profile still adds 135 ms of network delay each way. The reduction comes from less time queued in the relay.
+
+<Diagram src="/blog/automating-latency-research/figures/fig-4.html" title="Frame delay" caption="The whole distribution on the bad India link. For any delay on the horizontal axis, the line shows what share of delivered main-camera frames were slower. Lower is better, and the 1% line is p99. One run each. The before line stops near 2% because that run delivered only 164 frames, against 1,645 after." />
+
+## Two minutes on the bad link
+
+After tuning, the operator receives 12 to 15 of the main camera's 15 frames per second for almost the whole two-minute run on the bad link. Before tuning, delivery stayed below 5 frames in any second.
+
+<Diagram src="/blog/automating-latency-research/figures/fig-5.html" title="Second by second" caption="Main-camera frames delivered in each second of a two-minute run on the bad India link. The camera sends 15 a second. One run each." />
+
+## Limits of these numbers
+
+- The link profiles are built from published path figures. A run with a live operator in India comes next.
+- The bench covers the relay, the protocol and the network path. Camera capture and headset display time are outside it.
+- Each run is two minutes. Results repeat within about 2 points on the bad link, and the delay distribution and the second-by-second chart each show a single run.
+- The thin-link result depends on the robot sending smaller frames on request. The bench's robot does this today and our robot software does not yet.
+- The thin link still freezes for 4.5 seconds a minute, which is more than we want.
+- Brazil and Same region were run with frame skipping off, which behaves the same as the final settings when loss is under 5%.
+
+## Availability
+
+The new controller and frame-skipping threshold are in the relay behind a setting. We will test them on our staging relay, then move them to production once the numbers hold there. The long-link gains require no changes to the robot or headset.

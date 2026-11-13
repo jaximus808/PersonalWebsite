@@ -1,0 +1,132 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Second by second</title><style>
+.iso{
+  --anatomy-page:#0b0b0b;--anatomy-card:#131313;--anatomy-text:#a3a3a3;--anatomy-strong:#e6e6e6;--anatomy-muted:#6e6e6e;
+  --anatomy-paper:#131313;--anatomy-face:#1b1b1b;--anatomy-top:#1c1c1c;
+  --anatomy-shade-0:#0f0f0f;--anatomy-shade-1:#121212;--anatomy-shade-2:#151515;--anatomy-shade-3:#181818;
+  --anatomy-lit-top:#262626;--anatomy-lit-shade:#1d1d1d;
+  --anatomy-hi:#d4d4d4;--anatomy-mid:#6a6a6a;--anatomy-lo:#3e3e3e;--anatomy-faint:#2a2a2a;--anatomy-lit:#ffffff;
+  --anatomy-halo:#050505;--anatomy-halo-opacity:.9;--anatomy-dot:#e6e6e6;
+  --anatomy-red:#ff6b6b;--anatomy-green:#6be0a0;--anatomy-blue:#6b9bff;
+  --anatomy-weight:.6px;--anatomy-ease:cubic-bezier(.32,.72,0,1);
+  --anatomy-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --anatomy-lift:inset 0 1px 0 0 #ffffff0a,inset 0 0 0 1px #ffffff06,0 0 0 1px #00000026,0 1px 1px -.5px #00000014,0 3px 3px -1.5px #00000014,0 6px 6px -3px #00000014,0 12px 12px -6px #00000014;
+}
+.iso[data-theme="light"]{
+  --anatomy-page:#f2f2ef;--anatomy-card:#fbfbfa;--anatomy-text:#57575a;--anatomy-strong:#18181a;--anatomy-muted:#8c8c90;
+  --anatomy-paper:#fbfbfa;--anatomy-face:#ffffff;--anatomy-top:#ffffff;
+  --anatomy-shade-0:#dcdcd9;--anatomy-shade-1:#e5e5e2;--anatomy-shade-2:#ededea;--anatomy-shade-3:#f4f4f1;
+  --anatomy-lit-top:#ffffff;--anatomy-lit-shade:#eeeeeb;
+  --anatomy-hi:#26262a;--anatomy-mid:#8a8a8f;--anatomy-lo:#b4b4b8;--anatomy-faint:#d4d4d6;--anatomy-lit:#000000;
+  --anatomy-halo:#8a8a80;--anatomy-halo-opacity:.32;--anatomy-dot:#3a3a3e;
+  --anatomy-red:#e5484d;--anatomy-green:#30a46c;--anatomy-blue:#3e63dd;
+  --anatomy-lift:inset 0 1px 0 0 #ffffff,0 0 0 1px #0000000f,0 1px 1px -.5px #0000000a,0 3px 3px -1.5px #0000000a,0 6px 6px -3px #0000000a,0 12px 12px -6px #0000000a;
+}
+.iso-svg{display:block;width:100%;height:auto;overflow:visible}
+.iso-svg path,.iso-svg circle{vector-effect:non-scaling-stroke}
+.iso-fill{fill:var(--anatomy-paper);stroke:none}
+.iso-solid[data-lit]>.iso-fill{fill:var(--anatomy-face)}
+.iso-shade,.iso-top{stroke:none}
+.iso-shade[data-shade="0"]{fill:var(--anatomy-shade-0)}
+.iso-shade[data-shade="1"]{fill:var(--anatomy-shade-1)}
+.iso-shade[data-shade="2"]{fill:var(--anatomy-shade-2)}
+.iso-shade[data-shade="3"]{fill:var(--anatomy-shade-3)}
+.iso-top{fill:var(--anatomy-top)}
+.iso-solid[data-lit]>.iso-top{fill:var(--anatomy-lit-top)}
+.iso-solid[data-lit]>.iso-shade{fill:var(--anatomy-lit-shade)}
+.iso-solid[data-seamless]>.iso-shade,.iso-solid[data-seamless]>.iso-top{stroke-width:.4;stroke-linejoin:round}
+.iso-solid[data-seamless]>.iso-shade[data-shade="0"]{stroke:var(--anatomy-shade-0)}
+.iso-solid[data-seamless]>.iso-shade[data-shade="1"]{stroke:var(--anatomy-shade-1)}
+.iso-solid[data-seamless]>.iso-shade[data-shade="2"]{stroke:var(--anatomy-shade-2)}
+.iso-solid[data-seamless]>.iso-shade[data-shade="3"]{stroke:var(--anatomy-shade-3)}
+.iso-solid[data-seamless]>.iso-top{stroke:var(--anatomy-top)}
+.iso-solid[data-seamless][data-lit]>.iso-top{stroke:var(--anatomy-lit-top)}
+.iso-solid[data-seamless][data-lit]>.iso-shade{stroke:var(--anatomy-lit-shade)}
+.iso-solid[data-lit]>.iso-edge{stroke:var(--anatomy-lit)}
+.iso-halo{fill:var(--anatomy-halo);stroke:none;filter:blur(9px);opacity:var(--anatomy-halo-opacity);transform:translateY(3px)}
+.iso-line{fill:none;stroke:var(--anatomy-lo);stroke-width:var(--anatomy-weight);stroke-linecap:round;stroke-linejoin:round}
+.iso-line[data-tone="hi"]{stroke:var(--anatomy-hi)}
+.iso-line[data-tone="mid"]{stroke:var(--anatomy-mid)}
+.iso-line[data-tone="lo"]{stroke:var(--anatomy-lo)}
+.iso-line[data-tone="faint"]{stroke:var(--anatomy-faint)}
+.iso-line[data-tone="lit"]{stroke:var(--anatomy-lit)}
+.iso-line[data-tone="red"]{stroke:var(--anatomy-red)}
+.iso-line[data-tone="green"]{stroke:var(--anatomy-green)}
+.iso-line[data-tone="blue"]{stroke:var(--anatomy-blue)}
+.iso-line[data-dotted]{stroke-dasharray:.01 3.5;stroke-width:1}
+.iso-line[data-dashed]{stroke-dasharray:3 3}
+.iso-line[data-flow]{stroke-dasharray:2 6}
+.iso-wire-end{fill:var(--anatomy-paper);stroke:var(--anatomy-lo);stroke-width:var(--anatomy-weight)}
+.iso-wire[data-tone="hi"] .iso-wire-end{stroke:var(--anatomy-hi)}
+.iso-wire[data-tone="mid"] .iso-wire-end{stroke:var(--anatomy-mid)}
+.iso-wire[data-tone="faint"] .iso-wire-end{stroke:var(--anatomy-faint)}
+.iso-wire[data-tone="lit"] .iso-wire-end{stroke:var(--anatomy-lit)}
+.iso-dots circle{fill:var(--anatomy-dot);stroke:none;opacity:.32}
+.iso-dots[data-tone="hi"] circle{opacity:.85}
+.iso-dots[data-tone="mid"] circle{opacity:.45}
+.iso-dots[data-tone="lo"] circle{opacity:.22}
+.iso-dots[data-tone="faint"] circle{opacity:.12}
+.iso-face-text{fill:var(--anatomy-mid);font-family:var(--anatomy-mono);letter-spacing:.04em}
+.iso-face-text[data-tone="hi"]{fill:var(--anatomy-hi)}
+.iso-face-text[data-tone="lo"]{fill:var(--anatomy-lo)}
+.iso-face-text[data-tone="faint"]{fill:var(--anatomy-faint)}
+.tb-body{fill:var(--anatomy-shade-2);stroke:none}
+.tb-shine{fill:var(--anatomy-top);stroke:none}
+.tb-shade{fill:var(--anatomy-shade-0);stroke:none}
+.tb-ring{fill:none;stroke:var(--anatomy-lo);stroke-width:.45;stroke-linecap:butt;stroke-linejoin:round}
+.tb-ring[data-tone="mid"]{stroke:var(--anatomy-mid)}
+.tb-ring[data-tone="faint"]{stroke:var(--anatomy-faint)}
+.tb-ring[data-tone="hi"]{stroke:var(--anatomy-hi)}
+@keyframes iso-flow{to{stroke-dashoffset:-32}}
+@keyframes iso-pulse{0%,100%{opacity:.18}12%{opacity:1}40%{opacity:.18}}
+.iso-line[data-flow]{animation:iso-flow 1600ms linear infinite}
+.iso-dots circle[data-pulse]{animation:iso-pulse 1600ms steps(1,end) infinite;animation-delay:var(--pulse-at,0ms)}
+.iso-figure{margin:32px 0 36px}
+.iso-plate{position:relative;padding:52px 24px;border-radius:0;background:var(--anatomy-card);box-shadow:0 0 0 1px var(--anatomy-mid);--anatomy-paper:var(--anatomy-card)}
+.iso-plate-corners{position:absolute;inset:18px 20px;pointer-events:none}
+.iso-plate-corner{position:absolute;color:var(--anatomy-muted);font-family:var(--anatomy-mono);font-size:10.5px;line-height:1;letter-spacing:.04em;white-space:nowrap}
+.iso-plate-corner[data-corner="fig"]{top:0;left:0;color:var(--anatomy-text)}
+.iso-plate-corner[data-corner="title"]{top:0;right:0;text-transform:uppercase;letter-spacing:.1em}
+.iso-plate-corner[data-corner="hint"]{bottom:0;left:0;text-transform:uppercase;letter-spacing:.1em}
+.iso-plate-corner[data-corner="readout"]{right:0;bottom:0;color:var(--anatomy-text);font-variant-numeric:tabular-nums}
+.iso-plate .iso-svg{margin:0 auto}
+.iso-legend{display:grid;gap:8px;margin-top:12px;color:var(--anatomy-muted);font-size:13px;line-height:1.55}
+.iso-keys{display:flex;flex-wrap:wrap;gap:6px 18px}
+.iso-key{display:inline-flex;align-items:center;gap:7px}
+.iso-swatch{width:16px;height:10px;flex:none;overflow:visible}
+.iso-swatch path{fill:none;stroke:var(--anatomy-hi);stroke-width:1;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round}
+.iso-swatch[data-mark="raised"] path,.iso-swatch[data-mark="flat"] path{stroke:var(--anatomy-mid)}
+.iso-swatch[data-mark="lit"] path{stroke:var(--anatomy-lit)}
+.iso-swatch[data-mark="dim"] path{stroke:var(--anatomy-lo)}
+.iso-swatch[data-mark="dotted"] path{stroke-dasharray:.01 3;stroke-width:1.4}
+.iso-swatch[data-mark="dashed"] path{stroke-dasharray:3 2.5}
+.iso-swatch[data-mark="red"] path{stroke:var(--anatomy-red)}
+.iso-swatch[data-mark="green"] path{stroke:var(--anatomy-green)}
+.iso-swatch[data-mark="blue"] path{stroke:var(--anatomy-blue)}
+.iso-swatch-crease{stroke:var(--anatomy-lo)!important}
+@media (max-width:560px){.iso-plate{padding:48px 12px 70px}.iso-plate-corner[data-corner="hint"]{bottom:18px}}
+@media (prefers-reduced-motion:reduce){.iso-line[data-flow],.iso-dots circle[data-pulse]{animation:none}}
+
+*{box-sizing:border-box}
+html{color-scheme:dark}
+body[data-theme="light"]{color-scheme:light}
+body{margin:0;background:var(--anatomy-page);color:var(--anatomy-text);font:14px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+.iso-page{width:min(650px,100% - 32px);margin:64px auto 96px}
+</style><style>html,body{background:transparent}.iso-page{width:auto;margin:0}.iso-figure{margin:1px 1px 2px}</style></head><body class="iso" data-theme="dark"><main class="iso-page"><style>
+.cx{display:block;width:100%;height:auto;overflow:visible;font-family:Montserrat,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+.cx text{fill:#a3a3a3;font-size:13px}
+.cx .tick{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:12px;fill:#8a8a8a}
+.cx .val{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:12px;fill:#ededed}
+.cx .valb{fill:#8a8a8a}
+.cx .lab{fill:#ededed;font-size:13px}
+.cx .head{font-size:12px;fill:#a3a3a3}
+.cx .cell{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:14px;fill:#a3a3a3}
+.cx .cell.hi{fill:#ededed}
+.cx .pair{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:12px}
+.cx .pair .b{fill:#8a8a8a}.cx .pair .ar{fill:#5a5a5a}.cx .pair .a{fill:#a3cbff}
+.cx .grid{stroke:#262626;stroke-width:1}
+.cx .axis{stroke:#4d4d4d;stroke-width:1}
+.cx .ref{stroke:#6b6b6b;stroke-width:1;stroke-dasharray:3 4}
+.cx .fb{fill:#6b6b6b}.cx .fa{fill:#a3cbff}
+.cx .lb{stroke:#8a8a8a;fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.cx .la{stroke:#a3cbff;fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+</style><figure class="iso-figure"><div class="iso-plate"><div class="iso-plate-corners" aria-hidden="true"><span class="iso-plate-corner" data-corner="fig">Fig 7</span><span class="iso-plate-corner" data-corner="title">Second by second</span><span class="iso-plate-corner" data-corner="hint">Bad India · frames each second</span><span class="iso-plate-corner" data-corner="readout" data-readout>The camera sends 15 a second</span></div><svg class="cx" viewBox="0 0 480 262" role="img" aria-label="Two bar charts of main-camera frames delivered in each second of a two-minute run on the bad India link. Before: between 0 and 4 frames a second. After: between 9 and 15, mostly 13 to 15."><text x="30" y="15" class="lab" text-anchor="start">Before</text><line x1="30" y1="108" x2="476" y2="108" class="axis"/><text x="22" y="112" class="tick" text-anchor="end">0</text><line x1="30" y1="80" x2="476" y2="80" class="grid"/><text x="22" y="84" class="tick" text-anchor="end">5</text><line x1="30" y1="52" x2="476" y2="52" class="grid"/><text x="22" y="56" class="tick" text-anchor="end">10</text><line x1="30" y1="24" x2="476" y2="24" class="ref"/><text x="22" y="28" class="tick" text-anchor="end">15</text><rect class="fb" x="33.72" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="63.45" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="67.17" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="78.32" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="82.03" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="85.75" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="89.47" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="93.18" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="96.90" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="100.62" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="104.33" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="108.05" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="111.77" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="115.48" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="119.20" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="122.92" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="126.63" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="130.35" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="134.07" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="141.50" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="145.22" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="148.93" y="91.2" width="2.72" height="16.8"/><rect class="fb" x="152.65" y="91.2" width="2.72" height="16.8"/><rect class="fb" x="156.37" y="91.2" width="2.72" height="16.8"/><rect class="fb" x="160.08" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="163.80" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="167.52" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="171.23" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="174.95" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="178.67" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="182.38" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="186.10" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="189.82" y="91.2" width="2.72" height="16.8"/><rect class="fb" x="193.53" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="204.68" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="208.40" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="212.12" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="215.83" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="219.55" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="226.98" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="230.70" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="234.42" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="238.13" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="241.85" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="245.57" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="249.28" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="253.00" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="256.72" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="260.43" y="91.2" width="2.72" height="16.8"/><rect class="fb" x="264.15" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="267.87" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="271.58" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="275.30" y="91.2" width="2.72" height="16.8"/><rect class="fb" x="279.02" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="282.73" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="286.45" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="290.17" y="85.6" width="2.72" height="22.4"/><rect class="fb" x="293.88" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="297.60" y="91.2" width="2.72" height="16.8"/><rect class="fb" x="305.03" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="312.47" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="316.18" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="319.90" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="323.62" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="327.33" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="331.05" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="334.77" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="338.48" y="91.2" width="2.72" height="16.8"/><rect class="fb" x="342.20" y="91.2" width="2.72" height="16.8"/><rect class="fb" x="345.92" y="85.6" width="2.72" height="22.4"/><rect class="fb" x="349.63" y="91.2" width="2.72" height="16.8"/><rect class="fb" x="353.35" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="357.07" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="360.78" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="364.50" y="91.2" width="2.72" height="16.8"/><rect class="fb" x="368.22" y="91.2" width="2.72" height="16.8"/><rect class="fb" x="371.93" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="375.65" y="91.2" width="2.72" height="16.8"/><rect class="fb" x="379.37" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="383.08" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="386.80" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="394.23" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="397.95" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="401.67" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="409.10" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="412.82" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="420.25" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="423.97" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="427.68" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="431.40" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="435.12" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="446.27" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="449.98" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="453.70" y="91.2" width="2.72" height="16.8"/><rect class="fb" x="457.42" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="461.13" y="102.4" width="2.72" height="5.6"/><rect class="fb" x="468.57" y="96.8" width="2.72" height="11.2"/><rect class="fb" x="472.28" y="96.8" width="2.72" height="11.2"/><text x="30" y="143" class="lab" text-anchor="start">After</text><line x1="30" y1="236" x2="476" y2="236" class="axis"/><text x="22" y="240" class="tick" text-anchor="end">0</text><line x1="30" y1="208" x2="476" y2="208" class="grid"/><text x="22" y="212" class="tick" text-anchor="end">5</text><line x1="30" y1="180" x2="476" y2="180" class="grid"/><text x="22" y="184" class="tick" text-anchor="end">10</text><line x1="30" y1="152" x2="476" y2="152" class="ref"/><text x="22" y="156" class="tick" text-anchor="end">15</text><rect class="fa" x="30.00" y="230.4" width="2.72" height="5.6"/><rect class="fa" x="33.72" y="174.4" width="2.72" height="61.6"/><rect class="fa" x="37.43" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="41.15" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="44.87" y="168.8" width="2.72" height="67.2"/><rect class="fa" x="48.58" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="52.30" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="56.02" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="59.73" y="168.8" width="2.72" height="67.2"/><rect class="fa" x="63.45" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="67.17" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="70.88" y="168.8" width="2.72" height="67.2"/><rect class="fa" x="74.60" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="78.32" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="82.03" y="168.8" width="2.72" height="67.2"/><rect class="fa" x="85.75" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="89.47" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="93.18" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="96.90" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="100.62" y="174.4" width="2.72" height="61.6"/><rect class="fa" x="104.33" y="168.8" width="2.72" height="67.2"/><rect class="fa" x="108.05" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="111.77" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="115.48" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="119.20" y="185.6" width="2.72" height="50.4"/><rect class="fa" x="122.92" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="126.63" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="130.35" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="134.07" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="137.78" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="141.50" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="145.22" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="148.93" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="152.65" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="156.37" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="160.08" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="163.80" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="167.52" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="171.23" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="174.95" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="178.67" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="182.38" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="186.10" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="189.82" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="193.53" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="197.25" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="200.97" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="204.68" y="168.8" width="2.72" height="67.2"/><rect class="fa" x="208.40" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="212.12" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="215.83" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="219.55" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="223.27" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="226.98" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="230.70" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="234.42" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="238.13" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="241.85" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="245.57" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="249.28" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="253.00" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="256.72" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="260.43" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="264.15" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="267.87" y="174.4" width="2.72" height="61.6"/><rect class="fa" x="271.58" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="275.30" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="279.02" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="282.73" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="286.45" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="290.17" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="293.88" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="297.60" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="301.32" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="305.03" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="308.75" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="312.47" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="316.18" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="319.90" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="323.62" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="327.33" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="331.05" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="334.77" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="338.48" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="342.20" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="345.92" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="349.63" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="353.35" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="357.07" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="360.78" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="364.50" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="368.22" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="371.93" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="375.65" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="379.37" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="383.08" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="386.80" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="390.52" y="168.8" width="2.72" height="67.2"/><rect class="fa" x="394.23" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="397.95" y="174.4" width="2.72" height="61.6"/><rect class="fa" x="401.67" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="405.38" y="168.8" width="2.72" height="67.2"/><rect class="fa" x="409.10" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="412.82" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="416.53" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="420.25" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="423.97" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="427.68" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="431.40" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="435.12" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="438.83" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="442.55" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="446.27" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="449.98" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="453.70" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="457.42" y="152.0" width="2.72" height="84.0"/><rect class="fa" x="461.13" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="464.85" y="163.2" width="2.72" height="72.8"/><rect class="fa" x="468.57" y="157.6" width="2.72" height="78.4"/><rect class="fa" x="472.28" y="152.0" width="2.72" height="84.0"/><text x="30" y="254" class="tick" text-anchor="start">0 s</text><text x="141.5" y="254" class="tick" text-anchor="middle">30 s</text><text x="253" y="254" class="tick" text-anchor="middle">60 s</text><text x="364.5" y="254" class="tick" text-anchor="middle">90 s</text><text x="476" y="254" class="tick" text-anchor="end">120 s</text></svg></div></figure></main></body></html>

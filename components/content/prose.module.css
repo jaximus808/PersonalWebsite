@@ -5,9 +5,9 @@
  */
 
 .article {
-  --ink: rgba(255, 255, 255, 0.8);
-  --ink-strong: rgba(255, 255, 255, 0.96);
-  --ink-quiet: rgba(255, 255, 255, 0.6);
+  --ink: rgba(255, 255, 255, 0.92);
+  --ink-strong: #fff;
+  --ink-quiet: rgba(255, 255, 255, 0.72);
   --ink-faint: rgba(255, 255, 255, 0.4);
   --rule: rgba(255, 255, 255, 0.1);
   --surface: rgba(255, 255, 255, 0.035);
